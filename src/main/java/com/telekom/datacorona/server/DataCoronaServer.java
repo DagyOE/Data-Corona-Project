@@ -8,6 +8,9 @@ import com.telekom.datacorona.hospital.HospitalService;
 import com.telekom.datacorona.hospital.HospitalServiceJPA;
 import com.telekom.datacorona.region.RegionService;
 import com.telekom.datacorona.region.RegionServiceJPA;
+import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
+import com.telekom.datacorona.regionVaccinations.RegionVaccinationsJPA;
+import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -18,7 +21,8 @@ import org.springframework.context.annotation.Bean;
         "com.telekom.datacorona.city",
         "com.telekom.datacorona.district",
         "com.telekom.datacorona.hospital",
-        "com.telekom.datacorona.region"
+        "com.telekom.datacorona.region",
+        "com.telekom.datacorona.regionVaccinations"
 })
 public class DataCoronaServer {
 
@@ -44,5 +48,10 @@ public class DataCoronaServer {
     @Bean
     public RegionService regionService() {
         return new RegionServiceJPA();
+    }
+
+    @Bean
+    public RegionVaccinationsService regionVaccinationsService() {
+        return new RegionVaccinationsJPA();
     }
 }
