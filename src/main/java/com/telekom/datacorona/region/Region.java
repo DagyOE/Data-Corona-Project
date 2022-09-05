@@ -1,8 +1,12 @@
 package com.telekom.datacorona.region;
 
+import com.telekom.datacorona.district.District;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @Entity
 public class Region {
@@ -12,6 +16,8 @@ public class Region {
     private String title;
     private String code;
     private String abbreviation;
+    @OneToMany(mappedBy = "id")
+    private List<District> districts;
 
     public Region() {
     }
