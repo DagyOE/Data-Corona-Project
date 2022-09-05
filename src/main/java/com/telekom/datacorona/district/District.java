@@ -1,6 +1,7 @@
 package com.telekom.datacorona.district;
 
 import com.telekom.datacorona.city.City;
+import com.telekom.datacorona.region.Region;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,7 +13,7 @@ public class District {
     private long id;
     @ManyToOne
     @JoinColumn(name = "Region.id", nullable = false)
-    private long regionId;
+    Region region;
     private String title;
     private String code;
     @OneToMany(mappedBy = "id")
@@ -21,8 +22,8 @@ public class District {
     public District() {
     }
 
-    public District(long regionId, String title, String code) {
-        this.regionId = regionId;
+    public District(Region region, String title, String code) {
+        this.region = region;
         this.title = title;
         this.code = code;
     }
@@ -35,12 +36,12 @@ public class District {
         this.id = id;
     }
 
-    public long getRegionId() {
-        return regionId;
+    public Region getRegionId() {
+        return region;
     }
 
-    public void setRegionId(long regionId) {
-        this.regionId = regionId;
+    public void setRegionId(Region region) {
+        this.region = region;
     }
 
     public String getTitle() {

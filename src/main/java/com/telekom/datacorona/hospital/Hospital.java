@@ -1,5 +1,7 @@
 package com.telekom.datacorona.hospital;
 
+import com.telekom.datacorona.city.City;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,7 +11,7 @@ public class Hospital {
     private long id;
     @ManyToOne
     @JoinColumn(name = "City.id", nullable = false)
-    private long cityId;
+    City city;
     private String title;
     private String code;
 
@@ -17,8 +19,8 @@ public class Hospital {
 
     }
 
-    public Hospital(long cityId, String title, String code) {
-        this.cityId = cityId;
+    public Hospital(City city, String title, String code) {
+        this.city = city;
         this.title = title;
         this.code = code;
     }
@@ -31,12 +33,12 @@ public class Hospital {
         this.id = id;
     }
 
-    public long getCityId() {
-        return cityId;
+    public City getCity() {
+        return city;
     }
 
-    public void setCityId(long cityId) {
-        this.cityId = cityId;
+    public void setCity(City city) {
+        this.city = city;
     }
 
     public String getTitle() {

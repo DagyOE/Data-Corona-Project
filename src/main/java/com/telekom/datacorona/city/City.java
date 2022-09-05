@@ -1,5 +1,6 @@
 package com.telekom.datacorona.city;
 
+import com.telekom.datacorona.district.District;
 import com.telekom.datacorona.hospital.Hospital;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ public class City {
     private long id;
     @ManyToOne
     @JoinColumn(name = "District.id", nullable = false)
-    private long districtId;
+    District district;
     private String code;
     private String title;
     @OneToMany(mappedBy = "id")
@@ -21,10 +22,11 @@ public class City {
     public City() {
     }
 
-    public City(long districtId, String code, String title) {
-        this.districtId = districtId;
+    public City(District district, String code, String title, List<Hospital> hospitals) {
+        this.district = district;
         this.code = code;
         this.title = title;
+        this.hospitals = hospitals;
     }
 
     public long getId() {
@@ -35,12 +37,12 @@ public class City {
         this.id = id;
     }
 
-    public long getDistrictId() {
-        return districtId;
+    public District getDistrict() {
+        return district;
     }
 
-    public void setDistrictId(long districtId) {
-        this.districtId = districtId;
+    public void setDistrict(District district) {
+        this.district = district;
     }
 
     public String getCode() {

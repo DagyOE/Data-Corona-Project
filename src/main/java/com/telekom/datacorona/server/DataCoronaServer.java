@@ -12,9 +12,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EntityScan(basePackages = {
+        "com.telekom.datacorona.city",
+        "com.telekom.datacorona.district",
+        "com.telekom.datacorona.hospital",
+        "com.telekom.datacorona.region"
+})
+@ComponentScan(basePackages = {
         "com.telekom.datacorona.city",
         "com.telekom.datacorona.district",
         "com.telekom.datacorona.hospital",
