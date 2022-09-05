@@ -1,24 +1,28 @@
-package com.telekom.datacorona.hospital;
+package com.telekom.datacorona.district;
+
+import com.telekom.datacorona.city.City;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-public class Hospital {
+public class District {
     @Id
     @GeneratedValue
     private long id;
     @ManyToOne
-    @JoinColumn(name = "City.id", nullable = false)
-    private long cityId;
+    @JoinColumn(name = "Region.id", nullable = false)
+    private long regionId;
     private String title;
     private String code;
+    @OneToMany(mappedBy = "id")
+    private List<City> cities;
 
-    public Hospital() {
-
+    public District() {
     }
 
-    public Hospital(long cityId, String title, String code) {
-        this.cityId = cityId;
+    public District(long regionId, String title, String code) {
+        this.regionId = regionId;
         this.title = title;
         this.code = code;
     }
@@ -31,12 +35,12 @@ public class Hospital {
         this.id = id;
     }
 
-    public long getCityId() {
-        return cityId;
+    public long getRegionId() {
+        return regionId;
     }
 
-    public void setCityId(long cityId) {
-        this.cityId = cityId;
+    public void setRegionId(long regionId) {
+        this.regionId = regionId;
     }
 
     public String getTitle() {

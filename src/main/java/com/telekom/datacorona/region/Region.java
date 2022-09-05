@@ -1,26 +1,25 @@
-package com.telekom.datacorona.hospital;
+package com.telekom.datacorona.region;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
-public class Hospital {
+public class Region {
     @Id
     @GeneratedValue
     private long id;
-    @ManyToOne
-    @JoinColumn(name = "City.id", nullable = false)
-    private long cityId;
     private String title;
     private String code;
+    private String abbreviation;
 
-    public Hospital() {
-
+    public Region() {
     }
 
-    public Hospital(long cityId, String title, String code) {
-        this.cityId = cityId;
+    public Region(String title, String code, String abbreviation) {
         this.title = title;
         this.code = code;
+        this.abbreviation = abbreviation;
     }
 
     public long getId() {
@@ -29,14 +28,6 @@ public class Hospital {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(long cityId) {
-        this.cityId = cityId;
     }
 
     public String getTitle() {
@@ -53,5 +44,13 @@ public class Hospital {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 }

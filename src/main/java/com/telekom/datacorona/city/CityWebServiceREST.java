@@ -1,4 +1,4 @@
-package com.telekom.datacorona.hospital;
+package com.telekom.datacorona.city;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/hospitals")
-public class HospitalWebServiceREST {
+@RequestMapping("/api/cities")
+public class CityWebServiceREST {
     @Autowired
-    HospitalService hospitalService;
+    CityService cityService;
 
     @PostMapping
-    public void addHospital(Hospital hospital) {
-        hospitalService.addHospital(hospital);
+    public void addCity(City city) {
+        cityService.addCity(city);
     }
 
     @GetMapping
-    public List<Hospital> getAllHospitals() {
-        return hospitalService.getAllHospitals();
+    public List<City> getAllCities() {
+        return cityService.getAllCities();
     }
 }

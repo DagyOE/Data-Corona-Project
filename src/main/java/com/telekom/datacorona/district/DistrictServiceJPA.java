@@ -1,4 +1,4 @@
-package com.telekom.datacorona.hospital;
+package com.telekom.datacorona.district;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -6,19 +6,19 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Transactional
-public class HospitalServiceJPA implements HospitalService{
+public class DistrictServiceJPA implements DistrictService{
     @PersistenceContext
     EntityManager entityManager;
 
     @Override
-    public void addHospital(Hospital hospital) {
-        entityManager.persist(hospital);
+    public void addDistrict(District district) {
+        entityManager.persist(district);
     }
 
     @Override
-    public List<Hospital> getAllHospitals() {
+    public List<District> getAllDistricts() {
         return entityManager
-                .createQuery("select h from Hospital h")
+                .createQuery("select d from District d")
                 .getResultList();
     }
 }
