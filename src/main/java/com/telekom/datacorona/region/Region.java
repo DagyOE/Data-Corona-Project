@@ -1,6 +1,7 @@
 package com.telekom.datacorona.region;
 
 import com.telekom.datacorona.district.District;
+import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,8 @@ public class Region {
     private String abbreviation;
     @OneToMany(mappedBy = "id")
     private List<District> districts;
+    @OneToMany(mappedBy = "id")
+    private List<RegionVaccinations> regionVaccinations;
 
     public Region() {
     }
