@@ -29,7 +29,8 @@ import org.springframework.context.annotation.ComponentScan;
         "com.telekom.datacorona.city",
         "com.telekom.datacorona.district",
         "com.telekom.datacorona.hospital",
-        "com.telekom.datacorona.region"
+        "com.telekom.datacorona.region",
+        "com.telekom.datacorona.regionVaccinations"
 })
 public class DataCoronaServer {
 
