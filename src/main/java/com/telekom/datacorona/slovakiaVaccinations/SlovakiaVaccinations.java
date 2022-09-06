@@ -1,17 +1,13 @@
-package com.telekom.datacorona.regionVaccinations;
+package com.telekom.datacorona.slovakiaVaccinations;
 
-import com.telekom.datacorona.region.Region;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
-public class RegionVaccinations {
+public class SlovakiaVaccinations {
 
     @Id
     private String id;
-    @ManyToOne
-    @JoinColumn(name = "Region.id", nullable = false)
-    private Region region;
     private int dose1Count;
     private int dose2Count;
     private int dose1Sum;
@@ -19,12 +15,11 @@ public class RegionVaccinations {
     private String updatedAt;
     private String publishedOn;
 
-    public RegionVaccinations() {
+    public SlovakiaVaccinations() {
     }
 
-    public RegionVaccinations(String id, Region region, int dose1Count, int dose2Count, int dose1Sum, int dose2Sum, String updatedAt, String publishedOn) {
+    public SlovakiaVaccinations(String id, int dose1Count, int dose2Count, int dose1Sum, int dose2Sum, String updatedAt, String publishedOn) {
         this.id = id;
-        this.region = region;
         this.dose1Count = dose1Count;
         this.dose2Count = dose2Count;
         this.dose1Sum = dose1Sum;
@@ -39,14 +34,6 @@ public class RegionVaccinations {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Region getRegion() {
-        return region;
-    }
-
-    public void setRegion(Region region) {
-        this.region = region;
     }
 
     public int getDose1Count() {

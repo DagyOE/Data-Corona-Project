@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Transactional
-public class RegionVaccinationsJPA implements RegionVaccinationsService {
+public class RegionVaccinationsServiceJPA implements RegionVaccinationsService {
 
     @PersistenceContext
     EntityManager entityManager;

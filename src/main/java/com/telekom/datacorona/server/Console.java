@@ -2,24 +2,18 @@ package com.telekom.datacorona.server;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.*;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.telekom.datacorona.city.City;
 import com.telekom.datacorona.city.CityService;
 import com.telekom.datacorona.district.District;
 import com.telekom.datacorona.district.DistrictService;
 import com.telekom.datacorona.region.Region;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.json.*;
 import com.telekom.datacorona.region.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 
 public class Console {
 
