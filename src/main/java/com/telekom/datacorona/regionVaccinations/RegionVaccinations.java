@@ -8,7 +8,6 @@ import javax.persistence.*;
 public class RegionVaccinations {
 
     @Id
-    @GeneratedValue
     private String id;
     @ManyToOne
     @JoinColumn(name = "Region.id", nullable = false)
@@ -23,7 +22,8 @@ public class RegionVaccinations {
     public RegionVaccinations() {
     }
 
-    public RegionVaccinations(Region region, int dose1Count, int dose2Count, int dose1Sum, int dose2Sum, String updatedAt, String publishedOn) {
+    public RegionVaccinations(String id, Region region, int dose1Count, int dose2Count, int dose1Sum, int dose2Sum, String updatedAt, String publishedOn) {
+        this.id = id;
         this.region = region;
         this.dose1Count = dose1Count;
         this.dose2Count = dose2Count;

@@ -1,6 +1,11 @@
 package com.telekom.datacorona.server;
 
+import com.telekom.datacorona.region.Region;
 import com.telekom.datacorona.region.RegionService;
+import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
+import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
+import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinations;
+import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinationsService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +18,7 @@ import java.util.Scanner;
 public class Console {
 
     @Autowired
-    private RegionService regionService;
+    private SlovakiaVaccinationsService slovakiaVaccinationsService;
 
     public void run() {
         System.out.println("App started");
