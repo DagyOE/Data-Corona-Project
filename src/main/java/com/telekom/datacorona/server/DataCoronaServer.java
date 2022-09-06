@@ -8,8 +8,8 @@ import com.telekom.datacorona.hospital.HospitalService;
 import com.telekom.datacorona.hospital.HospitalServiceJPA;
 import com.telekom.datacorona.region.RegionService;
 import com.telekom.datacorona.region.RegionServiceJPA;
-import com.telekom.datacorona.regionVaccinations.RegionVaccinationsJPA;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
+import com.telekom.datacorona.regionVaccinations.RegionVaccinationsServiceJPA;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -72,6 +72,6 @@ public class DataCoronaServer {
 
     @Bean
     public RegionVaccinationsService regionVaccinationsService() {
-        return new RegionVaccinationsJPA();
+        return new RegionVaccinationsServiceJPA();
     }
 }
