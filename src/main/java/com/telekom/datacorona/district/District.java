@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 public class District {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne
     @JoinColumn(name = "Region.id", nullable = false)
@@ -20,6 +20,10 @@ public class District {
     private List<City> cities;
 
     public District() {
+    }
+
+    public District(long id) {
+        this.id = id;
     }
 
     public District(Region region, String title, String code) {
@@ -58,5 +62,14 @@ public class District {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @Override
+    public String toString() {
+        return "District{" +
+                "region=" + region +
+                ", title='" + title + '\'' +
+                ", code='" + code + '\'' +
+                '}';
     }
 }

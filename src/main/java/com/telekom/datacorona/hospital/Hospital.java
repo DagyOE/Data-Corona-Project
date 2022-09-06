@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 public class Hospital {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne
     @JoinColumn(name = "City.id", nullable = false)
@@ -16,7 +16,10 @@ public class Hospital {
     private String code;
 
     public Hospital() {
+    }
 
+    public Hospital(long id) {
+        this.id = id;
     }
 
     public Hospital(City city, String title, String code) {
@@ -55,5 +58,14 @@ public class Hospital {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @Override
+    public String toString() {
+        return "Hospital{" +
+                "city=" + city +
+                ", title='" + title + '\'' +
+                ", code='" + code + '\'' +
+                '}';
     }
 }
