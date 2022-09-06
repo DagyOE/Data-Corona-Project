@@ -1,0 +1,18 @@
+/*Structure formatting*/
+.header {
+    padding: 60px;
+    text-align: center;
+    background: #FFF654;
+    color: white;
+    font-size: 30px;
+}
+
+body{
+    padding: 10px;
+    text-align: center;
+}
+
+.footer{
+    padding: 10px;
+    text-align: center;
+}
