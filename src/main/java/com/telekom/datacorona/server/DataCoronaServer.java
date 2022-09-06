@@ -8,9 +8,9 @@ import com.telekom.datacorona.hospital.HospitalService;
 import com.telekom.datacorona.hospital.HospitalServiceJPA;
 import com.telekom.datacorona.region.RegionService;
 import com.telekom.datacorona.region.RegionServiceJPA;
-import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsJPA;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -37,6 +37,18 @@ public class DataCoronaServer {
     public static void main(String[] args) {
         SpringApplication.run(DataCoronaServer.class, args);
     }
+
+    // ------> NEVIEM ALE SI TYMTO BY SME MOHLI OVLADAT ZAPIS DO DB
+    @Bean
+    public CommandLineRunner runner(Console console) {
+        return s -> console.run();
+    }
+
+    @Bean
+    public Console console() {
+        return new Console();
+    }
+    // ------>
 
     @Bean
     public CityService cityService() {
