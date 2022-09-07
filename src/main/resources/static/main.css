@@ -1,0 +1,19 @@
+/*Structure formatting*/
+.header {
+    padding: 1vw;
+    text-align: center;
+    background: lightgray;
+    color: white;
+    font-size: 2vw;
+}
+
+body{
+    padding: 5vw;
+    text-align: center;
+}
+
+.footer{
+    padding: 2vw;
+    background: lightgray;
+    text-align: center;
+}
