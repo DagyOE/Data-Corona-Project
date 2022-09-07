@@ -3,7 +3,6 @@ package com.telekom.datacorona.server;
 import java.io.*;
 import java.net.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.telekom.datacorona.city.City;
 import com.telekom.datacorona.city.CityService;
 import com.telekom.datacorona.district.District;
@@ -14,85 +13,186 @@ import com.telekom.datacorona.region.Region;
 import com.telekom.datacorona.region.RegionService;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinations;
+import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinationsService;
+import com.telekom.datacorona.vaccinations.Vaccinations;
+import com.telekom.datacorona.vaccinations.VaccinationsService;
+import com.telekom.datacorona.vaccine.Vaccine;
+import com.telekom.datacorona.vaccine.VaccineService;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Scanner;
 
 public class Console {
 
     @Autowired
     private RegionService regionService;
-
     @Autowired
     private DistrictService districtService;
-
     @Autowired
     private CityService cityService;
-
     @Autowired
     private HospitalService hospitalService;
-
     @Autowired
     private RegionVaccinationsService regionVaccinationsService;
+    @Autowired
+    private SlovakiaVaccinationsService slovakiaVaccinationsService;
+    @Autowired
+    private VaccineService vaccineService;
+    @Autowired
+    private VaccinationsService vaccinationsService;
 
-    public void run() throws IOException {
-        System.out.println("App started");
-        getRegionData("https://data.korona.gov.sk/api/regions");
-        getDistrictData("https://data.korona.gov.sk/api/districts");
-        getCityData("https://data.korona.gov.sk/api/cities");
-        getHospitalData("https://data.korona.gov.sk/api/hospitals");
+    private String urlRegion = "https://data.korona.gov.sk/api/regions";
+    private String urlDistrict = "https://data.korona.gov.sk/api/districts";
+    private String urlCity = "https://data.korona.gov.sk/api/cities";
+    private String urlHospital = "https://data.korona.gov.sk/api/hospitals";
+    private String urlVaccinationsByRegion = "https://data.korona.gov.sk/api/vaccinations/by-region";
+    private String urlVaccinationsInSlovakia = "https://data.korona.gov.sk/api/vaccinations/in-slovakia";
+    private String urlVaccine = "https://data.korona.gov.sk/api/vaccines";
+    private String urlVaccination = "https://data.korona.gov.sk/api/vaccinations";
+
+    public void run() throws IOException, JSONException {
+        System.out.println("Start mirroring");
+        getRegionData(urlRegion);
+        getDistrictData(urlDistrict);
+        getCityData(urlCity);
+        getHospitalData(urlHospital);
+        getVaccinationByRegionData(urlVaccinationsByRegion);
+        getVaccinationInSlovakiaData(urlVaccinationsInSlovakia);
+        getVaccineData(urlVaccine);
+        getVaccinationData(urlVaccination);
+        System.out.println("End mirroring");
     }
 
-    private void getHospitalData(String url) throws IOException {
-        String data = jsonString(url);
-        ObjectMapper mapper = new ObjectMapper();
-        Hospital[] pp1 = mapper.readValue(data, Hospital[].class);
-
-        System.out.println("JSON array to Array objects...");
-        for (Hospital hospital : pp1) {
-            System.out.println(hospital);
-            hospitalService.addHospital(new Hospital(hospital.getCity(), hospital.getTitle(), hospital.getCode()));
+    private void getVaccinationData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONObject obj = new JSONObject(jsonString);
+        JSONArray data = obj.getJSONArray("page");
+        for (int i = 0; i < data.length(); i++) {
+            vaccinationsService.addVaccination(new Vaccinations(
+                    (String) data.getJSONObject(i).get("id"),
+                    new Vaccine((int) data.getJSONObject(i).get("vaccine_id")),
+                    new Region((int) data.getJSONObject(i).get("region_id")),
+                    (int) data.getJSONObject(i).get("dose1_count"),
+                    (int) data.getJSONObject(i).get("dose2_count"),
+                    (String) data.getJSONObject(i).get("updated_at"),
+                    (String) data.getJSONObject(i).get("published_on")
+            ));
+        }
+        if (!(obj.get("next_offset").toString().equals("null"))) {
+            String newUrl = urlVaccination + "?offset=" + obj.get("next_offset");
+            getVaccinationData(newUrl);
         }
     }
 
-    private void getCityData(String url) throws IOException {
-        String data = jsonString(url);
-        ObjectMapper mapper = new ObjectMapper();
-        City[] pp1 = mapper.readValue(data, City[].class);
-
-        System.out.println("JSON array to Array objects...");
-        for (City city : pp1) {
-            System.out.println(city);
-            cityService.addCity(new City(city.getDistrict(), city.getCode(), city.getTitle()));
+    private void getVaccineData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONArray pageName = new JSONArray(jsonString);
+        for (int i = 0; i < pageName.length(); i++) {
+            vaccineService.addVaccine(new Vaccine(
+                    (int) pageName.getJSONObject(i).get("id"),
+                    (String) pageName.getJSONObject(i).get("title"),
+                    (String) pageName.getJSONObject(i).get("manufacturer")
+                    ));
         }
     }
 
-    private void getDistrictData(String url) throws IOException {
-        String data = jsonString(url);
-        ObjectMapper mapper = new ObjectMapper();
-        District[] pp1 = mapper.readValue(data, District[].class);
-
-        System.out.println("JSON array to Array objects...");
-        for (District district : pp1) {
-            System.out.println(district);
-            districtService.addDistrict(new District(district.getRegionId(), district.getTitle(), district.getCode()));
+    private void getVaccinationInSlovakiaData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONObject obj = new JSONObject(jsonString);
+        JSONArray data = obj.getJSONArray("page");
+        for (int i = 0; i < data.length(); i++) {
+            slovakiaVaccinationsService.addSlovakiaVaccinations(new SlovakiaVaccinations(
+                    (String) data.getJSONObject(i).get("id"),
+                    (int) data.getJSONObject(i).get("dose1_count"),
+                    (int) data.getJSONObject(i).get("dose2_count"),
+                    (int) data.getJSONObject(i).get("dose1_sum"),
+                    (int) data.getJSONObject(i).get("dose2_sum"),
+                    (String) data.getJSONObject(i).get("updated_at"),
+                    (String) data.getJSONObject(i).get("published_on")
+            ));
+        }
+        if (!(obj.get("next_offset").toString().equals("null"))) {
+            String newUrl = urlVaccinationsInSlovakia + "?offset=" + obj.get("next_offset");
+            getVaccinationInSlovakiaData(newUrl);
         }
     }
 
-    private void getRegionData(String url) throws IOException {
-        String data = jsonString(url);
-        ObjectMapper mapper = new ObjectMapper();
-        Region[] pp1 = mapper.readValue(data, Region[].class);
+    private void getVaccinationByRegionData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONObject obj = new JSONObject(jsonString);
+        JSONArray data = obj.getJSONArray("page");
+        for (int i = 0; i < data.length(); i++) {
+            regionVaccinationsService.addRegionVaccinations(new RegionVaccinations(
+                    (String) data.getJSONObject(i).get("id"),
+                    new Region((int) data.getJSONObject(i).get("region_id")),
+                    (int) data.getJSONObject(i).get("dose1_count"),
+                    (int) data.getJSONObject(i).get("dose2_count"),
+                    (int) data.getJSONObject(i).get("dose1_sum"),
+                    (int) data.getJSONObject(i).get("dose2_sum"),
+                    (String) data.getJSONObject(i).get("updated_at"),
+                    (String) data.getJSONObject(i).get("published_on")
+            ));
+        }
+        if (!(obj.get("next_offset").toString().equals("null"))) {
+            String newUrl = urlVaccinationsByRegion + "?offset=" + obj.get("next_offset");
+            getVaccinationByRegionData(newUrl);
+        }
+    }
 
-        System.out.println("JSON array to Array objects...");
-        for (Region region : pp1) {
-            System.out.println(region);
-            regionService.addRegion(new Region(region.getTitle(), region.getCode(), region.getAbbreviation()));
+    private void getHospitalData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONArray data = new JSONArray(jsonString);
+        for (int i = 0; i < data.length(); i++) {
+            hospitalService.addHospital(new Hospital(
+                    (int) data.getJSONObject(i).get("id"),
+                    new City((int) data.getJSONObject(i).get("city_id")),
+                    (String) data.getJSONObject(i).get("title"),
+                    (String) data.getJSONObject(i).get("code")
+            ));
+        }
+    }
+
+    private void getCityData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONArray data = new JSONArray(jsonString);
+        for (int i = 0; i < data.length(); i++) {
+            cityService.addCity(new City(
+                    (int) data.getJSONObject(i).get("id"),
+                    new District((int) data.getJSONObject(i).get("district_id")),
+                    (String) data.getJSONObject(i).get("title"),
+                    (String) data.getJSONObject(i).get("code")
+            ));
+        }
+    }
+
+    private void getDistrictData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONArray data = new JSONArray(jsonString);
+        for (int i = 0; i < data.length(); i++) {
+            districtService.addDistrict(new District(
+                    (int) data.getJSONObject(i).get("id"),
+                    new Region((int) data.getJSONObject(i).get("region_id")),
+                    (String) data.getJSONObject(i).get("title"),
+                    (String) data.getJSONObject(i).get("code")
+            ));
+        }
+    }
+
+    private void getRegionData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONArray data = new JSONArray(jsonString);
+        for (int i = 0; i < data.length(); i++) {
+            regionService.addRegion(new Region(
+                    (int) data.getJSONObject(i).get("id"),
+                    (String) data.getJSONObject(i).get("title"),
+                    (String) data.getJSONObject(i).get("code"),
+                    (String) data.getJSONObject(i).get("abbreviation")
+            ));
         }
     }
 
@@ -102,19 +202,12 @@ public class Console {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         int responseCode = conn.getResponseCode();
-        System.err.println("Response code: " + responseCode);
         try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
             String line;
             while ((line = in.readLine()) != null) {
-                data+=line;
+                data += line;
             }
         }
-        String prop = "id";
-        data = data.replaceAll("\"" + prop + "\"[ ]*:[^,}\\]]*[,]?", "");
-        data = data.replaceAll("region_id", "regionId");
-        data = data.replaceAll("district_id", "district");
-        data = data.replaceAll("city_id", "city");
-        System.out.println(data);
         return data;
     }
 }

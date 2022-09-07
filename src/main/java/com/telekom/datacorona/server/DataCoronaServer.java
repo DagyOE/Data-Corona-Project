@@ -12,9 +12,10 @@ import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsServiceJPA;
 import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinationsService;
 import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinationsServiceJPA;
-import com.telekom.datacorona.vaccinations.Vaccinations;
 import com.telekom.datacorona.vaccinations.VaccinationsService;
 import com.telekom.datacorona.vaccinations.VaccinationsServiceJPA;
+import com.telekom.datacorona.vaccine.VaccineService;
+import com.telekom.datacorona.vaccine.VaccineServiceJPA;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,6 +31,7 @@ import org.springframework.context.annotation.ComponentScan;
         "com.telekom.datacorona.region",
         "com.telekom.datacorona.regionVaccinations",
         "com.telekom.datacorona.slovakiaVaccinations",
+        "com.telekom.datacorona.vaccine",
         "com.telekom.datacorona.vaccinations"
 })
 @ComponentScan(basePackages = {
@@ -39,6 +41,7 @@ import org.springframework.context.annotation.ComponentScan;
         "com.telekom.datacorona.region",
         "com.telekom.datacorona.regionVaccinations",
         "com.telekom.datacorona.slovakiaVaccinations",
+        "com.telekom.datacorona.vaccine",
         "com.telekom.datacorona.vaccinations"
 })
 public class DataCoronaServer {
@@ -87,6 +90,11 @@ public class DataCoronaServer {
     @Bean
     public SlovakiaVaccinationsService slovakiaVaccinationsService() {
         return new SlovakiaVaccinationsServiceJPA();
+    }
+
+    @Bean
+    public VaccineService vaccineService() {
+        return new VaccineServiceJPA();
     }
 
     @Bean
