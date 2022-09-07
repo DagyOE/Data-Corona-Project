@@ -39,7 +39,8 @@ import org.springframework.context.annotation.ComponentScan;
         "com.telekom.datacorona.region",
         "com.telekom.datacorona.regionVaccinations",
         "com.telekom.datacorona.slovakiaVaccinations",
-        "com.telekom.datacorona.vaccinations"
+        "com.telekom.datacorona.vaccinations",
+        "com.telekom.datacorona.server"
 })
 public class DataCoronaServer {
 
@@ -47,7 +48,7 @@ public class DataCoronaServer {
         SpringApplication.run(DataCoronaServer.class, args);
     }
 
-    // ------> NEVIEM ALE SI TYMTO BY SME MOHLI OVLADAT ZAPIS DO DB
+    // ------> NEVIEM ALE ASI TYMTO BY SME MOHLI OVLADAT ZAPIS DO DB
     @Bean
     public CommandLineRunner runner(Console console) {
         return s -> console.run();

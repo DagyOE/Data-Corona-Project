@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <title>Slovakia Vaccinations</title>
+</head>
+<body>
+<main>
+
+<!--    <h1>Vaccination in Slovakia</h1>-->
+    <div>
+        <canvas id="SlovakiaVaccinations"></canvas>
+    </div>
+    <div>
+        <canvas id="Dose1Vaccination"></canvas>
+    </div>
+
+<script>
+    const CHART_COLORS = {
+        red: 'rgb(255, 99, 132)',
+        orange: 'rgb(255, 159, 64)',
+        yellow: 'rgb(255, 205, 86)',
+        green: 'rgb(75, 192, 192)',
+        blue: 'rgb(54, 162, 235)',
+        purple: 'rgb(153, 102, 255)',
+        grey: 'rgb(201, 203, 207)'
+    };
+
+    const BACKGROUND_CHART_COLORS = {
+        red: 'rgba(255, 99, 132, 0.5)',
+        orange: 'rgba(255, 159, 64, 0.5)',
+        yellow: 'rgba(255, 205, 86, 0.5)',
+        green: 'rgba(75, 192, 192, 0.5)',
+        blue: 'rgba(54, 162, 235, 0.5)',
+        purple: 'rgba(153, 102, 255, 0.5)',
+        grey: 'rgba(201, 203, 207, 0.5)'
+    }
+
+    // function transparentize(value, opacity) {
+    //     var alpha = opacity === undefined ? 0.5 : 1 - opacity;
+    //     return colorLib(value).alpha(alpha).rgbString();
+    // }
+
+    // memory for data
+    let dose1Count = [];
+    let dose2Count = [];
+    let dose1Sum = [];
+    let dose2Sum = [];
+    let updatedAt = [];
+    let publishedOn = [];
+
+    fetchVaccinationData("http://localhost:8080/api/slovakiaVaccinations");
+    plotSlovakiaVaccinations();
+
+    async function fetchVaccinationData(url) {
+        await fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(new Error(`Vaccination data acquisition failed. Server answered with ${response.status}: ${response.statusText}.`));
+                }
+            })
+            .then(data => {
+                // filling memory
+                const dataLength = data.length;
+                for (let i = 0; i < dataLength; i++) {
+                    dose1Count[i] = data[i].dose1Count;
+                    dose2Count[i] = data[i].dose2Count;
+                    dose1Sum[i] = data[i].dose1Sum;
+                    dose2Sum[i] = data[i].dose2Sum;
+                    updatedAt[i] = data[i].updatedAt;
+                    publishedOn[i] = data[i].publishedOn;
+                }
+            })
+    }
+
+    function plotSlovakiaVaccinations() {
+        const data = {
+            labels: publishedOn,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: "Dose 1",
+                    backgroundColor: BACKGROUND_CHART_COLORS.red,
+                    borderColor: CHART_COLORS.red,
+                    borderWidth: 2,
+                    data: dose1Count
+                },
+                {
+                    type: 'bar',
+                    label: "Dose 2",
+                    backgroundColor: BACKGROUND_CHART_COLORS.blue,
+                    borderColor: CHART_COLORS.blue,
+                    borderWidth: 2,
+                    data: dose2Count
+                },
+                {
+                    type: 'line',
+                    label: 'Dose 1 accumulation',
+                    borderColor: CHART_COLORS.red,
+                    pointRadius: 5,
+                    data: dose1Sum
+                },
+                {
+                    type: 'line',
+                    label: 'Dose 2 accumulation',
+                    borderColor: CHART_COLORS.blue,
+                    pointRadius: 5,
+                    data: dose2Sum
+                }]
+        };
+
+        var myChart = new Chart(document.getElementById("SlovakiaVaccinations").getContext("2d"), {
+            type: 'scatter',
+            data: data,
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Vaccination in Slovakia"
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem, data) => (`${myChart.data.datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex]}`)
+                        }
+                    }
+                },
+                hover: {
+                    mode: 'point',
+                },
+                responsive: true
+            }
+        });
+    }
+
+    plotText();
+    function plotText() {
+        const data = {
+            labels: publishedOn,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: "Dose 1",
+                    backgroundColor: BACKGROUND_CHART_COLORS.red,
+                    borderColor: CHART_COLORS.red,
+                    borderWidth: 2,
+                    data: dose1Count
+                }]
+        };
+
+        var myChart = new Chart(document.getElementById("Dose1Vaccination").getContext("2d"),
+            {
+                type: 'scatter',
+                data: data,
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Vaccination in Slovakia"
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (tooltipItem, data) => (`${myChart.data.datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex]}`)
+                            }
+                        }
+                    },
+                    hover: {
+                        mode: 'point',
+                    },
+                    responsive: true
+                }
+            });
+    }
+
+
+</script>
+
+</main>
+</body>
+
+</html>
