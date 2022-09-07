@@ -8,12 +8,20 @@ import com.telekom.datacorona.city.City;
 import com.telekom.datacorona.city.CityService;
 import com.telekom.datacorona.district.District;
 import com.telekom.datacorona.district.DistrictService;
+import com.telekom.datacorona.hospital.Hospital;
+import com.telekom.datacorona.hospital.HospitalService;
 import com.telekom.datacorona.region.Region;
 import com.telekom.datacorona.region.RegionService;
+import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
+import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Scanner;
 
 public class Console {
 
@@ -26,22 +34,29 @@ public class Console {
     @Autowired
     private CityService cityService;
 
+    @Autowired
+    private HospitalService hospitalService;
+
+    @Autowired
+    private RegionVaccinationsService regionVaccinationsService;
+
     public void run() throws IOException {
         System.out.println("App started");
-//        getRegionData("https://data.korona.gov.sk/api/regions");
-//        getDistrictData("https://data.korona.gov.sk/api/districts");
-//        getCityData("https://data.korona.gov.sk/api/cities");
+        getRegionData("https://data.korona.gov.sk/api/regions");
+        getDistrictData("https://data.korona.gov.sk/api/districts");
+        getCityData("https://data.korona.gov.sk/api/cities");
         getHospitalData("https://data.korona.gov.sk/api/hospitals");
     }
+
     private void getHospitalData(String url) throws IOException {
         String data = jsonString(url);
         ObjectMapper mapper = new ObjectMapper();
-        City[] pp1 = mapper.readValue(data, City[].class);
+        Hospital[] pp1 = mapper.readValue(data, Hospital[].class);
 
         System.out.println("JSON array to Array objects...");
-        for (City city : pp1) {
-            System.out.println(city);
-            cityService.addCity(new City(city.getDistrict(), city.getCode(), city.getTitle()));
+        for (Hospital hospital : pp1) {
+            System.out.println(hospital);
+            hospitalService.addHospital(new Hospital(hospital.getCity(), hospital.getTitle(), hospital.getCode()));
         }
     }
 
@@ -98,6 +113,7 @@ public class Console {
         data = data.replaceAll("\"" + prop + "\"[ ]*:[^,}\\]]*[,]?", "");
         data = data.replaceAll("region_id", "regionId");
         data = data.replaceAll("district_id", "district");
+        data = data.replaceAll("city_id", "city");
         System.out.println(data);
         return data;
     }

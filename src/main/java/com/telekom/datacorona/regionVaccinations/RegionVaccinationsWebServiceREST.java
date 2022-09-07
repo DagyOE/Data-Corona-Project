@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/regionVaccinations")
+@RequestMapping("/api/vaccinations/by-region")
 public class RegionVaccinationsWebServiceREST {
 
     @Autowired
