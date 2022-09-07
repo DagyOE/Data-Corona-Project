@@ -1,0 +1,8 @@
+path {
+fill: pink;
+border-color: black;
+stroke: black;
+}
+path:hover{
+  fill:purple;
+}

@@ -33,6 +33,7 @@ import org.springframework.context.annotation.ComponentScan;
         "com.telekom.datacorona.vaccinations"
 })
 @ComponentScan(basePackages = {
+        "com.telekom.datacorona.server",
         "com.telekom.datacorona.city",
         "com.telekom.datacorona.district",
         "com.telekom.datacorona.hospital",
