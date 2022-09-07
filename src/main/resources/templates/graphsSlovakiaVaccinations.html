@@ -2,13 +2,19 @@
 <html lang="sk">
 <head>
     <meta charset="UTF-8">
+<!--chart js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<!--date range picker-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <title>Slovakia Vaccinations</title>
 </head>
 <body>
 <main>
 
-<!--    <h1>Vaccination in Slovakia</h1>-->
+    <input type="SlovakiaVaccinationsRange" name="SlovakiaVaccinationsRange" />
     <div>
         <canvas id="SlovakiaVaccinations"></canvas>
     </div>
@@ -36,11 +42,6 @@
         purple: 'rgba(153, 102, 255, 0.5)',
         grey: 'rgba(201, 203, 207, 0.5)'
     }
-
-    // function transparentize(value, opacity) {
-    //     var alpha = opacity === undefined ? 0.5 : 1 - opacity;
-    //     return colorLib(value).alpha(alpha).rgbString();
-    // }
 
     // memory for data
     let dose1Count = [];
@@ -73,7 +74,36 @@
                     updatedAt[i] = data[i].updatedAt;
                     publishedOn[i] = data[i].publishedOn;
                 }
+                dose1Count.reverse();
+                dose2Count.reverse();
+                dose1Sum.reverse();
+                dose2Sum.reverse();
+                updatedAt.reverse();
+                publishedOn.reverse();
+
+                createDatePicker();
             })
+    }
+
+    function createDatePicker() {
+        // $('input[name="SlovakiaVaccinationsRange"]').daterangepicker();
+        console.log(publishedOn[0]);
+        console.log(publishedOn[publishedOn.length - 1]);
+        $(function() {
+            $('input[name="SlovakiaVaccinationsRange"]').daterangepicker({
+                opens: 'left',
+                minDate: createDate(publishedOn[0]),
+                maxDate: createDate(publishedOn[publishedOn.length - 1]),
+                startDate: createDate(publishedOn[0]),
+                endDate: createDate(publishedOn[publishedOn.length - 1])
+            }, function(start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
+        });
+    }
+
+    function createDate(date) {
+        return new Date(parseInt(date.substring(0, 4)), parseInt(date.substring(5, 7)) - 1, parseInt(date.substring(8, 10)));
     }
 
     function plotSlovakiaVaccinations() {
@@ -83,6 +113,7 @@
                 {
                     type: 'bar',
                     label: "Dose 1",
+                    yAxisID: 'Dose',
                     backgroundColor: BACKGROUND_CHART_COLORS.red,
                     borderColor: CHART_COLORS.red,
                     borderWidth: 2,
@@ -91,6 +122,7 @@
                 {
                     type: 'bar',
                     label: "Dose 2",
+                    yAxisID: 'Dose',
                     backgroundColor: BACKGROUND_CHART_COLORS.blue,
                     borderColor: CHART_COLORS.blue,
                     borderWidth: 2,
@@ -99,15 +131,17 @@
                 {
                     type: 'line',
                     label: 'Dose 1 accumulation',
+                    yAxisID: 'Acc',
                     borderColor: CHART_COLORS.red,
-                    pointRadius: 5,
+                    pointRadius: 1,
                     data: dose1Sum
                 },
                 {
                     type: 'line',
                     label: 'Dose 2 accumulation',
+                    yAxisID: 'Acc',
                     borderColor: CHART_COLORS.blue,
-                    pointRadius: 5,
+                    pointRadius: 1,
                     data: dose2Sum
                 }]
         };
@@ -127,6 +161,16 @@
                         }
                     }
                 },
+                scales: {
+                    Dose: {
+                        type: 'linear',
+                        position: 'left'
+                    },
+                    Acc: {
+                        type: 'linear',
+                        position: 'right'
+                    }
+                },
                 hover: {
                     mode: 'point',
                 },
@@ -135,8 +179,8 @@
         });
     }
 
-    plotText();
-    function plotText() {
+    plotDose1();
+    function plotDose1() {
         const data = {
             labels: publishedOn,
             datasets: [
