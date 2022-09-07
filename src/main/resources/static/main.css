@@ -1,19 +1,23 @@
-/*Structure formatting*/
+/*Header formatting*/
 .header {
-    padding: 1vw;
+    padding: 20px 10px;
+    background: #F5FCFF;
     text-align: center;
-    background: lightgray;
-    color: white;
-    font-size: 2vw;
+    font-family: Arial, "Arial CE", "Helvetica CE", sans-serif;
+    font-size: 1vw;
 }
 
+/*Body formatting*/
 body{
     padding: 5vw;
     text-align: center;
 }
 
+/*Footer formatting*/
 .footer{
-    padding: 2vw;
-    background: lightgray;
+    padding: 20px 10px;
+    background: #F5FCFF;
     text-align: center;
+    font-family: Arial, "Arial CE", "Helvetica CE", sans-serif;
+    font-size: 1vw;
 }
