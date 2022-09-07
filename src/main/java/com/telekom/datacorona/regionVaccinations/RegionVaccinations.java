@@ -8,7 +8,8 @@ import javax.persistence.*;
 public class RegionVaccinations {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @ManyToOne
     @JoinColumn(name = "Region.id", nullable = false)
     private Region region;
@@ -22,8 +23,7 @@ public class RegionVaccinations {
     public RegionVaccinations() {
     }
 
-    public RegionVaccinations(String id, Region region, int dose1Count, int dose2Count, int dose1Sum, int dose2Sum, String updatedAt, String publishedOn) {
-        this.id = id;
+    public RegionVaccinations(Region region, int dose1Count, int dose2Count, int dose1Sum, int dose2Sum, String updatedAt, String publishedOn) {
         this.region = region;
         this.dose1Count = dose1Count;
         this.dose2Count = dose2Count;
@@ -33,11 +33,11 @@ public class RegionVaccinations {
         this.publishedOn = publishedOn;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

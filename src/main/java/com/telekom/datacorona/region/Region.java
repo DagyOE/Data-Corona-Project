@@ -3,16 +3,13 @@ package com.telekom.datacorona.region;
 import com.telekom.datacorona.district.District;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class Region {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String title;
     private String code;
@@ -23,6 +20,10 @@ public class Region {
     private List<RegionVaccinations> regionVaccinations;
 
     public Region() {
+    }
+
+    public Region(long id) {
+        this.id = id;
     }
 
     public Region(String title, String code, String abbreviation) {
@@ -53,5 +54,14 @@ public class Region {
 
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    @Override
+    public String toString() {
+        return "Region{" +
+                "title='" + title + '\'' +
+                ", code='" + code + '\'' +
+                ", abbreviation='" + abbreviation + '\'' +
+                '}';
     }
 }
