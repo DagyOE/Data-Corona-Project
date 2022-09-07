@@ -51,8 +51,15 @@
     let updatedAt = [];
     let publishedOn = [];
 
+    // indices for range selection
+    let startIndexSlovakia = 0;
+    let endIndexSlovakia = 0;
+
+    const millisecondsInDay = 1000 * 3600 * 24;
+    var myChart = new Chart(document.getElementById("SlovakiaVaccinations").getContext("2d"), {});
+
     fetchVaccinationData("http://localhost:8080/api/slovakiaVaccinations");
-    plotSlovakiaVaccinations();
+    // selectDataAndPlotSlovakiaVaccinations();
 
     async function fetchVaccinationData(url) {
         await fetch(url)
@@ -81,23 +88,27 @@
                 updatedAt.reverse();
                 publishedOn.reverse();
 
-                createDatePicker();
+                myChart.destroy();
+                plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn);
+                createDatePickerSlovakia();
             })
     }
 
-    function createDatePicker() {
-        // $('input[name="SlovakiaVaccinationsRange"]').daterangepicker();
-        console.log(publishedOn[0]);
-        console.log(publishedOn[publishedOn.length - 1]);
+    function createDatePickerSlovakia() {
+        let minDate = createDate(publishedOn[0]);
+        let maxDate = createDate(publishedOn[publishedOn.length - 1]);
         $(function() {
             $('input[name="SlovakiaVaccinationsRange"]').daterangepicker({
                 opens: 'left',
-                minDate: createDate(publishedOn[0]),
-                maxDate: createDate(publishedOn[publishedOn.length - 1]),
-                startDate: createDate(publishedOn[0]),
-                endDate: createDate(publishedOn[publishedOn.length - 1])
+                minDate: minDate,
+                maxDate: maxDate,
+                startDate: minDate,
+                endDate: maxDate
             }, function(start, end, label) {
-                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                startIndexSlovakia = (start._d.getTime() - minDate.getTime()) / millisecondsInDay;
+                endIndexSlovakia = (end._d.getTime() - minDate.getTime()) / millisecondsInDay;
+                myChart.destroy();
+                selectDataAndPlotSlovakiaVaccinations();
             });
         });
     }
@@ -106,7 +117,25 @@
         return new Date(parseInt(date.substring(0, 4)), parseInt(date.substring(5, 7)) - 1, parseInt(date.substring(8, 10)));
     }
 
-    function plotSlovakiaVaccinations() {
+    function selectDataAndPlotSlovakiaVaccinations() {
+        let dose1CountNew = [];
+        let dose2CountNew = [];
+        let dose1SumNew = [];
+        let dose2SumNew = [];
+        let publishedOnNew = [];
+
+        for (let i = startIndexSlovakia; i < endIndexSlovakia; i++) {
+            dose1CountNew[i - startIndexSlovakia] = dose1Count[i];
+            dose2CountNew[i - startIndexSlovakia] = dose2Count[i];
+            dose1SumNew[i - startIndexSlovakia] = dose1Sum[i];
+            dose2SumNew[i - startIndexSlovakia] = dose2Sum[i];
+            publishedOnNew[i - startIndexSlovakia] = publishedOn[i];
+        }
+
+        plotSlovakiaVaccinations(dose1CountNew, dose2CountNew, dose1SumNew, dose2SumNew, publishedOnNew);
+    }
+
+    function plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn) {
         const data = {
             labels: publishedOn,
             datasets: [
@@ -133,7 +162,8 @@
                     label: 'Dose 1 accumulation',
                     yAxisID: 'Acc',
                     borderColor: CHART_COLORS.red,
-                    pointRadius: 1,
+                    pointRadius: 2,
+                    pointStyle: 'rectRot',
                     data: dose1Sum
                 },
                 {
@@ -141,12 +171,13 @@
                     label: 'Dose 2 accumulation',
                     yAxisID: 'Acc',
                     borderColor: CHART_COLORS.blue,
-                    pointRadius: 1,
+                    pointRadius: 2,
+                    pointStyle: 'rectRot',
                     data: dose2Sum
                 }]
         };
 
-        var myChart = new Chart(document.getElementById("SlovakiaVaccinations").getContext("2d"), {
+        myChart = new Chart(document.getElementById("SlovakiaVaccinations").getContext("2d"), {
             type: 'scatter',
             data: data,
             options: {
