@@ -1,4 +1,4 @@
-package com.telekom.datacorona.vaccinations;
+package com.telekom.datacorona.vaccine;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/vaccinations")
-public class VaccinationsWebServiceREST {
+@RequestMapping("/api/vaccines")
+public class VaccineWebServiceREST {
     @Autowired
-    VaccinationsService vaccinationsService;
+    VaccineService vaccineService;
 
     @PostMapping
-    public void addVaccination(Vaccinations vaccinations) {
-        vaccinationsService.addVaccination(vaccinations);
+    public void addVaccine(Vaccine vaccine) {
+        vaccineService.addVaccine(vaccine);
     }
 
     @GetMapping
-    public List<Vaccinations> getAllVaccinations() {
-        return vaccinationsService.getAllVaccinations();
+    public List<Vaccine> getAllVaccines() {
+        return vaccineService.getAllVaccines();
     }
 }

@@ -4,14 +4,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
+
 @Transactional
-public class VaccinationsServiceJPA  implements VaccinationsService{
+public class VaccinationsServiceJPA implements VaccinationsService {
     @PersistenceContext
     EntityManager entityManager;
 
-
     @Override
-    public void addVaccinations(Vaccinations vaccinations) {
+    public void addVaccination(Vaccinations vaccinations) {
         entityManager.persist(vaccinations);
     }
 
