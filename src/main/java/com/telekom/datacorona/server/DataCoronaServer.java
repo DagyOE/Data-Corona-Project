@@ -64,7 +64,7 @@ public class DataCoronaServer {
         return s -> console.run();
     }
 
-    @Bean
+//    @Bean
     public Console console() {
         return new Console();
     }
