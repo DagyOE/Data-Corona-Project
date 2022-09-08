@@ -14,11 +14,6 @@ public class HospitalWebServiceREST {
     @Autowired
     HospitalService hospitalService;
 
-    @PostMapping
-    public void addHospital(Hospital hospital) {
-        hospitalService.addHospital(hospital);
-    }
-
     @GetMapping
     public List<Hospital> getAllHospitals() {
         return hospitalService.getAllHospitals();

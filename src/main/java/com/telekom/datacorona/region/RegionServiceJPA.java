@@ -14,7 +14,14 @@ public class RegionServiceJPA implements RegionService{
 
     @Override
     public void addRegion(Region region) {
-        entityManager.persist(region);
+        try {
+            entityManager
+                    .createQuery("select r from Region r where r.id= :id")
+                    .setParameter("id", region.getId())
+                    .getSingleResult();
+        } catch (IllegalArgumentException iae) {
+            entityManager.persist(region);
+        }
     }
 
     @Override

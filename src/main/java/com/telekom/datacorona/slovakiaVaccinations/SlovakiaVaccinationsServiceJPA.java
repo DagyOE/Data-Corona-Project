@@ -12,7 +12,14 @@ public class SlovakiaVaccinationsServiceJPA implements SlovakiaVaccinationsServi
 
     @Override
     public void addSlovakiaVaccinations(SlovakiaVaccinations slovakiaVaccinations) {
-        entityManager.persist(slovakiaVaccinations);
+        try {
+            entityManager
+                    .createQuery("select sv from SlovakiaVaccinations sv where sv.id= :id")
+                    .setParameter("id", slovakiaVaccinations.getId())
+                    .getSingleResult();
+        } catch (IllegalArgumentException iae) {
+            entityManager.persist(slovakiaVaccinations);
+        }
     }
 
     @Override

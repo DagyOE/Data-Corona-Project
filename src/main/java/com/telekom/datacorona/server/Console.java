@@ -11,6 +11,8 @@ import com.telekom.datacorona.hospital.Hospital;
 import com.telekom.datacorona.hospital.HospitalService;
 import com.telekom.datacorona.region.Region;
 import com.telekom.datacorona.region.RegionService;
+import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatients;
+import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatientsService;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
 import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinations;
@@ -23,10 +25,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
 
+@Component
 public class Console {
 
     @Autowired
@@ -45,6 +52,8 @@ public class Console {
     private VaccineService vaccineService;
     @Autowired
     private VaccinationsService vaccinationsService;
+    @Autowired
+    private RegionHospitalPatientsService regionHospitalPatientsService;
 
     private String urlRegion = "https://data.korona.gov.sk/api/regions";
     private String urlDistrict = "https://data.korona.gov.sk/api/districts";
@@ -54,7 +63,9 @@ public class Console {
     private String urlVaccinationsInSlovakia = "https://data.korona.gov.sk/api/vaccinations/in-slovakia";
     private String urlVaccine = "https://data.korona.gov.sk/api/vaccines";
     private String urlVaccination = "https://data.korona.gov.sk/api/vaccinations";
+    private String urlRegionHospitalPatients = "https://data.korona.gov.sk/api/hospital-patients/by-region";
 
+    @Scheduled(fixedRate = 86400000)
     public void run() throws IOException, JSONException {
         System.out.println("Start mirroring");
         getRegionData(urlRegion);
@@ -65,7 +76,32 @@ public class Console {
         getVaccinationInSlovakiaData(urlVaccinationsInSlovakia);
         getVaccineData(urlVaccine);
         getVaccinationData(urlVaccination);
+        getRegionHospitalPatientsData(urlRegionHospitalPatients);
         System.out.println("End mirroring");
+    }
+
+    private void getRegionHospitalPatientsData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONObject obj = new JSONObject(jsonString);
+        JSONArray data = obj.getJSONArray("page");
+        for (int i = 0; i < data.length(); i++) {
+            regionHospitalPatientsService.addRegionHospitalPatients(new RegionHospitalPatients(
+                    data.getJSONObject(i).get("id").toString(),
+                    (String) data.getJSONObject(i).get("oldest_reported_at"),
+                    (String) data.getJSONObject(i).get("newest_reported_at"),
+                    new Region((int) data.getJSONObject(i).get("region_id")),
+                    (int) data.getJSONObject(i).get("ventilated_covid"),
+                    (int) data.getJSONObject(i).get("non_covid"),
+                    (int) data.getJSONObject(i).get("confirmed_covid"),
+                    (int) data.getJSONObject(i).get("suspected_covid"),
+                    (String) data.getJSONObject(i).get("published_on"),
+                    (String) data.getJSONObject(i).get("updated_at")
+            ));
+        }
+        if (!(obj.get("next_offset").toString().equals("null"))) {
+            String newUrl = urlRegionHospitalPatients + "?offset=" + obj.get("next_offset");
+            getRegionHospitalPatientsData(newUrl);
+        }
     }
 
     private void getVaccinationData(String url) throws IOException, JSONException {
