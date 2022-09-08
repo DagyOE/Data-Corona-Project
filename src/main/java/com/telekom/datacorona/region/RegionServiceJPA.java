@@ -21,6 +21,8 @@ public class RegionServiceJPA implements RegionService{
                     .getSingleResult();
         } catch (IllegalArgumentException iae) {
             entityManager.persist(region);
+        } catch (NoResultException nre) {
+            entityManager.persist(region);
         }
     }
 
