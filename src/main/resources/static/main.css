@@ -1,0 +1,96 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, "Arial CE", "Helvetica CE", sans-serif;
+    box-sizing: border-box;
+}
+
+/*Header formatting*/
+.header {
+    height: 10vh;
+    width: 100%;
+    padding: 0 8%;
+    background: whitesmoke;
+    position: fixed;
+    top: 0;
+    font-size: 1vw;
+}
+
+nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.logo{
+    width: 6%;
+}
+
+.nav-links{
+    padding: 28px 0;
+}
+
+.nav-links li{
+    display: inline-block;
+    margin: 0 15px;
+}
+
+.nav-links li a{
+    text-decoration: none;
+    color: black;
+    padding: 5px 0;
+    position: relative;
+}
+
+.nav-links li a::after{
+    content: '';
+    background: black;
+    width: 0;
+    height: 2px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: width 0.5s;
+}
+
+.nav-links li a:hover::after{
+    width: 100%;
+}
+
+/*Body formatting*/
+/*body{*/
+/*    padding: 5vw;*/
+/*    text-align: center;*/
+/*}*/
+
+/*Footer formatting*/
+.footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 15px 15%;
+    background: whitesmoke;
+    display: flex;
+    font-size: 0.8vw;
+}
+
+.footer div{
+    text-align: center;
+}
+
+.col-second{
+    flex-grow: 2;
+}
+
+.footer div h3{
+    font-weight: 300;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.col-first a{
+    display: block;
+    text-decoration: none;
+    color: black;
+    margin-bottom: 5px;
+}
