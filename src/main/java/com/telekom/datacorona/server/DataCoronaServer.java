@@ -41,7 +41,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.telekom.datacorona.regionHospitalPatients",
 })
 @ComponentScan(basePackages = {
-        "com.telekom.datacorona.server",
         "com.telekom.datacorona.city",
         "com.telekom.datacorona.district",
         "com.telekom.datacorona.hospital",
@@ -59,16 +58,17 @@ public class DataCoronaServer {
         SpringApplication.run(DataCoronaServer.class, args);
     }
 
+    // ------> NEVIEM ALE ASI TYMTO BY SME MOHLI OVLADAT ZAPIS DO DB
     @Bean
     public CommandLineRunner runner(Console console) {
         return s -> console.run();
     }
 
-    @Bean
+    //    @Bean
     public Console console() {
         return new Console();
     }
-   
+    // ------>
 
     @Bean
     public CityService cityService() {
