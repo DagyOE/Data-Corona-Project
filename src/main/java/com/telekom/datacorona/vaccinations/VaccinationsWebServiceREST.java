@@ -14,11 +14,6 @@ public class VaccinationsWebServiceREST {
     @Autowired
     VaccinationsService vaccinationsService;
 
-    @PostMapping
-    public void addVaccination(Vaccinations vaccinations) {
-        vaccinationsService.addVaccination(vaccinations);
-    }
-
     @GetMapping
     public List<Vaccinations> getAllVaccinations() {
         return vaccinationsService.getAllVaccinations();

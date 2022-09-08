@@ -13,7 +13,14 @@ public class RegionVaccinationsServiceJPA implements RegionVaccinationsService {
 
     @Override
     public void addRegionVaccinations(RegionVaccinations regionVaccinations) {
-        entityManager.persist(regionVaccinations);
+        try {
+            entityManager
+                    .createQuery("select rv from RegionVaccinations rv where rv.id= :id")
+                    .setParameter("id", regionVaccinations.getId())
+                    .getResultList();
+        } catch (IllegalArgumentException iae) {
+            entityManager.persist(regionVaccinations);
+        }
     }
 
     @Override

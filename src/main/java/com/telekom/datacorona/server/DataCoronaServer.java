@@ -8,6 +8,8 @@ import com.telekom.datacorona.hospital.HospitalService;
 import com.telekom.datacorona.hospital.HospitalServiceJPA;
 import com.telekom.datacorona.region.RegionService;
 import com.telekom.datacorona.region.RegionServiceJPA;
+import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatientsService;
+import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatientsServiceJPA;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsServiceJPA;
 import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinationsService;
@@ -22,8 +24,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 @EntityScan(basePackages = {
         "com.telekom.datacorona.city",
         "com.telekom.datacorona.district",
@@ -32,7 +36,8 @@ import org.springframework.context.annotation.ComponentScan;
         "com.telekom.datacorona.regionVaccinations",
         "com.telekom.datacorona.slovakiaVaccinations",
         "com.telekom.datacorona.vaccine",
-        "com.telekom.datacorona.vaccinations"
+        "com.telekom.datacorona.vaccinations",
+        "com.telekom.datacorona.regionHospitalPatients"
 })
 @ComponentScan(basePackages = {
         "com.telekom.datacorona.city",
@@ -42,7 +47,8 @@ import org.springframework.context.annotation.ComponentScan;
         "com.telekom.datacorona.regionVaccinations",
         "com.telekom.datacorona.slovakiaVaccinations",
         "com.telekom.datacorona.vaccine",
-        "com.telekom.datacorona.vaccinations"
+        "com.telekom.datacorona.vaccinations",
+        "com.telekom.datacorona.regionHospitalPatients"
 })
 public class DataCoronaServer {
 
@@ -50,17 +56,15 @@ public class DataCoronaServer {
         SpringApplication.run(DataCoronaServer.class, args);
     }
 
-    // ------> NEVIEM ALE SI TYMTO BY SME MOHLI OVLADAT ZAPIS DO DB
-//    @Bean
+    @Bean
     public CommandLineRunner runner(Console console) {
         return s -> console.run();
     }
 
-//    @Bean
+    @Bean
     public Console console() {
         return new Console();
     }
-    // ------>
 
     @Bean
     public CityService cityService() {
@@ -100,5 +104,10 @@ public class DataCoronaServer {
     @Bean
     public VaccinationsService vaccinationsService() {
         return new VaccinationsServiceJPA();
+    }
+
+    @Bean
+    public RegionHospitalPatientsService regionHospitalPatientsService() {
+        return new RegionHospitalPatientsServiceJPA();
     }
 }

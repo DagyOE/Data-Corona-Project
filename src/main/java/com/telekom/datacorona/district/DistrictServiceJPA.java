@@ -12,7 +12,14 @@ public class DistrictServiceJPA implements DistrictService{
 
     @Override
     public void addDistrict(District district) {
-        entityManager.persist(district);
+        try {
+            entityManager
+                    .createQuery("select d from District d where d.id= :id")
+                    .setParameter("id", district.getId())
+                    .getSingleResult();
+        } catch (IllegalArgumentException iae) {
+            entityManager.persist(district);
+        }
     }
 
     @Override

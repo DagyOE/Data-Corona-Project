@@ -12,7 +12,14 @@ public class VaccineServiceJPA implements VaccineService{
 
     @Override
     public void addVaccine(Vaccine vaccine) {
-        entityManager.persist(vaccine);
+        try {
+            entityManager
+                    .createQuery("select v from Vaccine v where v.id= :id")
+                    .setParameter("id", vaccine.getId())
+                    .getSingleResult();
+        } catch (IllegalArgumentException iae) {
+            entityManager.persist(vaccine);
+        }
     }
 
     @Override

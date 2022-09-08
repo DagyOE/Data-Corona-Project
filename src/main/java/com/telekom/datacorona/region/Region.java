@@ -1,6 +1,7 @@
 package com.telekom.datacorona.region;
 
 import com.telekom.datacorona.district.District;
+import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatients;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
 import com.telekom.datacorona.vaccinations.Vaccinations;
 
@@ -20,6 +21,8 @@ public class Region {
     private List<RegionVaccinations> regionVaccinations;
     @OneToMany(mappedBy = "id")
     private List<Vaccinations> vaccinations;
+    @OneToMany(mappedBy = "id")
+    private List<RegionHospitalPatients> regionHospitalPatients;
 
     public Region() {
     }
@@ -33,6 +36,14 @@ public class Region {
         this.title = title;
         this.code = code;
         this.abbreviation = abbreviation;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

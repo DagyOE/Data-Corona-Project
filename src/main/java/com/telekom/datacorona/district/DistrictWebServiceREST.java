@@ -14,11 +14,6 @@ public class DistrictWebServiceREST {
     @Autowired
     DistrictService districtService;
 
-    @PostMapping
-    public void addDistrict(District district) {
-        districtService.addDistrict(district);
-    }
-
     @GetMapping
     public List<District> getAllDistricts() {
         return districtService.getAllDistricts();
