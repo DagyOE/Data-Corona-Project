@@ -38,7 +38,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.telekom.datacorona.slovakiaVaccinations",
         "com.telekom.datacorona.vaccine",
         "com.telekom.datacorona.vaccinations",
-        "com.telekom.datacorona.regionHospitalPatients"
+        "com.telekom.datacorona.regionHospitalPatients",
 })
 @ComponentScan(basePackages = {
         "com.telekom.datacorona.city",
@@ -49,7 +49,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.telekom.datacorona.slovakiaVaccinations",
         "com.telekom.datacorona.vaccine",
         "com.telekom.datacorona.vaccinations",
-        "com.telekom.datacorona.regionHospitalPatients"
+        "com.telekom.datacorona.regionHospitalPatients",
         "com.telekom.datacorona.server"
 })
 public class DataCoronaServer {
