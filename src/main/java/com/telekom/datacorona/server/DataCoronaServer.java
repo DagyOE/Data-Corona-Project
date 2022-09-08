@@ -49,7 +49,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.telekom.datacorona.slovakiaVaccinations",
         "com.telekom.datacorona.vaccine",
         "com.telekom.datacorona.vaccinations",
-        "com.telekom.datacorona.regionHospitalPatients"
+        "com.telekom.datacorona.regionHospitalPatients",
         "com.telekom.datacorona.server"
 })
 public class DataCoronaServer {
@@ -64,7 +64,7 @@ public class DataCoronaServer {
         return s -> console.run();
     }
 
-    @Bean
+//    @Bean
     public Console console() {
         return new Console();
     }
