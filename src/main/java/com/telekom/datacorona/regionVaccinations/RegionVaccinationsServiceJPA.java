@@ -1,6 +1,7 @@
 package com.telekom.datacorona.regionVaccinations;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -19,6 +20,8 @@ public class RegionVaccinationsServiceJPA implements RegionVaccinationsService {
                     .setParameter("id", regionVaccinations.getId())
                     .getResultList();
         } catch (IllegalArgumentException iae) {
+            entityManager.persist(regionVaccinations);
+        } catch (NoResultException nre) {
             entityManager.persist(regionVaccinations);
         }
     }

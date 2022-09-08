@@ -1,6 +1,7 @@
 package com.telekom.datacorona.city;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -18,6 +19,8 @@ public class CityServiceJPA implements CityService{
                     .setParameter("id", city.getId())
                     .getSingleResult();
         } catch (IllegalArgumentException iae) {
+            entityManager.persist(city);
+        } catch (NoResultException nre) {
             entityManager.persist(city);
         }
     }

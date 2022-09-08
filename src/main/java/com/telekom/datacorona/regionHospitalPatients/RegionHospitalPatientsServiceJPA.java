@@ -2,6 +2,7 @@ package com.telekom.datacorona.regionHospitalPatients;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -19,6 +20,8 @@ public class RegionHospitalPatientsServiceJPA implements RegionHospitalPatientsS
                     .setParameter("id", regionHospitalPatients.getId())
                     .getSingleResult();
         } catch (IllegalArgumentException iae) {
+            entityManager.persist(regionHospitalPatients);
+        } catch (NoResultException nre) {
             entityManager.persist(regionHospitalPatients);
         }
     }

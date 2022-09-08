@@ -1,6 +1,7 @@
 package com.telekom.datacorona.vaccine;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -18,6 +19,8 @@ public class VaccineServiceJPA implements VaccineService{
                     .setParameter("id", vaccine.getId())
                     .getSingleResult();
         } catch (IllegalArgumentException iae) {
+            entityManager.persist(vaccine);
+        } catch (NoResultException nre) {
             entityManager.persist(vaccine);
         }
     }
