@@ -15,6 +15,11 @@
 <main>
 
     <input type="SlovakiaVaccinationsRange" name="SlovakiaVaccinationsRange" />
+    <select id="SlovakiaVaccinationsInterval" name="SlovakiaVaccinationsInterval">
+        <option value="daily">daily</option>
+        <option value="weekly" selected="selected">weekly</option>
+        <option value="monthly">monthly</option>
+    </select>
     <div>
         <canvas id="SlovakiaVaccinations"></canvas>
     </div>
@@ -50,13 +55,31 @@
     let dose2Sum = [];
     let updatedAt = [];
     let publishedOn = [];
+    let dose1CountWeek = [];
+    let dose2CountWeek = [];
+    let dose1SumWeek = [];
+    let dose2SumWeek = [];
+    let updatedAtWeek = [];
+    let publishedOnWeek = [];
+    let dose1CountMonth = [];
+    let dose2CountMonth = [];
+    let dose1SumMonth = [];
+    let dose2SumMonth = [];
+    let updatedAtMonth = [];
+    let publishedOnMonth = [];
+    let publishedOnMonthXAxis = [];
 
     // indices for range selection
     let startIndexSlovakia = 0;
     let endIndexSlovakia = 0;
 
+    const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     const millisecondsInDay = 1000 * 3600 * 24;
+    const interval = 'daily';
+
     var myChart = new Chart(document.getElementById("SlovakiaVaccinations").getContext("2d"), {});
+
+    document.getElementById("SlovakiaVaccinationsInterval").addEventListener("click", );
 
     fetchVaccinationData("http://localhost:8080/api/slovakiaVaccinations");
     // selectDataAndPlotSlovakiaVaccinations();
@@ -87,9 +110,14 @@
                 dose2Sum.reverse();
                 updatedAt.reverse();
                 publishedOn.reverse();
+                prepareWeeklyData();
+                prepareMonthlyData();
 
                 myChart.destroy();
-                plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn);
+                // plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn);
+                startIndexSlovakia = 0;
+                endIndexSlovakia = publishedOn.length - 1;
+                selectDataAndPlotSlovakiaVaccinations(interval);
                 createDatePickerSlovakia();
             })
     }
@@ -105,10 +133,10 @@
                 startDate: minDate,
                 endDate: maxDate
             }, function(start, end, label) {
-                startIndexSlovakia = (start._d.getTime() - minDate.getTime()) / millisecondsInDay;
-                endIndexSlovakia = (end._d.getTime() - minDate.getTime()) / millisecondsInDay;
+                startIndexSlovakia = Math.round((start._d.getTime() - minDate.getTime()) / millisecondsInDay);
+                endIndexSlovakia = Math.round((end._d.getTime() - minDate.getTime()) / millisecondsInDay);
                 myChart.destroy();
-                selectDataAndPlotSlovakiaVaccinations();
+                selectDataAndPlotSlovakiaVaccinations(interval);
             });
         });
     }
@@ -117,19 +145,110 @@
         return new Date(parseInt(date.substring(0, 4)), parseInt(date.substring(5, 7)) - 1, parseInt(date.substring(8, 10)));
     }
 
-    function selectDataAndPlotSlovakiaVaccinations() {
+    function prepareWeeklyData() {
+        let dayIdx = 0;
+        let weekIdx = 0;
+        while(dayIdx < publishedOn.length) {
+            dose1CountWeek[weekIdx] = 0;
+            dose2CountWeek[weekIdx] = 0;
+            dose1SumWeek[weekIdx] = 0;
+            dose2SumWeek[weekIdx] = 0;
+            do {
+                dose1CountWeek[weekIdx] += dose1Count[dayIdx];
+                dose2CountWeek[weekIdx] += dose2Count[dayIdx];
+                dose1SumWeek[weekIdx] += dose1Sum[dayIdx];
+                dose2SumWeek[weekIdx] += dose2Sum[dayIdx];
+                dayIdx++;
+            } while(dayIdx < publishedOn.length && createDate(publishedOn[dayIdx]).getDay() != 0);
+            // updatedAtWeek[weekIdx] = updatedAt[dayIdx - 1];
+            publishedOnWeek[weekIdx] = publishedOn[dayIdx - 1];
+            weekIdx++;
+        }
+    }
+
+    function prepareMonthlyData() {
+        let dayIdx = 0;
+        let monthIdx = 0;
+        while(dayIdx < publishedOn.length) {
+            dose1CountMonth[monthIdx] = 0;
+            dose2CountMonth[monthIdx] = 0;
+            dose1SumMonth[monthIdx] = 0;
+            dose2SumMonth[monthIdx] = 0;
+            do {
+                dose1CountMonth[monthIdx] += dose1Count[dayIdx];
+                dose2CountMonth[monthIdx] += dose2Count[dayIdx];
+                dose1SumMonth[monthIdx] += dose1Sum[dayIdx];
+                dose2SumMonth[monthIdx] += dose2Sum[dayIdx];
+                dayIdx++;
+            } while(dayIdx < publishedOn.length && createDate(publishedOn[dayIdx]).getDate() != 1);
+            // updatedAtMonth[weekIdx] = updatedAt[dayIdx - 1];
+            publishedOnMonth[monthIdx] = publishedOn[dayIdx - 1];
+            publishedOnMonthXAxis[monthIdx] = month[createDate(publishedOn[dayIdx - 1]).getMonth()] + ' ' + publishedOn[dayIdx - 1].substring(0, 4);
+            monthIdx++;
+        }
+    }
+
+    function selectDataAndPlotSlovakiaVaccinations(interval) {
         let dose1CountNew = [];
         let dose2CountNew = [];
         let dose1SumNew = [];
         let dose2SumNew = [];
         let publishedOnNew = [];
 
-        for (let i = startIndexSlovakia; i < endIndexSlovakia; i++) {
-            dose1CountNew[i - startIndexSlovakia] = dose1Count[i];
-            dose2CountNew[i - startIndexSlovakia] = dose2Count[i];
-            dose1SumNew[i - startIndexSlovakia] = dose1Sum[i];
-            dose2SumNew[i - startIndexSlovakia] = dose2Sum[i];
-            publishedOnNew[i - startIndexSlovakia] = publishedOn[i];
+        if (interval === 'daily') {
+            for (let i = startIndexSlovakia; i < endIndexSlovakia; i++) {
+                dose1CountNew[i - startIndexSlovakia] = dose1Count[i];
+                dose2CountNew[i - startIndexSlovakia] = dose2Count[i];
+                dose1SumNew[i - startIndexSlovakia] = dose1Sum[i];
+                dose2SumNew[i - startIndexSlovakia] = dose2Sum[i];
+                publishedOnNew[i - startIndexSlovakia] = publishedOn[i];
+            }
+        } else if (interval === 'weekly') {
+            let startDate = createDate(publishedOn[startIndexSlovakia]);
+            let endDate = createDate(publishedOn[endIndexSlovakia]);
+
+            let startIdx = -1;
+            let endIdx = -1;
+            for (let i = 0; i < publishedOnWeek.length; i++) {
+                let curDate = createDate(publishedOnWeek[i]);
+                if (startIdx === -1 && curDate >= startDate) {
+                    startIdx = i;
+                }
+                if (endIdx === -1 && curDate >= endDate) {
+                    endIdx = i;
+                    break;
+                }
+            }
+            for (let i = startIdx; i < endIdx; i++) {
+                dose1CountNew[i - startIdx] = dose1CountWeek[i];
+                dose2CountNew[i - startIdx] = dose2CountWeek[i];
+                dose1SumNew[i - startIdx] = dose1SumWeek[i];
+                dose2SumNew[i - startIdx] = dose2SumWeek[i];
+                publishedOnNew[i - startIdx] = publishedOnWeek[i];
+            }
+        } else if (interval === 'monthly') {
+            let startDate = createDate(publishedOn[startIndexSlovakia]);
+            let endDate = createDate(publishedOn[endIndexSlovakia]);
+
+            let startIdx = -1;
+            let endIdx = -1;
+            for (let i = 0; i < publishedOnMonth.length; i++) {
+                let curDate = createDate(publishedOnMonth[i]);
+                if (startIdx === -1 && curDate >= startDate) {
+                    startIdx = i;
+                }
+                if (endIdx === -1 && curDate >= endDate) {
+                    endIdx = i;
+                    break;
+                }
+            }
+            for (let i = startIdx; i < endIdx; i++) {
+                dose1CountNew[i - startIdx] = dose1CountMonth[i];
+                dose2CountNew[i - startIdx] = dose2CountMonth[i];
+                dose1SumNew[i - startIdx] = dose1SumMonth[i];
+                dose2SumNew[i - startIdx] = dose2SumMonth[i];
+                publishedOnNew[i - startIdx] = publishedOnMonthXAxis[i];
+            }
         }
 
         plotSlovakiaVaccinations(dose1CountNew, dose2CountNew, dose1SumNew, dose2SumNew, publishedOnNew);
