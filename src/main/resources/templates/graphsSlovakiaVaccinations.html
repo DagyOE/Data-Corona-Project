@@ -79,7 +79,7 @@
 
     var myChart = new Chart(document.getElementById("SlovakiaVaccinations").getContext("2d"), {});
 
-    document.getElementById("SlovakiaVaccinationsInterval").addEventListener("click", );
+    // document.getElementById("SlovakiaVaccinationsInterval").addEventListener("click", );
 
     fetchVaccinationData("http://localhost:8080/api/slovakiaVaccinations");
     // selectDataAndPlotSlovakiaVaccinations();
@@ -151,17 +151,15 @@
         while(dayIdx < publishedOn.length) {
             dose1CountWeek[weekIdx] = 0;
             dose2CountWeek[weekIdx] = 0;
-            dose1SumWeek[weekIdx] = 0;
-            dose2SumWeek[weekIdx] = 0;
             do {
                 dose1CountWeek[weekIdx] += dose1Count[dayIdx];
                 dose2CountWeek[weekIdx] += dose2Count[dayIdx];
-                dose1SumWeek[weekIdx] += dose1Sum[dayIdx];
-                dose2SumWeek[weekIdx] += dose2Sum[dayIdx];
                 dayIdx++;
             } while(dayIdx < publishedOn.length && createDate(publishedOn[dayIdx]).getDay() != 0);
             // updatedAtWeek[weekIdx] = updatedAt[dayIdx - 1];
             publishedOnWeek[weekIdx] = publishedOn[dayIdx - 1];
+            dose1SumWeek[weekIdx] = dose1Sum[dayIdx - 1];
+            dose2SumWeek[weekIdx] = dose2Sum[dayIdx - 1];
             weekIdx++;
         }
     }
@@ -172,18 +170,17 @@
         while(dayIdx < publishedOn.length) {
             dose1CountMonth[monthIdx] = 0;
             dose2CountMonth[monthIdx] = 0;
-            dose1SumMonth[monthIdx] = 0;
-            dose2SumMonth[monthIdx] = 0;
             do {
                 dose1CountMonth[monthIdx] += dose1Count[dayIdx];
                 dose2CountMonth[monthIdx] += dose2Count[dayIdx];
-                dose1SumMonth[monthIdx] += dose1Sum[dayIdx];
-                dose2SumMonth[monthIdx] += dose2Sum[dayIdx];
                 dayIdx++;
             } while(dayIdx < publishedOn.length && createDate(publishedOn[dayIdx]).getDate() != 1);
             // updatedAtMonth[weekIdx] = updatedAt[dayIdx - 1];
             publishedOnMonth[monthIdx] = publishedOn[dayIdx - 1];
             publishedOnMonthXAxis[monthIdx] = month[createDate(publishedOn[dayIdx - 1]).getMonth()] + ' ' + publishedOn[dayIdx - 1].substring(0, 4);
+            dose1SumMonth[monthIdx] = dose1Sum[dayIdx - 1];
+            dose2SumMonth[monthIdx] = dose2Sum[dayIdx - 1];
+
             monthIdx++;
         }
     }
