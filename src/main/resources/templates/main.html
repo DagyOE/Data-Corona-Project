@@ -7,6 +7,12 @@
     <link rel="stylesheet"
           href="/static/main.css"
           media="screen"/>
+    <script src="graph.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <title>Project | Covid Data</title>
 </head>
 
@@ -19,7 +25,17 @@
                 <h2 class="title">Covid Statistics in Slovakia</h2>
             </div>
             <div class="map"></div>
-            <div class="graph1"></div>
+            <div class="graph1">
+                <input type="SlovakiaVaccinationsRange" name="SlovakiaVaccinationsRange" />
+                <select id="SlovakiaVaccinationsInterval" name="SlovakiaVaccinationsInterval">
+                    <option value="daily">daily</option>
+                    <option value="weekly" selected="selected">weekly</option>
+                    <option value="monthly">monthly</option>
+                </select>
+                <div>
+                    <canvas id="SlovakiaVaccinations"></canvas>
+                </div>
+            </div>
             <div class="graph2"></div>
             <div class="stat1">
                 <div class="row1"></div>
