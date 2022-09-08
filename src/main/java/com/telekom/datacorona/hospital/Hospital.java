@@ -7,8 +7,7 @@ import javax.persistence.*;
 @Entity
 public class Hospital {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @ManyToOne
     @JoinColumn(name = "City.id", nullable = false)
     City city;
@@ -18,21 +17,22 @@ public class Hospital {
     public Hospital() {
     }
 
-    public Hospital(long id) {
+    public Hospital(int id) {
         this.id = id;
     }
 
-    public Hospital(City city, String title, String code) {
+    public Hospital(int id, City city, String title, String code) {
+        this.id = id;
         this.city = city;
         this.title = title;
         this.code = code;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

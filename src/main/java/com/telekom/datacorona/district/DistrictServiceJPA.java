@@ -1,6 +1,7 @@
 package com.telekom.datacorona.district;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -12,7 +13,16 @@ public class DistrictServiceJPA implements DistrictService{
 
     @Override
     public void addDistrict(District district) {
-        entityManager.persist(district);
+        try {
+            entityManager
+                    .createQuery("select d from District d where d.id= :id")
+                    .setParameter("id", district.getId())
+                    .getSingleResult();
+        } catch (IllegalArgumentException iae) {
+            entityManager.persist(district);
+        } catch (NoResultException nre) {
+            entityManager.persist(district);
+        }
     }
 
     @Override

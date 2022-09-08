@@ -1,7 +1,9 @@
 package com.telekom.datacorona.region;
 
 import com.telekom.datacorona.district.District;
+import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatients;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
+import com.telekom.datacorona.vaccinations.Vaccinations;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,8 +11,7 @@ import java.util.List;
 @Entity
 public class Region {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     private String title;
     private String code;
     private String abbreviation;
@@ -18,18 +19,31 @@ public class Region {
     private List<District> districts;
     @OneToMany(mappedBy = "id")
     private List<RegionVaccinations> regionVaccinations;
+    @OneToMany(mappedBy = "id")
+    private List<Vaccinations> vaccinations;
+    @OneToMany(mappedBy = "id")
+    private List<RegionHospitalPatients> regionHospitalPatients;
 
     public Region() {
     }
 
-    public Region(long id) {
+    public Region(int id) {
         this.id = id;
     }
 
-    public Region(String title, String code, String abbreviation) {
+    public Region(int id, String title, String code, String abbreviation) {
+        this.id = id;
         this.title = title;
         this.code = code;
         this.abbreviation = abbreviation;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

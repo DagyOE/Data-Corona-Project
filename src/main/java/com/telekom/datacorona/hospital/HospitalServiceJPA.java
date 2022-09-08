@@ -1,6 +1,7 @@
 package com.telekom.datacorona.hospital;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -12,7 +13,16 @@ public class HospitalServiceJPA implements HospitalService{
 
     @Override
     public void addHospital(Hospital hospital) {
-        entityManager.persist(hospital);
+        try {
+            entityManager
+                    .createQuery("select h from Hospital h where h.id= :id")
+                    .setParameter("id", hospital.getId())
+                    .getSingleResult();
+        } catch (IllegalArgumentException iae) {
+            entityManager.persist(hospital);
+        } catch (NoResultException nre) {
+            entityManager.persist(hospital);
+        }
     }
 
     @Override

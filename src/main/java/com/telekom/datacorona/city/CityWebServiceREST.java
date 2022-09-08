@@ -14,11 +14,6 @@ public class CityWebServiceREST {
     @Autowired
     CityService cityService;
 
-    @PostMapping
-    public void addCity(City city) {
-        cityService.addCity(city);
-    }
-
     @GetMapping
     public List<City> getAllCities() {
         return cityService.getAllCities();

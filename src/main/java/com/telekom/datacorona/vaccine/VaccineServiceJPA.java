@@ -1,4 +1,4 @@
-package com.telekom.datacorona.vaccinations;
+package com.telekom.datacorona.vaccine;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -7,28 +7,28 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Transactional
-public class VaccinationsServiceJPA implements VaccinationsService {
+public class VaccineServiceJPA implements VaccineService{
     @PersistenceContext
     EntityManager entityManager;
 
     @Override
-    public void addVaccination(Vaccinations vaccinations) {
+    public void addVaccine(Vaccine vaccine) {
         try {
             entityManager
-                    .createQuery("select v from Vaccinations v where v.id= :id")
-                    .setParameter("id", vaccinations.getId())
+                    .createQuery("select v from Vaccine v where v.id= :id")
+                    .setParameter("id", vaccine.getId())
                     .getSingleResult();
         } catch (IllegalArgumentException iae) {
-            entityManager.persist(vaccinations);
+            entityManager.persist(vaccine);
         } catch (NoResultException nre) {
-            entityManager.persist(vaccinations);
+            entityManager.persist(vaccine);
         }
     }
 
     @Override
-    public List<Vaccinations> getAllVaccinations() {
+    public List<Vaccine> getAllVaccines() {
         return entityManager
-                .createQuery("select v from Vaccinations v")
+                .createQuery("select v from Vaccine v")
                 .getResultList();
     }
 }

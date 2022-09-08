@@ -1,93 +1,95 @@
 package com.telekom.datacorona.vaccinations;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.telekom.datacorona.region.Region;
+import com.telekom.datacorona.vaccine.Vaccine;
+
+import javax.persistence.*;
+
 @Entity
 public class Vaccinations {
- @Id
- Integer vaccine_id;
- // title: Interné id vakcíny z /api/vaccines
- Integer  region_id;
- //title: Interné id regiónu z regiónov z /api/regions alebo null. Hodnota null znamená, že dáta nie sú priradené žiadnemu kraju.
- String     id;
- // title: Interné id záznamu
- Integer dose1_count;
- //title: Počet podaných prvých dávok vakcín pre daný deň, kraj a typ vakcíny
- Integer dose2_count;
- //title: Počet podaných druhých dávok vakcín pre daný deň, kraj a typ vakcíny
- String updated_at;
- //string($date-time)  title: Čas poslednej aktualizácie záznamu (čas poslednej zmeny hodnoty niektorého z atribútov záznamu) example: 2020-01-13 12:34:56
+    @Id
+    private String id;
+    @ManyToOne
+    @JoinColumn(name = "Vaccine.id", nullable = false)
+    private Vaccine vaccine;
+    @ManyToOne
+    @JoinColumn(name = "Region.id", nullable = false)
+    private Region region;
+    private int dose1Count;
+    private int dose2Count;
+    private String updatedAt;
+    private String publishedOn;
 
- String published_on;
-// string($date-time)   title: Deň, pre ktorý sú dáta záznamu publikované pre potreby štatistík example: 2020-01-13
+    public Vaccinations() {
+    }
 
+    public Vaccinations(String id) {
+        this.id = id;
+    }
 
- public Vaccinations(Integer vaccine_id, Integer region_id, String id, Integer dose1_count, Integer dose2_count, String updated_at, String published_on) {
-  this.vaccine_id = vaccine_id;
-  this.region_id = region_id;
-  this.id = id;
-  this.dose1_count = dose1_count;
-  this.dose2_count = dose2_count;
-  this.updated_at = updated_at;
-  this.published_on = published_on;
- }
+    public Vaccinations(String id, Vaccine vaccine, Region region, int dose1Count, int dose2Count, String updatedAt, String publishedOn) {
+        this.id = id;
+        this.vaccine = vaccine;
+        this.region = region;
+        this.dose1Count = dose1Count;
+        this.dose2Count = dose2Count;
+        this.updatedAt = updatedAt;
+        this.publishedOn = publishedOn;
+    }
 
- public Vaccinations() {
- }
+    public String getId() {
+        return id;
+    }
 
- public Integer getVaccine_id() {
-  return vaccine_id;
- }
+    public void setId(String id) {
+        this.id = id;
+    }
 
- public void setVaccine_id(Integer vaccine_id) {
-  this.vaccine_id = vaccine_id;
- }
+    public Vaccine getVaccine() {
+        return vaccine;
+    }
 
- public Integer getRegion_id() {
-  return region_id;
- }
+    public void setVaccine(Vaccine vaccine) {
+        this.vaccine = vaccine;
+    }
 
- public void setRegion_id(Integer region_id) {
-  this.region_id = region_id;
- }
+    public Region getRegion() {
+        return region;
+    }
 
- public String getId() {
-  return id;
- }
+    public void setRegion(Region region) {
+        this.region = region;
+    }
 
- public void setId(String id) {
-  this.id = id;
- }
+    public int getDose1Count() {
+        return dose1Count;
+    }
 
- public Integer getDose1_count() {
-  return dose1_count;
- }
+    public void setDose1Count(int dose1Count) {
+        this.dose1Count = dose1Count;
+    }
 
- public void setDose1_count(Integer dose1_count) {
-  this.dose1_count = dose1_count;
- }
+    public int getDose2Count() {
+        return dose2Count;
+    }
 
- public Integer getDose2_count() {
-  return dose2_count;
- }
+    public void setDose2Count(int dose2Count) {
+        this.dose2Count = dose2Count;
+    }
 
- public void setDose2_count(Integer dose2_count) {
-  this.dose2_count = dose2_count;
- }
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
 
- public String getUpdated_at() {
-  return updated_at;
- }
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
- public void setUpdated_at(String updated_at) {
-  this.updated_at = updated_at;
- }
+    public String getPublishedOn() {
+        return publishedOn;
+    }
 
- public String getPublished_on() {
-  return published_on;
- }
-
- public void setPublished_on(String published_on) {
-  this.published_on = published_on;
- }
+    public void setPublishedOn(String publishedOn) {
+        this.publishedOn = publishedOn;
+    }
 }

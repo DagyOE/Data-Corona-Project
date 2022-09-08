@@ -1,12 +1,8 @@
 package com.telekom.datacorona.vaccinations;
 
-
-
 import java.util.List;
 
 public interface VaccinationsService {
-
-    void addVaccinations(Vaccinations vaccinations);
-
+    void addVaccination(Vaccinations vaccinations);
     List<Vaccinations> getAllVaccinations();
 }
