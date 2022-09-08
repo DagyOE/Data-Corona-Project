@@ -75,11 +75,16 @@
 
     const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     const millisecondsInDay = 1000 * 3600 * 24;
-    const interval = 'daily';
+    let interval = 'weekly';
 
     var myChart = new Chart(document.getElementById("SlovakiaVaccinations").getContext("2d"), {});
 
-    // document.getElementById("SlovakiaVaccinationsInterval").addEventListener("click", );
+    document.getElementById("SlovakiaVaccinationsInterval").addEventListener("change", event => {
+        event.preventDefault();
+        interval = event.target.value;
+        myChart.destroy();
+        selectDataAndPlotSlovakiaVaccinations(interval);
+    });
 
     fetchVaccinationData("http://localhost:8080/api/slovakiaVaccinations");
     // selectDataAndPlotSlovakiaVaccinations();
@@ -326,44 +331,44 @@
         });
     }
 
-    plotDose1();
-    function plotDose1() {
-        const data = {
-            labels: publishedOn,
-            datasets: [
-                {
-                    type: 'bar',
-                    label: "Dose 1",
-                    backgroundColor: BACKGROUND_CHART_COLORS.red,
-                    borderColor: CHART_COLORS.red,
-                    borderWidth: 2,
-                    data: dose1Count
-                }]
-        };
-
-        var myChart = new Chart(document.getElementById("Dose1Vaccination").getContext("2d"),
-            {
-                type: 'scatter',
-                data: data,
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: "Vaccination in Slovakia"
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (tooltipItem, data) => (`${myChart.data.datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex]}`)
-                            }
-                        }
-                    },
-                    hover: {
-                        mode: 'point',
-                    },
-                    responsive: true
-                }
-            });
-    }
+    // plotDose1();
+    // function plotDose1() {
+    //     const data = {
+    //         labels: publishedOn,
+    //         datasets: [
+    //             {
+    //                 type: 'bar',
+    //                 label: "Dose 1",
+    //                 backgroundColor: BACKGROUND_CHART_COLORS.red,
+    //                 borderColor: CHART_COLORS.red,
+    //                 borderWidth: 2,
+    //                 data: dose1Count
+    //             }]
+    //     };
+    //
+    //     var myChart = new Chart(document.getElementById("Dose1Vaccination").getContext("2d"),
+    //         {
+    //             type: 'scatter',
+    //             data: data,
+    //             options: {
+    //                 plugins: {
+    //                     title: {
+    //                         display: true,
+    //                         text: "Vaccination in Slovakia"
+    //                     },
+    //                     tooltip: {
+    //                         callbacks: {
+    //                             label: (tooltipItem, data) => (`${myChart.data.datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex]}`)
+    //                         }
+    //                     }
+    //                 },
+    //                 hover: {
+    //                     mode: 'point',
+    //                 },
+    //                 responsive: true
+    //             }
+    //         });
+    // }
 
 
 </script>
