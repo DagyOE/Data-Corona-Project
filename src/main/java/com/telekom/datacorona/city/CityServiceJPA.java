@@ -12,7 +12,14 @@ public class CityServiceJPA implements CityService{
 
     @Override
     public void addCity(City city) {
-        entityManager.persist(city);
+        try {
+            entityManager
+                    .createQuery("select c from City c where c.id= :id")
+                    .setParameter("id", city.getId())
+                    .getSingleResult();
+        } catch (IllegalArgumentException iae) {
+            entityManager.persist(city);
+        }
     }
 
     @Override

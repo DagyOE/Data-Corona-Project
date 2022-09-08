@@ -15,11 +15,6 @@ public class RegionVaccinationsWebServiceREST {
     @Autowired
     RegionVaccinationsService regionVaccinationsService;
 
-    @PostMapping
-    public void addRegionVaccinations(RegionVaccinations regionVaccinations) {
-        regionVaccinationsService.addRegionVaccinations(regionVaccinations);
-    }
-
     @GetMapping
     public List<RegionVaccinations> getAllRegionVaccinations() {
         return regionVaccinationsService.getAllRegionVaccinations();

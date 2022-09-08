@@ -15,11 +15,6 @@ public class SlovakiaVaccinationsWebServiceREST {
     @Autowired
     SlovakiaVaccinationsService slovakiaVaccinationsService;
 
-    @PostMapping
-    public void addSlovakiaVaccinations(SlovakiaVaccinations slovakiaVaccinations) {
-        slovakiaVaccinationsService.addSlovakiaVaccinations(slovakiaVaccinations);
-    }
-
     @GetMapping
     public List<SlovakiaVaccinations> getAllSlovakiaVaccinations() {
         return slovakiaVaccinationsService.getAllSlovakiaVaccinations();
