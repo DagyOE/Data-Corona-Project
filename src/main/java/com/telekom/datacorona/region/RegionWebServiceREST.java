@@ -14,11 +14,6 @@ public class RegionWebServiceREST {
     @Autowired
     RegionService regionService;
 
-    @PostMapping
-    public void addRegion(Region region) {
-        regionService.addRegion(region);
-    }
-
     @GetMapping
     public List<Region> getAllRegions() {
         return regionService.getAllRegions();

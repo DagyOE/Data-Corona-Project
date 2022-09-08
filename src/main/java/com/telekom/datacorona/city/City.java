@@ -9,8 +9,7 @@ import java.util.List;
 @Entity
 public class City {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @ManyToOne
     @JoinColumn(name = "District.id", nullable = false)
     District district;
@@ -22,21 +21,22 @@ public class City {
     public City() {
     }
 
-    public City(long id) {
+    public City(int id) {
         this.id = id;
     }
 
-    public City(District district, String code, String title) {
+    public City(int id, District district, String code, String title) {
+        this.id = id;
         this.district = district;
         this.code = code;
         this.title = title;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
