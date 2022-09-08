@@ -59,7 +59,7 @@ public class DataCoronaServer {
     }
 
     // ------> NEVIEM ALE ASI TYMTO BY SME MOHLI OVLADAT ZAPIS DO DB
-    @Bean
+//    @Bean
     public CommandLineRunner runner(Console console) {
         return s -> console.run();
     }

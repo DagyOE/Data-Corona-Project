@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.WebApplicationContext;
 
 @Controller
-@RequestMapping("/graphsSlovakiaVaccinations")
+@RequestMapping("")
 @Scope(WebApplicationContext.SCOPE_SESSION)
 public class GraphController {
 
     @RequestMapping
     public String graphsSlovakiaVaccinations() {
-        return "graphsSlovakiaVaccinations";
+        return "main";
     }
 
 }
