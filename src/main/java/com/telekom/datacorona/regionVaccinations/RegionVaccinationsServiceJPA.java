@@ -18,7 +18,7 @@ public class RegionVaccinationsServiceJPA implements RegionVaccinationsService {
             entityManager
                     .createQuery("select rv from RegionVaccinations rv where rv.id= :id")
                     .setParameter("id", regionVaccinations.getId())
-                    .getResultList();
+                    .getSingleResult();
         } catch (IllegalArgumentException iae) {
             entityManager.persist(regionVaccinations);
         } catch (NoResultException nre) {
@@ -30,6 +30,12 @@ public class RegionVaccinationsServiceJPA implements RegionVaccinationsService {
     public List<RegionVaccinations> getAllRegionVaccinations() {
         return entityManager
                 .createQuery("select rv from RegionVaccinations rv")
+                .getResultList();
+    }
+
+    public List<RegionVaccinations> getCountRegionVaccinations() {
+        return entityManager
+                .createQuery("")
                 .getResultList();
     }
 }
