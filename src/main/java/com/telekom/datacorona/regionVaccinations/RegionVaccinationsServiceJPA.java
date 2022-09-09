@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Transactional
@@ -33,9 +34,12 @@ public class RegionVaccinationsServiceJPA implements RegionVaccinationsService {
                 .getResultList();
     }
 
-    public List<RegionVaccinations> getCountRegionVaccinations() {
+    @Override
+    public List<RegionVaccinations> getCountRegionVaccinations(String from, String to) {
         return entityManager
-                .createQuery("")
+                .createQuery("select rv.region.title, sum(rv.dose1Count) as dose1Count, sum(rv.dose2Count) AS dose2Count from RegionVaccinations rv where rv.publishedOn between :from and :to group by rv.region.title")
+                .setParameter("from", from)
+                .setParameter("to", to)
                 .getResultList();
     }
 }
