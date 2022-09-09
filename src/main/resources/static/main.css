@@ -112,3 +112,14 @@ path {
 path:hover {
     fill: #47a0e8;
 }
+
+.tablemap{
+    display: inline-flex;
+}
+
+.webmap{
+}
+
+.webtable{
+    width: 250px;
+}
