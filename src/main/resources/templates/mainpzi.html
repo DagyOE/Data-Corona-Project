@@ -13,40 +13,26 @@
 <body>
 <div>
 
-    <!--    <form action="/regionmap" method="get">-->
+
     <select id="objectOfInterest" title="objectOfInterest">
         <option value="0" title="Krajské vakcinácie, ">Regionálne vakcinácie</option>
         <option value="1" title="Hospitalizovaní pacienti v rámci krajov, ">Hospitalizovaní pacienti v rámci Krajov</option>
-        <!--      <option th:each="option: ${getRegions}" th:value="${option.ident}" th:text="${option.Country}">-->
-        <!--      </option>-->
+
     </select>
     <label for="dateStart">Počiatočný dátum </label> <input id="dateStart" type="date" name="myStartDate"
                                                             value="2019-07-26"/>
     <label for="dateEnd">Koncový dátum</label> <input id="dateEnd" type="date" name="myEndDate" value="2022-07-01"/>
-    <!--    <input type="text" hidden name="game" value="stones">-->
+
 
     <button id="submit" onclick="processData('Slovensko.')">Potvrďte výber pre celé Slovensko.</button>
-    <!--        <h3>Regionálne vakcinácie</h3>-->
+
     <h3 id="objectOfInterestName"></h3>
     <table class="info" id="infoTable">
-        <!--            <thead>-->
-        <!--            <tr>-->
-        <!--                <th>Vakcinácie 1 dávka</th>-->
-        <!--                <th>Vakcinácie 2 dávka</th>-->
 
-
-        <!--            </tr>-->
-        <!--            </thead>-->
 
     </table>
     </selection>
-    <!--  </form>-->
-    <!--  <form action="/regionmap/addEndDate"  method="get" >-->
-    <!--    <label for="date">Koncový dátum</label> <input id="date" type="datetime-local"  name="myDate" />-->
-    <!--    &lt;!&ndash;    <input type="text" hidden name="game" value="stones">&ndash;&gt;-->
 
-    <!--    <button type="submit">Potvrďte výber</button>-->
-    <!--  </form>-->
     <svg
 
             geoViewBox="16.834315 49.614067 22.568332 47.731105"
@@ -88,11 +74,6 @@
     </svg>
 </div>
 
-<!--<header th:replace="fragments/fragments :: header"/>-->
-
-<!--<main layout:fragment="content"/>-->
-
-<!--<footer th:replace="fragments/fragments :: footer"/>-->
 
 </body>
 
@@ -200,7 +181,6 @@ myRegionNameTitle = regionHospitalPatientsData[row].region.title;
 
 
 
-<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
 
 
 
@@ -303,8 +283,6 @@ myRegionNameTitle = regionHospitalPatientsData[row].region.title;
     }
 
 }
-
-<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
 
 
 
