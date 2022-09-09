@@ -25,12 +25,12 @@
             <select id="objectOfInterest" title="objectOfInterest">
                 <option value="0" title="Krajské vakcinácie, ">Regionálne vakcinácie</option>
                 <option value="1" title="Hospitalizovaní pacienti v rámci krajov, ">Hospitalizovaní pacienti v rámci Krajov</option>
-            </select>
-            <label for="dateStart">Počiatočný dátum </label> <input id="dateStart" type="date" name="myStartDate"
-                                                                    value="2019-07-26"/>
-            <label for="dateEnd">Koncový dátum</label> <input id="dateEnd" type="date" name="myEndDate" value="2022-07-01"/>
+            </select><br/>
+            <label for="dateStart">OD</label> <input id="dateStart" type="date" name="myStartDate"
+                                                                    value="2019-07-26"/><br/>
+            <label for="dateEnd">DO</label> <input id="dateEnd" type="date" name="myEndDate" value="2022-07-01"/><br/>
 
-            <button id="submit" onclick="processData('Slovensko.')">Potvrďte výber pre celé Slovensko.</button>
+            <button id="submit" onclick="processData('Slovensko.')">Výber pre celé Slovensko</button>
 
             <h3 id="objectOfInterestName"></h3>
             <table class="info" id="infoTable"></table>
@@ -166,8 +166,8 @@
                 html2Render += `
             <thead>
            <tr>
-               <th>Vakcinácie 1 dávka</th>
-                <th>Vakcinácie 2 dávka</th></tr>`;
+               <th>1.Dávka</th>
+                <th>2.Dávka</th></tr>`;
                 let doseCount1 = 0;
                 let doseCount2 = 0
                 var myNewStartDate = new Date(startDate);
@@ -251,10 +251,10 @@
                 html2Render += `
             <thead>
            <tr>
-               <th>Necovidoví pacienti</th>
-                <th>Covidoví pacienti</th>
-                <th>Covidoví pacienti na pľúcnej ventilácii</th>
-                <th>Pacienti s podozrením na covid</th>
+               <th>Pacienti celkovo</th>
+                <th>Pacienti(COV19)</th>
+                <th>Pacienti(COV19) na UPV</th>
+                <th>Pacienti(Podozrenie na COV19)</th>
                 </tr>`;
                 let nonCovidPatients = 0;
                 let covidPatients = 0;
