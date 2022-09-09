@@ -15,8 +15,7 @@
 
     <!--    <form action="/regionmap" method="get">-->
     <select id="objectOfInterest" title="objectOfInterest">
-        <option value="0" title="Krajské vakcinácie, ">Regionálne vakcinácie</option>
-        <option value="1" title="Hospitalizovaní pacienti v rámci krajov, ">Hospitalizovaní pacienti v rámci Krajov</option>
+        <option value="0" title="Regionálne vakcinácie, ">Regionálne vakcinácie</option>
         <!--      <option th:each="option: ${getRegions}" th:value="${option.ident}" th:text="${option.Country}">-->
         <!--      </option>-->
     </select>
@@ -101,7 +100,6 @@
 
 
 
-
 var buttonClick = document.getElementById("submit");
 
 
@@ -139,8 +137,8 @@ function fetchAndRenderRegionVaccinations(getJsonUrl,viewElements) {
                     return Promise.reject(new Error(`regionVaccinations acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
                 }
             })
-            .then(regionHospitalPatientsData => { //here we process the returned response data in JSON ...
-                renderRegionVaccinations(regionHospitalPatientsData, viewElements);
+            .then(regionVaccinationsData => { //here we process the returned response data in JSON ...
+                renderRegionVaccinations(regionVaccinationsData, viewElements);
             })
             .catch(error => { ////here we process all the failed promises
                 errorMessage = "Nepodarilo sa získať alebo vykresliť údaje krajských vakcináciách. Podrobnosti: " + error;
@@ -149,9 +147,9 @@ function fetchAndRenderRegionVaccinations(getJsonUrl,viewElements) {
     }
 
 
-    function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
+    function renderRegionVaccinations(regionVaccinationsData, viewElements) {
 
-        const rowCount = regionHospitalPatientsData.length;
+        const rowCount = regionVaccinationsData.length;
 let html2Render="";
          html2Render+=`
             <thead>
@@ -167,16 +165,16 @@ let myDate="";
 var myNewDate="";
 var myRegionNameTitle = ""
         for(row=0;row<rowCount;row++){
-          myDate = regionHospitalPatientsData[row].publishedOn;
+          myDate = regionVaccinationsData[row].publishedOn;
           myReparedDate = myDate.replaceAll("\"","");
-myRegionNameTitle = regionHospitalPatientsData[row].region.title;
+myRegionNameTitle = regionVaccinationsData[row].region.title;
 
  myNewDate = new Date(myReparedDate);
 
         if(myNewStartDate <= myNewDate && myNewEndDate >= myNewDate){
         if(valRegion == myRegionNameTitle || valRegion == "Slovensko."){
-       doseCount1 += regionHospitalPatientsData[row].dose1Count;
-       doseCount2 += regionHospitalPatientsData[row].dose2Count;}
+       doseCount1+= regionVaccinationsData[row].dose1Count;
+       doseCount2+= regionVaccinationsData[row].dose2Count;}
        }
 
         }
@@ -197,134 +195,7 @@ myRegionNameTitle = regionHospitalPatientsData[row].region.title;
     }
 
 }
-
-
-
-<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
-
-
-
-if(document.getElementById('objectOfInterest').value==1){
- const viewElements = {
-objectOfInterestName: document.getElementById("objectOfInterestName"),
-        infoTable: document.getElementById("infoTable"),
-
-    }
-
-
- fetchAndRenderRegionVaccinations("/api/hospital-patients/by-region",viewElements);
-var valRegionEndSentence = "";
-var objectOfInterest = document.getElementById("objectOfInterest");
-var objectOfInterestName = objectOfInterest.options[objectOfInterest.selectedIndex].title;
-var startDate = document.getElementById("dateStart").value;
-var endDate = document.getElementById("dateEnd").value;
-
-if(valRegion == "Slovensko."){
-valRegionEndSentence="";
 }
-if(valRegion != "Slovensko."){
-valRegionEndSentence="kraj.";
-}
-viewElements.objectOfInterestName.innerHTML=objectOfInterestName +" " + valRegion + " " + valRegionEndSentence;
-function fetchAndRenderRegionVaccinations(getJsonUrl,viewElements) {
-
-        fetch(getJsonUrl)  //there may be a second parameter, an object wih options, but we do not need it now.
-            .then(response => {      //fetch promise fullfilled (operation completed successfully)
-                if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
-                    return response.json(); //we return a new promise with the response data as a js object, constructed from the JSON string in the response
-                } else { //if we get server error
-                    return Promise.reject(new Error(`regionalHospitalPatients acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
-                }
-            })
-            .then(regionHospitalPatientsData => { //here we process the returned response data in JSON ...
-                renderRegionVaccinations(regionHospitalPatientsData, viewElements);
-            })
-            .catch(error => { ////here we process all the failed promises
-                errorMessage = "Nepodarilo sa získať alebo vykresliť údaje hospitalizovanych pacientoch. Podrobnosti: " + error;
-                viewElements.infoTable.innerHTML =errorMessage;
-            });
-    }
-
-
-    function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
-
-        const rowCount = regionHospitalPatientsData.length;
-let html2Render="";
-         html2Render+=`
-            <thead>
-           <tr>
-               <th>Necovidoví pacienti</th>
-                <th>Covidoví pacienti</th>
-                <th>Covidoví pacienti na pľúcnej ventilácii</th>
-                <th>Pacienti s podozrením na covid</th>
-                </tr>`;
-let nonCovidPatients=0;
-let covidPatients=0;
-let covidPatientsOnVentilation=0;
-let suspectedCovidPatients=0;
-var myNewStartDate = new Date(startDate);
-var myNewEndDate = new Date(endDate);
-let myReparedDate="";
-let myDate="";
-var myNewDate="";
-var myRegionNameTitle = ""
-        for(row=0;row<rowCount;row++){
-          myDate = regionHospitalPatientsData[row].publishedOn;
-          myReparedDate = myDate.replaceAll("\"","");
-myRegionNameTitle = regionHospitalPatientsData[row].region.title;
-
- myNewDate = new Date(myReparedDate);
-
-        if(myNewStartDate <= myNewDate && myNewEndDate >= myNewDate){
-        if(valRegion == myRegionNameTitle || valRegion == "Slovensko."){
-       nonCovidPatients += regionHospitalPatientsData[row].nonCovid;
-       covidPatients += regionHospitalPatientsData[row].confirmedCovid;
-       covidPatientsOnVentilation += regionHospitalPatientsData[row].ventilatedCovid;
-       suspectedCovidPatients += regionHospitalPatientsData[row].suspectedCovid;}
-       }
-
-        }
-         html2Render+=
-                `
-               <tbody>
-
-                <tr>
-                    <td>${nonCovidPatients}</td>
-                    <td>${covidPatients}</td>
-                    <td>${covidPatientsOnVentilation}</td>
-                    <td>${suspectedCovidPatients}</td>
-
-                 </tr>
-                  </tbody>
-                `;
-
-
-        viewElements.infoTable.innerHTML=html2Render;
-    }
-
-}
-
-<!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
-
 
 
 
