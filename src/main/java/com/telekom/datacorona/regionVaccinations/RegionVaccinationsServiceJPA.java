@@ -39,3 +39,4 @@ public class RegionVaccinationsServiceJPA implements RegionVaccinationsService {
                 .getResultList();
     }
 }
+
