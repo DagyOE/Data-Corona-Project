@@ -121,7 +121,7 @@ async function fetchVaccinationData(url) {
             for (let i = 0; i < dataLength; i++) {
                 dose1Count[0][i] = data[i].dose1Count;
                 dose2Count[0][i] = data[i].dose2Count;
-                dose1Sum[0][i] = data[i].dose1Sum;
+                dose1Sum[0][i ] = data[i].dose1Sum;
                 dose2Sum[0][i] = data[i].dose2Sum;
                 updatedAt[i] = data[i].updatedAt;
                 publishedOn[i] = data[i].publishedOn;

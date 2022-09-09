@@ -15,12 +15,15 @@ import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatients;
 import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatientsService;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
+import com.telekom.datacorona.slovakiaHospitalPatients.SlovakiaHospitalPatients;
+import com.telekom.datacorona.slovakiaHospitalPatients.SlovakiaHospitalPatientsService;
 import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinations;
 import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinationsService;
 import com.telekom.datacorona.vaccinations.Vaccinations;
 import com.telekom.datacorona.vaccinations.VaccinationsService;
 import com.telekom.datacorona.vaccine.Vaccine;
 import com.telekom.datacorona.vaccine.VaccineService;
+import net.minidev.json.JSONUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +57,8 @@ public class Console {
     private VaccinationsService vaccinationsService;
     @Autowired
     private RegionHospitalPatientsService regionHospitalPatientsService;
+    @Autowired
+    private SlovakiaHospitalPatientsService slovakiaHospitalPatientsService;
 
     private String urlRegion = "https://data.korona.gov.sk/api/regions";
     private String urlDistrict = "https://data.korona.gov.sk/api/districts";
@@ -65,19 +70,45 @@ public class Console {
     private String urlVaccination = "https://data.korona.gov.sk/api/vaccinations";
     private String urlRegionHospitalPatients = "https://data.korona.gov.sk/api/hospital-patients/by-region";
 
+    private String urlSlovakiaHospitalPatients = "https://data.korona.gov.sk/api/hospital-patients/in-slovakia";
+
     @Scheduled(fixedRate = 86400000)
     public void run() throws IOException, JSONException {
         System.out.println("Start mirroring");
-        getRegionData(urlRegion);
-        getDistrictData(urlDistrict);
-        getCityData(urlCity);
-        getHospitalData(urlHospital);
-        getVaccinationByRegionData(urlVaccinationsByRegion);
-        getVaccinationInSlovakiaData(urlVaccinationsInSlovakia);
-        getVaccineData(urlVaccine);
-        getVaccinationData(urlVaccination);
-        getRegionHospitalPatientsData(urlRegionHospitalPatients);
+//        getRegionData(urlRegion);
+//        getDistrictData(urlDistrict);
+//        getCityData(urlCity);
+//        getHospitalData(urlHospital);
+//        getVaccinationByRegionData(urlVaccinationsByRegion);
+//        getVaccinationInSlovakiaData(urlVaccinationsInSlovakia);
+//        getVaccineData(urlVaccine);
+//        getVaccinationData(urlVaccination);
+//        getRegionHospitalPatientsData(urlRegionHospitalPatients);
+//        getSlovakiaHospitalPatientsData(urlSlovakiaHospitalPatients);
         System.out.println("End mirroring");
+    }
+
+    private void getSlovakiaHospitalPatientsData(String url) throws IOException, JSONException {
+        String jsonString = jsonString(url);
+        JSONObject obj = new JSONObject(jsonString);
+        JSONArray data = obj.getJSONArray("page");
+        for (int i = 0; i < data.length(); i++) {
+            slovakiaHospitalPatientsService.addSlovakiaHospitalPatients(new SlovakiaHospitalPatients(
+                    data.getJSONObject(i).get("id").toString(),
+                    (String) data.getJSONObject(i).get("oldest_reported_at"),
+                    (String) data.getJSONObject(i).get("newest_reported_at"),
+                    (int) data.getJSONObject(i).get("ventilated_covid"),
+                    (int) data.getJSONObject(i).get("non_covid"),
+                    (int) data.getJSONObject(i).get("confirmed_covid"),
+                    (int) data.getJSONObject(i).get("suspected_covid"),
+                    (String) data.getJSONObject(i).get("published_on"),
+                    (String) data.getJSONObject(i).get("updated_at")
+            ));
+        }
+        if (!(obj.get("next_offset").toString().equals("null"))) {
+            String newUrl = urlSlovakiaHospitalPatients + "?offset=" + obj.get("next_offset");
+            getSlovakiaHospitalPatientsData(newUrl);
+        }
     }
 
     private void getRegionHospitalPatientsData(String url) throws IOException, JSONException {

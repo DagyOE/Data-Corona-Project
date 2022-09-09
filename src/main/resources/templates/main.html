@@ -97,6 +97,26 @@
             </div>
         </div>
         <div class="graph2"></div>
+            <input type="PatientsRange" name="PatientsRange"/>
+            <select id="PatientsInterval" name="PatientsInterval">
+                <option value="daily">denne</option>
+                <option value="weekly" selected="selected">týždenne</option>
+                <option value="monthly">mesačne</option>
+            </select>
+            <select id="PatientsRegion" name="PatientsRegion">
+                <option value=0>Slovensko</option>
+                <option value=1>Košický kraj</option>
+                <option value=2>Nitriansky kraj</option>
+                <option value=3>Bratislavská kraj</option>
+                <option value=4>Trenčiansky kraj</option>
+                <option value=5>Žilinský kraj</option>
+                <option value=6>Banskobystrický kraj</option>
+                <option value=7>Trnavský kraj</option>
+                <option value=8>Prešovský kraj</option>
+            </select>
+            <div>
+                <canvas id="Patients"></canvas>
+            </div>
         <div class="stat1">
             <div class="row1"></div>
             <div class="row2"></div>
@@ -300,6 +320,7 @@
     }
 </script>
 
-<script src="/graph.js"></script>
+<script src="/graphVaccination.js"></script>
+<script src="/graphPatients.js"></script>
 </body>
 </html>

@@ -12,6 +12,9 @@ import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatientsServi
 import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatientsServiceJPA;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsServiceJPA;
+import com.telekom.datacorona.slovakiaHospitalPatients.SlovakiaHospitalPatients;
+import com.telekom.datacorona.slovakiaHospitalPatients.SlovakiaHospitalPatientsService;
+import com.telekom.datacorona.slovakiaHospitalPatients.SlovakiaHospitalPatientsServiceJPA;
 import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinationsService;
 import com.telekom.datacorona.slovakiaVaccinations.SlovakiaVaccinationsServiceJPA;
 import com.telekom.datacorona.vaccinations.Vaccinations;
@@ -39,6 +42,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.telekom.datacorona.vaccine",
         "com.telekom.datacorona.vaccinations",
         "com.telekom.datacorona.regionHospitalPatients",
+        "com.telekom.datacorona.slovakiaHospitalPatients"
 })
 @ComponentScan(basePackages = {
         "com.telekom.datacorona.city",
@@ -50,6 +54,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.telekom.datacorona.vaccine",
         "com.telekom.datacorona.vaccinations",
         "com.telekom.datacorona.regionHospitalPatients",
+        "com.telekom.datacorona.slovakiaHospitalPatients",
         "com.telekom.datacorona.server"
 })
 public class DataCoronaServer {
@@ -109,5 +114,10 @@ public class DataCoronaServer {
     @Bean
     public RegionHospitalPatientsService regionHospitalPatientsService() {
         return new RegionHospitalPatientsServiceJPA();
+    }
+
+    @Bean
+    public SlovakiaHospitalPatientsService slovakiaHospitalPatientsService() {
+        return new SlovakiaHospitalPatientsServiceJPA();
     }
 }
