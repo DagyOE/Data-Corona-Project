@@ -153,24 +153,25 @@ async function fetchRegionVaccinationData(url) {
             for (let i = 0; i < dataLength; i++) {
 
                 let index = Math.round((createDate(data[i].publishedOn).getTime() - minDate.getTime()) / millisecondsInDay);
-                let region = data[i].regionId;
+                let region = data[i].region.id;
 
-                if (i !== 0 && dose1Count[1][index] === undefined) {
-                    fillArraysWithPreviousDataPoint(index);
-                }
-                dose1Count[region][index] = data[index].dose1Count;
-                dose2Count[region][index] = data[index].dose2Count;
-                dose1Sum[region][index] = data[index].dose1Sum;
-                dose2Sum[region][index] = data[index].dose2Sum;
+                dose1Count[region][index] = data[i].dose1Count;
+                dose2Count[region][index] = data[i].dose2Count;
+                dose1Sum[region][index] = data[i].dose1Sum;
+                dose2Sum[region][index] = data[i].dose2Sum;
             }
             for (let region = 1; region < 9; region++) {
                 dose1Count[region].reverse();
                 dose2Count[region].reverse();
-                dose1Sum[region].reverse();
-                dose2Sum[region].reverse();
+                // dose1Sum[region].reverse();
+                // dose2Sum[region].reverse();
             }
+            fillArraysWithPreviousDataPoint();
             prepareWeeklyData();
             prepareMonthlyData();
+            console.log(dose1Sum[1]);
+            console.log(dose1SumWeek[1]);
+            console.log(dose1SumMonth[1]);
 
             myChart.destroy();
             // plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn);
@@ -181,12 +182,23 @@ async function fetchRegionVaccinationData(url) {
         })
 }
 
-function fillArraysWithPreviousDataPoint(idx) {
+function fillArraysWithPreviousDataPoint() {
+    const length = publishedOn.length;
     for (let region = 1; region < 9; region++) {
-        dose1Count[region][idx] = dose1Count[region][idx - 1];
-        dose2Count[region][idx] = dose2Count[region][idx - 1];
-        dose1Sum[region][idx] = dose1Sum[region][idx - 1];
-        dose2Sum[region][idx] = dose2Sum[region][idx - 1];
+        for (let idx = 1; idx < length; idx++) {
+            if (dose1Count[region][idx] === undefined) {
+                dose1Count[region][idx] = 0;
+            }
+            if (dose2Count[region][idx] === undefined) {
+                dose2Count[region][idx] = 0;
+            }
+            if (dose1Sum[region][idx] === undefined) {
+                dose1Sum[region][idx] = dose1Sum[region][idx - 1];
+            }
+            if (dose2Sum[region][idx] === undefined) {
+                dose2Sum[region][idx] = dose2Sum[region][idx - 1];
+            }
+        }
     }
 }
 
