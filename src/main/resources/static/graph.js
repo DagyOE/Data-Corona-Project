@@ -169,9 +169,6 @@ async function fetchRegionVaccinationData(url) {
             fillArraysWithPreviousDataPoint();
             prepareWeeklyData();
             prepareMonthlyData();
-            console.log(dose1Sum[1]);
-            console.log(dose1SumWeek[1]);
-            console.log(dose1SumMonth[1]);
 
             myChart.destroy();
             // plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn);
