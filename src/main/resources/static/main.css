@@ -123,3 +123,24 @@ path:hover {
 .webtable{
     width: 250px;
 }
+
+/*Table formatting*/
+table.stats {
+    width: 100%;
+    border: black 2px;
+}
+
+table.stats th {
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: dimgray;
+
+}
+
+table.stats tr:nth-child(even) {
+    background-color: lightgray
+}
+
+table.stats tr:nth-child(odd) {
+    background-color: white;
+}
