@@ -1,27 +1,3 @@
-// constants
-const CHART_COLORS = {
-    red: 'rgb(255, 99, 132)',
-    orange: 'rgb(255, 159, 64)',
-    yellow: 'rgb(255, 205, 86)',
-    green: 'rgb(75, 192, 192)',
-    blue: 'rgb(54, 162, 235)',
-    purple: 'rgb(153, 102, 255)',
-    grey: 'rgb(201, 203, 207)'
-};
-
-const BACKGROUND_CHART_COLORS = {
-    red: 'rgba(255, 99, 132, 0.5)',
-    orange: 'rgba(255, 159, 64, 0.5)',
-    yellow: 'rgba(255, 205, 86, 0.5)',
-    green: 'rgba(75, 192, 192, 0.5)',
-    blue: 'rgba(54, 162, 235, 0.5)',
-    purple: 'rgba(153, 102, 255, 0.5)',
-    grey: 'rgba(201, 203, 207, 0.5)'
-}
-
-const month = ["Január","Február","Marec","Apríl","Máj","Jún","Júl","August","September","Október","November","December"];
-const millisecondsInDay = 1000 * 3600 * 24;
-
 // memory for data
 let dose1Count = [];
 let dose2Count = [];
@@ -93,12 +69,6 @@ fetchRegionVaccinationData("http://localhost:8080/api/vaccinations/by-region");
 // selectDataAndPlotSlovakiaVaccinations();
 
 //---------------------- FUNCTIONS
-
-function initializeArrays(arr) {
-    for (let i = 0; i < 9; i++) {
-        arr[i] = [];
-    }
-}
 
 // function initializeArrays2D(arr) {
 //     for (let region = 1; region < 9; region++) {
@@ -353,7 +323,7 @@ function plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, pu
             },
             {
                 type: 'line',
-                label: '1. dávka súhrnne',
+                label: '1. dávka kumulatívne',
                 yAxisID: 'Acc',
                 borderColor: CHART_COLORS.red,
                 pointRadius: 2,
@@ -362,7 +332,7 @@ function plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, pu
             },
             {
                 type: 'line',
-                label: '2. dávka súhrnne',
+                label: '2. dávka kumulatívne',
                 yAxisID: 'Acc',
                 borderColor: CHART_COLORS.blue,
                 pointRadius: 2,
@@ -389,11 +359,25 @@ function plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, pu
             scales: {
                 Dose: {
                     type: 'linear',
-                    position: 'left'
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Počet dávok za deň',
+                        font: {
+                            size: 15
+                        }
+                    }
                 },
                 Acc: {
                     type: 'linear',
-                    position: 'right'
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Dávky kumulatívne',
+                        font: {
+                            size: 16
+                        }
+                    }
                 }
             },
             hover: {
