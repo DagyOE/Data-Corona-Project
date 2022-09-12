@@ -136,7 +136,9 @@
             var objectOfInterestName = objectOfInterest.options[objectOfInterest.selectedIndex].title;
             var startDate = document.getElementById("dateStart").value;
             var endDate = document.getElementById("dateEnd").value;
-             fetchAndRenderRegionVaccinations("/api/vaccinations/by-region/${startDate}/${endDate}", viewElements);
+            var myReparedStartDate = startDate.replaceAll("\"", "");
+             var myReparedEndDate = endDate.replaceAll("\"", "");
+             fetchAndRenderRegionVaccinations("/api/vaccinations/by-region/${myReparedStartDate}/${myReparedEndDate}", viewElements);
             if (valRegion == "Slovensko.") {
                 valRegionEndSentence = "";
             }
@@ -150,7 +152,7 @@
                 fetch(getJsonUrl)  //there may be a second parameter, an object wih options, but we do not need it now.
                     .then(response => {      //fetch promise fullfilled (operation completed successfully)
                         if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
-                            return response.json(); //we return a new promise with the response data as a js object, constructed from the JSON string in the response
+                            return response.text(); //we return a new promise with the response data as a js object, constructed from the JSON string in the response
                         } else { //if we get server error
                             return Promise.reject(new Error(`regionVaccinations acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
                         }
@@ -166,7 +168,7 @@
 
             function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
 
-                const rowCount = regionHospitalPatientsData.length;
+                const rowCount = 8;
                 let html2Render = "";
                 html2Render += `
             <thead>
@@ -183,18 +185,16 @@
                 var myNewDate = "";
                 var myRegionNameTitle = ""
                 for (row = 0; row < rowCount; row++) {
-                    myDate = regionHospitalPatientsData[row].publishedOn;
-                    myReparedDate = myDate.replaceAll("\"", "");
-                    myRegionNameTitle = regionHospitalPatientsData[row].region.title;
+                   myRegionNameTitle = regionHospitalPatientsData[row][0];
 
                     myNewDate = new Date(myReparedDate);
 
-                    if (myNewStartDate <= myNewDate && myNewEndDate >= myNewDate) {
+
                         if (valRegion == myRegionNameTitle || valRegion == "Slovensko.") {
-                            doseCount1 += regionHospitalPatientsData[row].dose1Count;
-                            doseCount2 += regionHospitalPatientsData[row].dose2Count;
+                            doseCount1 += regionHospitalPatientsData[row][1];
+                            doseCount2 += regionHospitalPatientsData[row][2];
                         }
-                    }
+
                 }
                 html2Render +=
                     `
@@ -205,7 +205,7 @@
                 </tr>
                     <td>Druhá</td>
                     <td>${doseCount2}</td>
-                    <td>${startDate}</td>
+                    <td>${rowCount}</td>
                  </tr>
                   </tbody>
                 `;
