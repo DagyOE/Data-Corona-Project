@@ -11,6 +11,7 @@
     padding: 0 8%;
     font-size: 0.8vw;
     text-align: center;
+    margin-top: 25px;
 }
 
 img.logo{
@@ -26,15 +27,13 @@ img.logo{
 
 .wrapper {
     display: grid;
-    align-items: center;
     grid-template-columns: 2.2fr 0.1fr 1.1fr 1fr;
     grid-template-rows: 0fr 0.4fr 1.9fr 2fr 0.4fr;
     gap: 0px 0px;
-    grid-auto-flow: row;
     grid-template-areas:
     ". . . ."
     "header header header header"
-    "map . stat1 stat2"
+    "map map statistics ."
     "graph1 . graph2 graph2"
     "footer footer footer footer";
 }
@@ -45,7 +44,7 @@ img.logo{
 
 .map {
     grid-area: map;
-    margin: 1vh;
+    text-align: center;
 }
 
 .graph1 {
@@ -55,41 +54,10 @@ img.logo{
 
 .graph2 { grid-area: graph2; }
 
-.stat1 {  display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-    "row1 row1 row1"
-    "row2 row2 row2"
-    "row3 row3 row3";
-    grid-area: stat1;
+.statistics {
+    grid-area: statistics;
+    text-align: center;
 }
-
-.row1 { grid-area: row1; }
-
-.row2 { grid-area: row2; }
-
-.row3 { grid-area: row3; }
-
-.stat2 {  display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-    "row4 row4 row4"
-    "row5 row5 row5"
-    "row6 row6 row6";
-    grid-area: stat2;
-}
-
-.row4 { grid-area: row4; }
-
-.row5 { grid-area: row5; }
-
-.row6 { grid-area: row6; }
 
 /*Footer formatting*/
 .footer{
@@ -100,7 +68,6 @@ img.logo{
     font-size: 0.8vw;
     position: fixed;
     text-align: center;
-    justify-content: center;
 }
 
 /*Map formatting*/
@@ -115,6 +82,7 @@ path:hover {
 
 .tablemap{
     display: inline-flex;
+    margin: 20px;
 }
 
 .webmap{
@@ -133,12 +101,12 @@ table.stats {
 table.stats th {
     font-weight: bold;
     color: #FFFFFF;
-    background-color: dimgray;
+    background-color: #47a0e8;
 
 }
 
 table.stats tr:nth-child(even) {
-    background-color: lightgray
+    background-color: #E3F3FE;
 }
 
 table.stats tr:nth-child(odd) {

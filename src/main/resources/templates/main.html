@@ -17,9 +17,9 @@
     <!-- NAVIGACIA -->
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid d-flex justify-content-center">
-            <img src="/img/logo.png" class="logo">
             <h2 class="navbar-brand p-3">Covid Statistics in Slovakia</h2>
         </div>
+        
     </nav>
 
     <!-- CONTENT -->
@@ -95,6 +95,7 @@
                 <h2 id="objectOfInterestName2"></h2>
                 <table class="table table-striped" id="infoTable"></table>
             </div>
+
         </div>
         <hr>
         <div class="row pt-4">
@@ -132,15 +133,11 @@
             </div>
         </div>
         <div class="graph2"></div>
-        <div class="stat1">
-            <div class="row1"></div>
-            <div class="row2"></div>
-            <div class="row3"></div>
-        </div>
-        <div class="stat2">
-            <div class="row4"></div>
-            <div class="row5"></div>
-            <div class="row6"></div>
+        <div class="statistics">
+            <h3 id="objectOfInterestName"></h3>
+            <table class="stats">
+                <tbody id= "infoTable">
+            </table>
         </div>
     </div>
 
@@ -153,8 +150,6 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
-    
-
 
 <script>
     var buttonClick = document.getElementById("submit");
@@ -240,11 +235,11 @@
                     `
                 <tbody>
                     <tr>
-                        <th scope="row">1.</th>
+                        <th scope="row">Prvá</th>
                         <td>${doseCount1}</td>
                     </tr>
                     <tr>
-                        <th scope="row">2.</th>
+                        <th scope="row">Druhá</th>
                         <td>${doseCount2}</td>
                     </tr>
                 </tbody>
@@ -303,8 +298,6 @@
                     <tr>
                         <th scope="col">Popis Pacientov</th>
                         <th scope="col">Počet</th>
-<!--                    <th scope="col">Pacienti(COV19) na UPV</th>-->
-<!--                    <th scope="col">Pacienti(Podozrenie na COV19)</th>-->
                     </tr>
                 </thead>
                 `;
