@@ -136,9 +136,11 @@
             var objectOfInterestName = objectOfInterest.options[objectOfInterest.selectedIndex].title;
             var startDate = document.getElementById("dateStart").value;
             var endDate = document.getElementById("dateEnd").value;
-            var myReparedStartDate = startDate.replaceAll("\"", "");
-             var myReparedEndDate = endDate.replaceAll("\"", "");
-             fetchAndRenderRegionVaccinations("/api/vaccinations/by-region/${myReparedStartDate}/${myReparedEndDate}", viewElements);
+            var myReparedStartDate = String(startDate.replaceAll('"', ''));
+             var myReparedEndDate = String(endDate.replaceAll('"', ''));
+
+             fetchAndRenderRegionVaccinations(`/api/vaccinations/by-region/${myReparedStartDate}/${myReparedEndDate}`, viewElements);
+
             if (valRegion == "Slovensko.") {
                 valRegionEndSentence = "";
             }
@@ -152,7 +154,7 @@
                 fetch(getJsonUrl)  //there may be a second parameter, an object wih options, but we do not need it now.
                     .then(response => {      //fetch promise fullfilled (operation completed successfully)
                         if (response.ok) {    //successful execution includes an error response from the server. So we have to check the return status of the response here.
-                            return response.text(); //we return a new promise with the response data as a js object, constructed from the JSON string in the response
+                            return response.json(); //we return a new promise with the response data as a js object, constructed from the JSON string in the response
                         } else { //if we get server error
                             return Promise.reject(new Error(`regionVaccinations acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
                         }
@@ -205,8 +207,7 @@
                 </tr>
                     <td>Druhá</td>
                     <td>${doseCount2}</td>
-                    <td>${rowCount}</td>
-                 </tr>
+                </tr>
                   </tbody>
                 `;
                 viewElements.infoTable.innerHTML = html2Render;
