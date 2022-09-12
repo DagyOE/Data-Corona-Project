@@ -130,13 +130,13 @@
                 infoTable: document.getElementById("infoTable"),
             }
 
-            fetchAndRenderRegionVaccinations("/api/vaccinations/by-region", viewElements);
+
             var valRegionEndSentence = "";
             var objectOfInterest = document.getElementById("objectOfInterest");
             var objectOfInterestName = objectOfInterest.options[objectOfInterest.selectedIndex].title;
             var startDate = document.getElementById("dateStart").value;
             var endDate = document.getElementById("dateEnd").value;
-
+             fetchAndRenderRegionVaccinations("/api/vaccinations/by-region/${startDate}/${endDate}", viewElements);
             if (valRegion == "Slovensko.") {
                 valRegionEndSentence = "";
             }
@@ -205,6 +205,7 @@
                 </tr>
                     <td>Druhá</td>
                     <td>${doseCount2}</td>
+                    <td>${startDate}</td>
                  </tr>
                   </tbody>
                 `;
