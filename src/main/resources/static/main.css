@@ -19,44 +19,8 @@ img.logo{
 }
 
 .background {
-    background: linear-gradient(0deg, rgba(214,238,252,1) 0%, rgba(255,255,255,1) 10%, rgba(255,255,255,1) 90%, rgba(214,238,252,1) 100%);
+    background: linear-gradient(0deg, rgba(255,255,255,1) 90%, rgba(214,238,252,1) 100%);
     background-size: cover;
-}
-
-/*Grid formatting*/
-
-.wrapper {
-    display: grid;
-    grid-template-columns: 2.2fr 0.1fr 1.1fr 1fr;
-    grid-template-rows: 0fr 0.4fr 1.9fr 2fr 0.4fr;
-    gap: 0px 0px;
-    grid-template-areas:
-    ". . . ."
-    "header header header header"
-    "map map statistics ."
-    "graph1 . graph2 graph2"
-    "footer footer footer footer";
-}
-
-.header { grid-area: header; }
-
-.footer { grid-area: footer; }
-
-.map {
-    grid-area: map;
-    text-align: center;
-}
-
-.graph1 {
-    grid-area: graph1;
-    margin: 1vh;
-}
-
-.graph2 { grid-area: graph2; }
-
-.statistics {
-    grid-area: statistics;
-    text-align: center;
 }
 
 /*Footer formatting*/
@@ -64,7 +28,7 @@ img.logo{
     bottom: 0;
     width: 100%;
     padding: 0 8%;
-    background: #E3F3FE;
+    /*background: #E3F3FE;*/
     font-size: 0.8vw;
     position: fixed;
     text-align: center;
@@ -80,35 +44,35 @@ path:hover {
     fill: #47a0e8;
 }
 
-.tablemap{
-    display: inline-flex;
-    margin: 20px;
-}
+/*.tablemap{*/
+/*    display: inline-flex;*/
+/*    margin: 20px;*/
+/*}*/
 
-.webmap{
-}
+/*.webmap{*/
+/*}*/
 
-.webtable{
-    width: 250px;
-}
+/*.webtable{*/
+/*    width: 250px;*/
+/*}*/
 
-/*Table formatting*/
-table.stats {
-    width: 100%;
-    border: black 2px;
-}
+/*!*Table formatting*!*/
+/*table.stats {*/
+/*    width: 100%;*/
+/*    border: black 2px;*/
+/*}*/
 
-table.stats th {
-    font-weight: bold;
-    color: #FFFFFF;
-    background-color: #47a0e8;
+/*table.stats th {*/
+/*    font-weight: bold;*/
+/*    color: #FFFFFF;*/
+/*    background-color: #47a0e8;*/
 
-}
+/*}*/
 
-table.stats tr:nth-child(even) {
-    background-color: #E3F3FE;
-}
+/*table.stats tr:nth-child(even) {*/
+/*    background-color: #E3F3FE;*/
+/*}*/
 
-table.stats tr:nth-child(odd) {
-    background-color: white;
-}
+/*table.stats tr:nth-child(odd) {*/
+/*    background-color: white;*/
+/*}*/
