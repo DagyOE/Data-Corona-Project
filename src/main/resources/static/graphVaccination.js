@@ -52,7 +52,7 @@ let endIndexSlovakia = 0;
 let interval = 'weekly';
 let region = 0;
 
-var myChart = new Chart(document.getElementById("SlovakiaVaccinations").getContext("2d"), {});
+let myChart = new Chart(document.getElementById("SlovakiaVaccinationsCanvas").getContext("2d"), {});
 
 //---------------------- LISTENERS
 
@@ -83,7 +83,10 @@ initializeArrays(dose1CountMonth);
 initializeArrays(dose2CountMonth);
 initializeArrays(dose1SumMonth);
 initializeArrays(dose2SumMonth);
-initializeArrays2D();
+// initializeArrays2D(dose1Count);
+// initializeArrays2D(dose2Count);
+// initializeArrays2D(dose1Sum);
+// initializeArrays2D(dose2Sum);
 
 fetchVaccinationData("http://localhost:8080/api/vaccinations/in-slovakia");
 fetchRegionVaccinationData("http://localhost:8080/api/vaccinations/by-region");
@@ -97,14 +100,11 @@ function initializeArrays(arr) {
     }
 }
 
-function initializeArrays2D() {
-    for (let region = 1; region < 9; region++) {
-        dose1Count[region][0] = 0;
-        dose2Count[region][0] = 0;
-        dose1Sum[region][0] = 0;
-        dose2Sum[region][0] = 0;
-    }
-}
+// function initializeArrays2D(arr) {
+//     for (let region = 1; region < 9; region++) {
+//         arr[region][0] = 0;
+//     }
+// }
 
 async function fetchVaccinationData(url) {
     await fetch(url)
@@ -121,7 +121,7 @@ async function fetchVaccinationData(url) {
             for (let i = 0; i < dataLength; i++) {
                 dose1Count[0][i] = data[i].dose1Count;
                 dose2Count[0][i] = data[i].dose2Count;
-                dose1Sum[0][i ] = data[i].dose1Sum;
+                dose1Sum[0][i] = data[i].dose1Sum;
                 dose2Sum[0][i] = data[i].dose2Sum;
                 updatedAt[i] = data[i].updatedAt;
                 publishedOn[i] = data[i].publishedOn;
@@ -151,7 +151,6 @@ async function fetchRegionVaccinationData(url) {
             // filling memory
             const dataLength = data.length;
             for (let i = 0; i < dataLength; i++) {
-
                 let index = Math.round((createDate(data[i].publishedOn).getTime() - minDate.getTime()) / millisecondsInDay);
                 let region = data[i].region.id;
 
@@ -170,10 +169,10 @@ async function fetchRegionVaccinationData(url) {
             prepareWeeklyData();
             prepareMonthlyData();
 
-            myChart.destroy();
             // plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn);
             startIndexSlovakia = 0;
             endIndexSlovakia = publishedOn.length - 1;
+            myChart.destroy();
             selectDataAndPlotSlovakiaVaccinations(interval);
             createDatePickerSlovakia();
         })
@@ -372,7 +371,7 @@ function plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, pu
             }]
     };
 
-    myChart = new Chart(document.getElementById("SlovakiaVaccinations").getContext("2d"), {
+    myChart = new Chart(document.getElementById("SlovakiaVaccinationsCanvas").getContext("2d"), {
         type: 'scatter',
         data: data,
         options: {
