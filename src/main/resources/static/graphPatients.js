@@ -143,13 +143,13 @@ async function fetchRegionHospitalPatients(url) {
         .then(data => {
             const dataLength = data.length;
             for (let i = 0; i < dataLength; i++) {
-                let index = Math.round((createDate(data[i].publishedOn).getTime() - minDate.getTime()) / millisecondsInDay);
+                let index = Math.round((createDate(data[i].publishedOn).getTime() - minDatePatients.getTime()) / millisecondsInDay);
                 let region = data[i].region.id;
 
-                confirmedCovid[region][index] = data[i].confirmedCount;
-                nonCovid[region][i] = data[i].nonCovid;
-                suspectedCovid[region][i] = data[i].suspectedCovid;
-                ventilatedCovid[region][i] = data[i].ventilatedCovid;
+                confirmedCovid[region][index] = data[i].confirmedCovid;
+                nonCovid[region][index] = data[i].nonCovid;
+                suspectedCovid[region][index] = data[i].suspectedCovid;
+                ventilatedCovid[region][index] = data[i].ventilatedCovid;
             }
             for (let region = 1; region < 9; region++) {
                 confirmedCovid[region].reverse();
@@ -177,8 +177,8 @@ function createDatePickerPatients() {
             startDate: minDatePatients,
             endDate: maxDatePatients
         }, function(start, end, label) {
-            startIndexSlovakiaPatients = Math.round((start._d.getTime() - minDate.getTime()) / millisecondsInDay);
-            endIndexSlovakiaPatients = Math.round((end._d.getTime() - minDate.getTime()) / millisecondsInDay);
+            startIndexSlovakiaPatients = Math.round((start._d.getTime() - minDatePatients.getTime()) / millisecondsInDay);
+            endIndexSlovakiaPatients = Math.round((end._d.getTime() - minDatePatients.getTime()) / millisecondsInDay);
             patientsChart.destroy();
             selectDataAndPlotHospitalPatients(intervalPatients);
         });
@@ -241,10 +241,10 @@ function selectDataAndPlotHospitalPatients(interval) {
 
     if (interval === 'daily') {
         for (let i = startIndexSlovakiaPatients; i < endIndexSlovakiaPatients; i++) {
-            confirmedCovidNew[i - startIndexSlovakiaPatients] = confirmedCovid[region][i];
-            nonCovidNew[i - startIndexSlovakiaPatients] = nonCovid[region][i];
-            suspectedCovidNew[i - startIndexSlovakiaPatients] = suspectedCovid[region][i];
-            ventilatedCovidNew[i - startIndexSlovakiaPatients] = ventilatedCovid[region][i];
+            confirmedCovidNew[i - startIndexSlovakiaPatients] = confirmedCovid[regionPatients][i];
+            nonCovidNew[i - startIndexSlovakiaPatients] = nonCovid[regionPatients][i];
+            suspectedCovidNew[i - startIndexSlovakiaPatients] = suspectedCovid[regionPatients][i];
+            ventilatedCovidNew[i - startIndexSlovakiaPatients] = ventilatedCovid[regionPatients][i];
             publishedOnPatientsNew[i - startIndexSlovakiaPatients] = publishedOnPatients[i];
         }
     } else if (interval === 'weekly') {
@@ -264,10 +264,10 @@ function selectDataAndPlotHospitalPatients(interval) {
             }
         }
         for (let i = startIdx; i < endIdx; i++) {
-            confirmedCovidNew[i - startIndexSlovakiaPatients] = confirmedCovidWeek[region][i];
-            nonCovidNew[i - startIndexSlovakiaPatients] = nonCovidWeek[region][i];
-            suspectedCovidNew[i - startIndexSlovakiaPatients] = suspectedCovidWeek[region][i];
-            ventilatedCovidNew[i - startIndexSlovakiaPatients] = ventilatedCovidWeek[region][i];
+            confirmedCovidNew[i - startIndexSlovakiaPatients] = confirmedCovidWeek[regionPatients][i];
+            nonCovidNew[i - startIndexSlovakiaPatients] = nonCovidWeek[regionPatients][i];
+            suspectedCovidNew[i - startIndexSlovakiaPatients] = suspectedCovidWeek[regionPatients][i];
+            ventilatedCovidNew[i - startIndexSlovakiaPatients] = ventilatedCovidWeek[regionPatients][i];
             publishedOnPatientsNew[i - startIndexSlovakiaPatients] = publishedOnPatientsWeek[i];
         }
     } else if (interval === 'monthly') {
@@ -287,15 +287,15 @@ function selectDataAndPlotHospitalPatients(interval) {
             }
         }
         for (let i = startIdx; i < endIdx; i++) {
-            confirmedCovidNew[i - startIndexSlovakiaPatients] = confirmedCovidMonth[region][i];
-            nonCovidNew[i - startIndexSlovakiaPatients] = nonCovidMonth[region][i];
-            suspectedCovidNew[i - startIndexSlovakiaPatients] = suspectedCovidMonth[region][i];
-            ventilatedCovidNew[i - startIndexSlovakiaPatients] = ventilatedCovidMonth[region][i];
+            confirmedCovidNew[i - startIndexSlovakiaPatients] = confirmedCovidMonth[regionPatients][i];
+            nonCovidNew[i - startIndexSlovakiaPatients] = nonCovidMonth[regionPatients][i];
+            suspectedCovidNew[i - startIndexSlovakiaPatients] = suspectedCovidMonth[regionPatients][i];
+            ventilatedCovidNew[i - startIndexSlovakiaPatients] = ventilatedCovidMonth[regionPatients][i];
             publishedOnPatientsNew[i - startIndexSlovakiaPatients] = publishedOnPatientsMonth[i];
         }
     }
 
-    plotHospitalPatients(confirmedCovidNew, nonCovidNew, suspectedCovidNew, ventilatedCovidNew, publishedOnPatientsNew);
+    plotHospitalPatients(confirmedCovidNew, ventilatedCovidNew, suspectedCovidNew, nonCovidNew, publishedOnPatientsNew);
 }
 
 function plotHospitalPatients(confirmedCovid, ventilatedCovid, suspectedCovid, nonCovid, publishedOn) {
@@ -318,22 +318,22 @@ function plotHospitalPatients(confirmedCovid, ventilatedCovid, suspectedCovid, n
                 borderWidth: 2,
                 data: ventilatedCovid
             },
-            // {
-            //     label: "Pacienti s podozrením na Covid",
-            //     type: 'bar',
-            //     backgroundColor: BACKGROUND_CHART_COLORS.green,
-            //     borderColor: CHART_COLORS.green,
-            //     borderWidth: 2,
-            //     data: suspectedCovid
-            // },
-            // {
-            //     label: "Necovidoví pacienti",
-            //     type: 'bar',
-            //     backgroundColor: BACKGROUND_CHART_COLORS.orange,
-            //     borderColor: CHART_COLORS.orange,
-            //     borderWidth: 2,
-            //     data: nonCovid
-            // }
+            {
+                label: "Pacienti s podozrením na Covid",
+                type: 'bar',
+                backgroundColor: BACKGROUND_CHART_COLORS.green,
+                borderColor: CHART_COLORS.green,
+                borderWidth: 2,
+                data: suspectedCovid
+            },
+            {
+                label: "Necovidoví pacienti",
+                type: 'bar',
+                backgroundColor: BACKGROUND_CHART_COLORS.orange,
+                borderColor: CHART_COLORS.orange,
+                borderWidth: 2,
+                data: nonCovid
+            }
         ]
     }
 
