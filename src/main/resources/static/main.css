@@ -18,7 +18,7 @@ img.logo{
 }
 
 .background {
-    background-image: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(233,233,233,1) 50%, rgba(255,255,255,1) 100%);
+    background: linear-gradient(0deg, rgba(214,238,252,1) 0%, rgba(255,255,255,1) 10%, rgba(255,255,255,1) 90%, rgba(214,238,252,1) 100%);
     background-size: cover;
 }
 
@@ -96,7 +96,7 @@ img.logo{
     bottom: 0;
     width: 100%;
     padding: 0 8%;
-    background: whitesmoke;
+    background: #E3F3FE;
     font-size: 0.8vw;
     position: fixed;
     text-align: center;
@@ -122,4 +122,25 @@ path:hover {
 
 .webtable{
     width: 250px;
+}
+
+/*Table formatting*/
+table.stats {
+    width: 100%;
+    border: black 2px;
+}
+
+table.stats th {
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: dimgray;
+
+}
+
+table.stats tr:nth-child(even) {
+    background-color: lightgray
+}
+
+table.stats tr:nth-child(odd) {
+    background-color: white;
 }

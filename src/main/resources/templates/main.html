@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      lang="sk">
+<html lang="sk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -160,14 +159,12 @@
 <script>
     var buttonClick = document.getElementById("submit");
 
-
     function processData(valRegion) {
         if (document.getElementById('objectOfInterest').value == 0) {
             const viewElements = {
                 objectOfInterestName1: document.getElementById("objectOfInterestName1"),
                 objectOfInterestName2: document.getElementById("objectOfInterestName2"),
                 infoTable: document.getElementById("infoTable"),
-
             }
 
             fetchAndRenderRegionVaccinations("/api/vaccinations/by-region", viewElements);
@@ -218,7 +215,7 @@
                 </thead>
                 `;
                 let doseCount1 = 0;
-                let doseCount2 = 0
+                let doseCount2 = 0;
                 var myNewStartDate = new Date(startDate);
                 var myNewEndDate = new Date(endDate);
                 let myReparedDate = "";
@@ -252,7 +249,6 @@
                     </tr>
                 </tbody>
                 `;
-
                 viewElements.infoTable.innerHTML = html2Render;
             }
         }
@@ -300,7 +296,6 @@
             }
 
             function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
-
                 const rowCount = regionHospitalPatientsData.length;
                 let html2Render = "";
                 html2Render += `
@@ -323,11 +318,11 @@
                 let myDate = "";
                 var myNewDate = "";
                 var myRegionNameTitle = ""
+
                 for (row = 0; row < rowCount; row++) {
                     myDate = regionHospitalPatientsData[row].publishedOn;
                     myReparedDate = myDate.replaceAll("\"", "");
                     myRegionNameTitle = regionHospitalPatientsData[row].region.title;
-
                     myNewDate = new Date(myReparedDate);
 
                     if (myNewStartDate <= myNewDate && myNewEndDate >= myNewDate) {
