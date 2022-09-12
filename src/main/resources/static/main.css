@@ -44,7 +44,7 @@ img.logo{
 
 .map {
     grid-area: map;
-    margin: 1vh;
+    text-align: center;
 }
 
 .graph1 {
@@ -82,6 +82,7 @@ path:hover {
 
 .tablemap{
     display: inline-flex;
+    margin: 20px;
 }
 
 .webmap{
