@@ -46,7 +46,7 @@ let maxDatePatients = 0;
 let startIndexSlovakiaPatients = 0;
 let endIndexSlovakiaPatients = 0;
 
-let intervalPatients = 'daily';
+let intervalPatients = 'weekly';
 let regionPatients = 0;
 
 let patientsChart = new Chart(document.getElementById("PatientsCanvas").getContext("2d"), {});
@@ -57,11 +57,13 @@ document.getElementById("PatientsInterval").addEventListener("change", event => 
     event.preventDefault();
     intervalPatients = event.target.value;
     patientsChart.destroy();
+    selectDataAndPlotHospitalPatients(intervalPatients);
 });
 document.getElementById("PatientsRegion").addEventListener("change", event => {
     event.preventDefault();
     regionPatients = event.target.value;
     patientsChart.destroy();
+    selectDataAndPlotHospitalPatients(intervalPatients);
 })
 
 //---------------------- CALLS
@@ -158,9 +160,9 @@ async function fetchRegionHospitalPatients(url) {
             prepareWeeklyDataPatients();
             prepareMonthlyDataPatients();
 
+            startIndexSlovakiaPatients = 0;
+            endIndexSlovakiaPatients = publishedOnPatients.length - 1;
             patientsChart.destroy();
-            startIndexSlovakia = 0;
-            endIndexSlovakia = publishedOnPatients.length - 1;
             selectDataAndPlotHospitalPatients(intervalPatients);
             createDatePickerPatients();
         })
@@ -230,13 +232,6 @@ function prepareMonthlyDataPatients() {
     }
 }
 
-/*
-let confirmedCovid = [];
-let nonCovid = [];
-let suspectedCovid = [];
-let ventilatedCovid = [];
-let publishedOnPatients = [];
- */
 function selectDataAndPlotHospitalPatients(interval) {
     let confirmedCovidNew = [];
     let nonCovidNew = [];
