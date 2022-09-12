@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/vaccinations/by-region")
 public class RegionVaccinationsWebServiceREST {
 
