@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      lang="sk">
+<html lang="sk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,8 +17,8 @@
 <div class="background">
     <div class="wrapper">
         <div class="header">
-            <img src="/img/logo.png" class="logo">
-            <h2 class="title">Covid Statistics in Slovakia</h2>
+<!--            <img src="/img/logo.png" class="logo">-->
+            <h2 class="title">Slovakia's Covid Statistics</h2>
         </div>
         <div class="map">
             <select id="objectOfInterest" title="objectOfInterest">
@@ -94,7 +93,7 @@
                 <option value=0>Slovensko</option>
                 <option value=1>Košický kraj</option>
                 <option value=2>Nitriansky kraj</option>
-                <option value=3>Bratislavská kraj</option>
+                <option value=3>Bratislavský kraj</option>
                 <option value=4>Trenčiansky kraj</option>
                 <option value=5>Žilinský kraj</option>
                 <option value=6>Banskobystrický kraj</option>
@@ -125,13 +124,11 @@
 <script>
     var buttonClick = document.getElementById("submit");
 
-
     function processData(valRegion) {
         if (document.getElementById('objectOfInterest').value == 0) {
             const viewElements = {
                 objectOfInterestName: document.getElementById("objectOfInterestName"),
                 infoTable: document.getElementById("infoTable"),
-
             }
 
             fetchAndRenderRegionVaccinations("/api/vaccinations/by-region", viewElements);
@@ -175,10 +172,11 @@
                 html2Render += `
             <thead>
            <tr>
-               <th>1.dávka</th>
-                <th>2.dávka</th></tr>`;
+                <th>Dávka</th>
+                <th>Počet</th>
+           </tr>`;
                 let doseCount1 = 0;
-                let doseCount2 = 0
+                let doseCount2 = 0;
                 var myNewStartDate = new Date(startDate);
                 var myNewEndDate = new Date(endDate);
                 let myReparedDate = "";
@@ -203,12 +201,14 @@
                     `
                <tbody>
                 <tr>
+                    <td>Prvá</td>
                     <td>${doseCount1}</td>
+                </tr>
+                    <td>Druhá</td>
                     <td>${doseCount2}</td>
                  </tr>
                   </tbody>
                 `;
-
                 viewElements.infoTable.innerHTML = html2Render;
             }
         }
@@ -254,17 +254,14 @@
             }
 
             function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
-
                 const rowCount = regionHospitalPatientsData.length;
                 let html2Render = "";
                 html2Render += `
             <thead>
            <tr>
                <th>Popis Pacientov</th>
-                <th>Počet</th>
-<!--                <th>Pacienti(COV19) na UPV</th>-->
-<!--                <th>Pacienti(Podozrenie na COV19)</th>-->
-                </tr>`;
+               <th>Počet</th>
+           </tr>`;
                 let nonCovidPatients = 0;
                 let covidPatients = 0;
                 let covidPatientsOnVentilation = 0;
@@ -275,11 +272,11 @@
                 let myDate = "";
                 var myNewDate = "";
                 var myRegionNameTitle = ""
+
                 for (row = 0; row < rowCount; row++) {
                     myDate = regionHospitalPatientsData[row].publishedOn;
                     myReparedDate = myDate.replaceAll("\"", "");
                     myRegionNameTitle = regionHospitalPatientsData[row].region.title;
-
                     myNewDate = new Date(myReparedDate);
 
                     if (myNewStartDate <= myNewDate && myNewEndDate >= myNewDate) {
@@ -307,7 +304,7 @@
                     <td>${covidPatientsOnVentilation}</td>
                 </tr>
                 <tr>
-                    <td>Podozrenie na COV19</td>
+                    <td>COV19 podozrenie</td>
                     <td>${suspectedCovidPatients}</td>
                 </tr>
                   </tbody>
