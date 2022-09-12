@@ -78,6 +78,15 @@
                               title="Žilinsky"
                               id="ZA"/>
                     </svg>
+                    <div class="colorSelectors">
+                        <label for="upToAverage">Vyberte farbu pre nadpriemer:</label>
+                        <input type="color" id="upToAverage" name="upToAverage" value="#ff0000">
+                        <label for="inAverage">Vyberte farbu pre priemer v tolerancii 5%:</label>
+                        <input type="color" id="inAverage" name="inAverage" value="#ff0000">
+                        <label for="downToAverage">Vyberte farbu pre podpriemer:</label>
+                        <input type="color" id="downToAverage" name="downToAverage" value="#ff0000">
+
+                    </div>
                 </div>
             </div>
 
@@ -159,8 +168,8 @@
                             return Promise.reject(new Error(`regionVaccinations acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
                         }
                     })
-                    .then(regionHospitalPatientsData => { //here we process the returned response data in JSON ...
-                        renderRegionVaccinations(regionHospitalPatientsData, viewElements);
+                    .then(regionVaccinationsData => { //here we process the returned response data in JSON ...
+                        renderRegionVaccinations(regionVaccinationsData, viewElements);
                     })
                     .catch(error => { ////here we process all the failed promises
                         errorMessage = "Nepodarilo sa získať alebo vykresliť údaje krajských vakcináciách. Podrobnosti: " + error;
@@ -168,9 +177,28 @@
                     });
             }
 
-            function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
+            function renderRegionVaccinations(regionVaccinationsData, viewElements) {
+let average = 0;
+let summForAverage=0;
+            let doseCount1KE = 0;
+let doseCount1TT = 0;
+let doseCount1TN = 0;
+let doseCount1NR = 0;
+let doseCount1BA = 0;
+let doseCount1PO = 0;
+let doseCount1BB = 0;
+let doseCount1ZA = 0;
 
-                const rowCount = regionHospitalPatientsData.length;
+let doseCount2KE = 0;
+let doseCount2TT = 0;
+let doseCount2TN = 0;
+let doseCount2NR = 0;
+let doseCount2BA = 0;
+let doseCount2PO = 0;
+let doseCount2BB = 0;
+let doseCount2ZA = 0;
+
+                const rowCount = regionVaccinationsData.length;
                 let html2Render = "";
                 html2Render += `
             <thead>
@@ -186,19 +214,56 @@
                 var myNewDate = "";
                 var myRegionNameTitle = ""
                 for (row = 0; row < rowCount; row++) {
-                    myDate = regionHospitalPatientsData[row].publishedOn;
+                    myDate = regionVaccinationsData[row].publishedOn;
                     myReparedDate = myDate.replaceAll("\"", "");
-                    myRegionNameTitle = regionHospitalPatientsData[row].region.title;
+                    myRegionNameTitle = regionVaccinationsData[row].region.title;
 
                     myNewDate = new Date(myReparedDate);
 
                     if (myNewStartDate <= myNewDate && myNewEndDate >= myNewDate) {
+
+                    summForAverage += regionVaccinationsData[row].dose1Count + regionVaccinationsData[row].dose1Count;
+
+                    if(regionVaccinationsData[row].region.title == "Košický"){
+                    doseCount1KE +=regionVaccinationsData[row].dose1Count;
+                    doseCount2KE +=regionVaccinationsData[row].dose1Count;
+                    }
+                    if(regionVaccinationsData[row].region.title == "Prešovský"){
+                    doseCount1PO +=regionVaccinationsData[row].dose1Count;
+                    doseCount2PO +=regionVaccinationsData[row].dose1Count;
+                    }
+                    if(regionVaccinationsData[row].region.title == "Žilinský"){
+                    doseCount1ZA +=regionVaccinationsData[row].dose1Count;
+                    doseCount2ZA +=regionVaccinationsData[row].dose1Count;
+                    }
+                    if(regionVaccinationsData[row].region.title == "Nitriansky"){
+                    doseCount1NR +=regionVaccinationsData[row].dose1Count;
+                    doseCount2NR +=regionVaccinationsData[row].dose1Count;
+                    }
+                    if(regionVaccinationsData[row].region.title == "Trenčiansky"){
+                    doseCount1TN +=regionVaccinationsData[row].dose1Count;
+                    doseCount2TN +=regionVaccinationsData[row].dose1Count;
+                    }
+                    if(regionVaccinationsData[row].region.title == "Trnavský"){
+                    doseCount1TT +=regionVaccinationsData[row].dose1Count;
+                    doseCount2TT +=regionVaccinationsData[row].dose1Count;
+                    }
+                    if(regionVaccinationsData[row].region.title == "Banskobystrický"){
+                    doseCount1BB +=regionVaccinationsData[row].dose1Count;
+                    doseCount2BB +=regionVaccinationsData[row].dose1Count;
+                    }
+                    if(regionVaccinationsData[row].region.title == "Bratislavský"){
+                    doseCount1BA +=regionVaccinationsData[row].dose1Count;
+                    doseCount2BA +=regionVaccinationsData[row].dose1Count;
+                    }
+
                         if (valRegion == myRegionNameTitle || valRegion == "Slovensko.") {
-                            doseCount1 += regionHospitalPatientsData[row].dose1Count;
-                            doseCount2 += regionHospitalPatientsData[row].dose2Count;
+                            doseCount1 += regionVaccinationsData[row].dose1Count;
+                            doseCount2 += regionVaccinationsData[row].dose2Count;
                         }
                     }
                 }
+
                 html2Render +=
                     `
                <tbody>
@@ -208,10 +273,46 @@
                  </tr>
                   </tbody>
                 `;
-
+                average = summForAverage/8;
+                if(average < (doseCount1TN + doseCount2TN)){
+                document.getElementById("TN").style.fill =  document.getElementById("downToAverage").value;
+                }
+                if(average > (doseCount1TN + doseCount2TN)){
+                document.getElementById("TN").style.fill =  document.getElementById("upToAverage").value;
+                }
+                if(average == (doseCount1TN + doseCount2TN)){
+                document.getElementById("TN").style.fill = document.getElementById("inToAverage").value;
+                }
+<!--                if(average < (doseCount1TN + doseCount2TN)){-->
+<!--                document.getElementById("TN").style.fill =  document.getElementById("downToAverage").value;-->
+<!--                }-->
+<!--                if(average > (doseCount1TN + doseCount2TN)){-->
+<!--                document.getElementById("TN").style.fill =  document.getElementById("upToAverage").value;-->
+<!--                }-->
+<!--                if(average == (doseCount1TN + doseCount2TN)){-->
+<!--                document.getElementById("TN").style.fill =  document.getElementById("inToAverage").value;-->
+<!--                }-->
                 viewElements.infoTable.innerHTML = html2Render;
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         if (document.getElementById('objectOfInterest').value == 1) {
             const viewElements = {
