@@ -42,5 +42,14 @@ public class RegionVaccinationsServiceJPA implements RegionVaccinationsService {
                 .setParameter("to", to)
                 .getResultList();
     }
+
+    @Override
+    public List<RegionVaccinations> getDailyRegionVaccinations(String from, String to) {
+        return entityManager
+                .createQuery("select rv from RegionVaccinations rv where rv.publishedOn between :from and :to")
+                .setParameter("from", from)
+                .setParameter("to", to)
+                .getResultList();
+    }
 }
 

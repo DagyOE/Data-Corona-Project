@@ -10,4 +10,5 @@ public interface RegionVaccinationsService {
     List<RegionVaccinations> getAllRegionVaccinations();
 
     List<RegionVaccinations> getCountRegionVaccinations(String from, String to);
+    List<RegionVaccinations> getDailyRegionVaccinations(String from, String to);
 }

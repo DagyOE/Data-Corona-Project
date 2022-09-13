@@ -23,4 +23,9 @@ public class RegionVaccinationsWebServiceREST {
     public List<RegionVaccinations> getCountRegionVaccinations(@PathVariable String from,@PathVariable String to) {
         return regionVaccinationsService.getCountRegionVaccinations(from, to);
     }
+
+    @GetMapping("/daily/{from}/{to}")
+    public List<RegionVaccinations> getDailyRegionVaccinations(@PathVariable String from, @PathVariable String to) {
+        return regionVaccinationsService.getDailyRegionVaccinations(from, to);
+    }
 }
