@@ -1,11 +1,15 @@
 // indices for range selection
-let minDatePatients = createDate("2021-01-04");
-let maxDatePatients = createDate("2022-07-26");
-let startDatePatients = deconstructDateToUrl(createDate("2021-01-04"));
-let endDatePatients = deconstructDateToUrl(createDate("2022-07-26"));
+let minDatePatients = createDate("2020-04-30");
+//todo: check whether it shouldn't be until today
+let maxDatePatients = createDate("2022-09-08");
+let startDatePatients = "2020-04-30";
+let endDatePatients = "2022-09-08";
 
 let intervalPatients = 'daily';
-let regionPatients = 0;
+let regionPatients = '0';
+
+let urlSlovakia = `http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`;
+let urlRegions = `http://localhost:8080/api/hospital-patients/by-region/${intervalPatients}/${startDatePatients}/${endDatePatients}`;
 
 let myChartPatients = new Chart(document.getElementById("PatientsCanvas").getContext("2d"), {});
 
@@ -15,30 +19,30 @@ document.getElementById("PatientsInterval").addEventListener("change", event => 
     event.preventDefault();
     intervalPatients = event.target.value;
 
-    if (regionPatients == 0)
-        fetchVaccinationData(`http://localhost:8080/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
+    if (regionPatients === '0')
+        fetchPatientsData(`http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
     else
-        fetchRegionVaccinationData(`http://localhost:8080/api/hospital-patients/by-region/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
+        fetchRegionPatientsData(`http://localhost:8080/api/hospital-patients/by-region/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
 });
 document.getElementById("PatientsRegion").addEventListener("change", event => {
     event.preventDefault();
     regionPatients = event.target.value;
 
-    if (regionPatients == 0)
-        fetchVaccinationData(`http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
+    if (regionPatients === '0')
+        fetchPatientsData(`http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
     else
-        fetchRegionVaccinationData(`http://localhost:8080/api/hospital-patients/by-region/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
+        fetchRegionPatientsData(`http://localhost:8080/api/hospital-patients/by-region/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
 })
 
 //---------------------- CALLS
 
-findFirstAndLastRecord(`http://localhost:8080/api/hospital-patients/in-slovakia`);
-fetchVaccinationData(`http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
-createDatePickerSlovakia();
+findFirstAndLastRecord(`http://127.0.0.1:8080/api/hospital-patients/in-slovakia`);
+fetchPatientsData(`http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
+createDatePickerPatients();
 
 //---------------------- FUNCTIONS
 
-async function fetchVaccinationData(url) {
+async function fetchPatientsData(url) {
     await fetch(url)
         .then(response => {
             if (response.ok) {
@@ -52,31 +56,28 @@ async function fetchVaccinationData(url) {
             let nonCovid = [];
             let suspectedCovid = [];
             let ventilatedCovid = [];
-            let publishedOnPatients = [];
-            initializeArrays(confirmedCovid);
-            initializeArrays(nonCovid);
-            initializeArrays(suspectedCovid);
-            initializeArrays(ventilatedCovid);
+            let publishedOn = [];
             // filling memory
             const dataLength = data.length;
             for (let i = 0; i < dataLength; i++) {
-                confirmedCovid[0][i] = data[i].confirmedCovid;
-                nonCovid[0][i] = data[i].nonCovid;
-                suspectedCovid[0][i] = data[i].suspectedCovid;
-                ventilatedCovid[0][i] = data[i].ventilatedCovid;
-                publishedOnPatients[i] = data[i].publishedOn;
+                confirmedCovid[i] = data[i].confirmedCovid;
+                nonCovid[i] = data[i].nonCovid;
+                suspectedCovid[i] = data[i].suspectedCovid;
+                ventilatedCovid[i] = data[i].ventilatedCovid;
+                publishedOn[i] = data[i].publishedOn;
             }
-            confirmedCovid[0].reverse();
-            nonCovid[0].reverse();
-            suspectedCovid[0].reverse();
-            ventilatedCovid[0].reverse();
+            confirmedCovid.reverse();
+            nonCovid.reverse();
+            suspectedCovid.reverse();
+            ventilatedCovid.reverse();
+            publishedOn.reverse();
 
             myChartPatients.destroy();
-            plotSlovakiaVaccinations(confirmedCovid[region], nonCovid[region], suspectedCovid[region], ventilatedCovid[region], publishedOnPatients);
+            plotHospitalPatients(confirmedCovid, ventilatedCovid, suspectedCovid, nonCovid, publishedOn);
         })
 }
 
-async function fetchRegionVaccinationData(url) {
+async function fetchRegionPatientsData(url) {
     await fetch(url)
         .then(response => {
             if (response.ok) {
@@ -86,30 +87,29 @@ async function fetchRegionVaccinationData(url) {
             }
         })
         .then(data => {
-            let dose1Count = [];
-            let dose2Count = [];
-            let dose1Sum = [];
-            let dose2Sum = [];
+            let confirmedCovid = [];
+            let nonCovid = [];
+            let suspectedCovid = [];
+            let ventilatedCovid = [];
             let publishedOn = [];
-            initializeArrays(dose1Count);
-            initializeArrays(dose2Count);
-            initializeArrays(dose1Sum);
-            initializeArrays(dose2Sum);
+            initializeArrays(confirmedCovid);
+            initializeArrays(nonCovid);
+            initializeArrays(suspectedCovid);
+            initializeArrays(ventilatedCovid);
             // filling memory
             const dataLength = data.length;
             for (let i = 0; i < dataLength; i++) {
-                let index = Math.round((createDate(data[i].publishedOn).getTime() - minDate.getTime()) / millisecondsInDay);
+                let index = Math.round((createDate(data[i].publishedOn).getTime() - minDatePatients.getTime()) / millisecondsInDay);
                 let region = data[i].region.id;
 
-                dose1Count[region][index] = data[i].dose1Count;
-                dose2Count[region][index] = data[i].dose2Count;
-                dose1Sum[region][index] = data[i].dose1Sum;
-                dose2Sum[region][index] = data[i].dose2Sum;
+                confirmedCovid[region][index] = data[i].confirmedCovid;
+                nonCovid[region][index] = data[i].nonCovid;
+                suspectedCovid[region][index] = data[i].suspectedCovid;
+                ventilatedCovid[region][index] = data[i].ventilatedCovid;
                 publishedOn[index] = data[i].publishedOn;
             }
-            fillArraysWithPreviousDataPoint(dose1Sum, dose2Sum, publishedOn);
             myChartPatients.destroy();
-            plotSlovakiaVaccinations(dose1Count[region], dose2Count[region], dose1Sum[region], dose2Sum[region], publishedOn);
+            plotHospitalPatients(confirmedCovid[regionPatients], ventilatedCovid[regionPatients], suspectedCovid[regionPatients], nonCovid[regionPatients], publishedOn);
         })
 }
 
@@ -123,31 +123,17 @@ async function findFirstAndLastRecord(url) {
             }
         })
         .then(data => {
-            endDate = deconstructDateToUrl(createDate(data[0].publishedOn));
-            startDate = deconstructDateToUrl(createDate(data[data.length - 1].publishedOn));
+            endDatePatients = deconstructDateToUrl(createDate(data[0].publishedOn));
+            startDatePatients = deconstructDateToUrl(createDate(data[data.length - 1].publishedOn));
         })
 }
 
-function fillArraysWithPreviousDataPoint(dose1Sum, dose2Sum, publishedOn) {
-    const length = publishedOn.length;
-    for (let region = 1; region < 9; region++) {
-        for (let idx = 1; idx < length; idx++) {
-            if (dose1Sum[region][idx] === undefined) {
-                dose1Sum[region][idx] = dose1Sum[region][idx - 1];
-            }
-            if (dose2Sum[region][idx] === undefined) {
-                dose2Sum[region][idx] = dose2Sum[region][idx - 1];
-            }
-        }
-    }
-}
-
-function createDatePickerSlovakia() {
+function createDatePickerPatients() {
     $(function() {
-        $('input[name="SlovakiaVaccinationsRange"]').daterangepicker({
+        $('input[name="PatientsRange"]').daterangepicker({
             opens: 'left',
-            minDate: createDate("2021-01-04"),
-            maxDate: createDate("2022-07-26"),
+            minDate: minDatePatients,
+            maxDate: maxDatePatients,
             startDate: minDatePatients,
             endDate: maxDatePatients
         }, function(start, end, label) {
@@ -155,34 +141,13 @@ function createDatePickerSlovakia() {
             startDatePatients = deconstructDateToUrl(start._d);
             endDatePatients = deconstructDateToUrl(end._d);
 
-            if (regionPatients == 0)
-                fetchVaccinationData(`http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
+            if (regionPatients === '0')
+                fetchPatientsData(`http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
             else
-                fetchRegionVaccinationData(`http://localhost:8080/api/hospital-patients/by-region/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
+                fetchRegionPatientsData(`http://localhost:8080/api/hospital-patients/by-region/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
         });
     });
 }
-
-// function deconstructDateToUrl(date) {
-//     dateSplit = date.toString().split(" ");
-//     monthNumber = '0';
-//     switch(dateSplit[1]) {
-//         case "Jan": monthNumber = '01'; break;
-//         case "Feb": monthNumber = '02'; break;
-//         case "Mar": monthNumber = '03'; break;
-//         case "Apr": monthNumber = '04'; break;
-//         case "May": monthNumber = '05'; break;
-//         case "Jun": monthNumber = '06'; break;
-//         case "Jul": monthNumber = '07'; break;
-//         case "Aug": monthNumber = '08'; break;
-//         case "Sep": monthNumber = '09'; break;
-//         case "Oct": monthNumber = '10'; break;
-//         case "Nov": monthNumber = '11'; break;
-//         case "Dec": monthNumber = '12'; break;
-//     }
-//     url = dateSplit[3] + "-" + monthNumber + "-" + dateSplit[2];
-//     return url;
-// }
 
 function plotHospitalPatients(confirmedCovid, ventilatedCovid, suspectedCovid, nonCovid, publishedOn) {
     const data = {
