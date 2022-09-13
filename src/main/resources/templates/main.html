@@ -186,6 +186,7 @@
                 let myDate = "";
                 var myNewDate = "";
                 var myRegionNameTitle = ""
+                if(regionHospitalPatientsData.length != 0){
                 for (row = 0; row < rowCount; row++) {
                    myRegionNameTitle = regionHospitalPatientsData[row][0];
 
@@ -197,7 +198,7 @@
                             doseCount2 += regionHospitalPatientsData[row][2];
                         }
 
-                }
+                }}
                 html2Render +=
                     `
                <tbody>
