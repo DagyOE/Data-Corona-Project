@@ -104,8 +104,10 @@ async function fetchRegionVaccinationData(url) {
             }
         })
         .then(data => {
-            minDate = createDate(publishedOn[0]);
-            maxDate = createDate(publishedOn[publishedOn.length - 1]);
+            minDate = createDate(data[0].publishedOn);
+//            minDate = createDate(publishedOn[0]);
+//            maxDate = createDate(publishedOn[publishedOn.length - 1]);
+            maxDate = createDate(data[data.length - 1].publishedOn);
 
             // filling memory
             const dataLength = data.length;
