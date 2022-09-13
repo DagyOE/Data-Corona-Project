@@ -32,4 +32,13 @@ public class RegionHospitalPatientsServiceJPA implements RegionHospitalPatientsS
                 .createQuery("select rhp from RegionHospitalPatients rhp")
                 .getResultList();
     }
+
+    @Override
+    public List<RegionHospitalPatients> getCountRegionHospitalPatients(String from, String to) {
+        return entityManager
+                .createQuery("select rhp.region.title, sum(rhp.nonCovid), sum(rhp.confirmedCovid), sum(rhp.ventilatedCovid), sum(rhp.suspectedCovid) from RegionHospitalPatients rhp where rhp.publishedOn between :from and :to group by rhp.region.title")
+                .setParameter("from", from)
+                .setParameter("to", to)
+                .getResultList();
+    }
 }

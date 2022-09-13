@@ -2,10 +2,7 @@ package com.telekom.datacorona.regionHospitalPatients;
 
 import com.telekom.datacorona.regionVaccinations.RegionVaccinationsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +17,10 @@ public class RegionHospitalPatientsWebServiceREST {
     @GetMapping
     public List<RegionHospitalPatients> regionHospitalPatients() {
         return regionHospitalPatientsService.getAllRegionHospitalPatients();
+    }
+
+    @GetMapping("/{from}/{to}")
+    public List<RegionHospitalPatients> getCountRegionHospitalPatients(@PathVariable String from, @PathVariable String to) {
+        return regionHospitalPatientsService.getCountRegionHospitalPatients(from, to);
     }
 }
