@@ -1,6 +1,8 @@
 package com.telekom.datacorona.slovakiaHospitalPatients;
 
 
+import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -30,6 +32,15 @@ public class SlovakiaHospitalPatientsServiceJPA implements SlovakiaHospitalPatie
     public List<SlovakiaHospitalPatients> getAllSlovakiaHospitalPatients() {
         return entityManager
                 .createQuery("select shp from SlovakiaHospitalPatients shp")
+                .getResultList();
+    }
+
+    @Override
+    public List<SlovakiaHospitalPatients> getDailyHospitalPatients(String from, String to) {
+        return entityManager
+                .createQuery("select shp from SlovakiaHospitalPatients shp where shp.publishedOn between :from and :to")
+                .setParameter("from", from)
+                .setParameter("to", to)
                 .getResultList();
     }
 }

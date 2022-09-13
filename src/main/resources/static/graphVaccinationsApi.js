@@ -5,7 +5,7 @@ let startDate = deconstructDateToUrl(createDate("2021-01-04"));
 let endDate = deconstructDateToUrl(createDate("2022-07-26"));
 
 let interval = 'daily';
-let region = 1;
+let region = 0;
 
 let myChart = new Chart(document.getElementById("SlovakiaVaccinationsCanvas").getContext("2d"), {});
 
@@ -14,22 +14,31 @@ let myChart = new Chart(document.getElementById("SlovakiaVaccinationsCanvas").ge
 document.getElementById("SlovakiaVaccinationsInterval").addEventListener("change", event => {
     event.preventDefault();
     interval = event.target.value;
-    fetchVaccinationData(`http://localhost:8080/api/vaccinations/in-slovakia/${interval}/${startDate}/${endDate}`,`http://localhost:8080/api/vaccinations/by-region/${interval}/${startDate}/${endDate}`);
+
+    if (region == 0)
+        fetchVaccinationData(`http://localhost:8080/vaccinations/in-slovakia/${interval}/${startDate}/${endDate}`);
+    else
+        fetchRegionVaccinationData(`http://localhost:8080/api/vaccinations/by-region/${interval}/${startDate}/${endDate}`);
 });
 document.getElementById("SlovakiaVaccinationsRegion").addEventListener("change", event => {
     event.preventDefault();
     region = event.target.value;
-    fetchVaccinationData(`http://localhost:8080/api/vaccinations/in-slovakia/${interval}/${startDate}/${endDate}`,`http://localhost:8080/api/vaccinations/by-region/${interval}/${startDate}/${endDate}`);
+
+    if (region == 0)
+        fetchVaccinationData(`http://localhost:8080/api/vaccinations/in-slovakia/${interval}/${startDate}/${endDate}`);
+    else
+        fetchRegionVaccinationData(`http://localhost:8080/api/vaccinations/by-region/${interval}/${startDate}/${endDate}`);
 })
 
 //---------------------- CALLS
 
-fetchVaccinationData(`http://localhost:8080/api/vaccinations/in-slovakia/${interval}/${startDate}/${endDate}`, `http://localhost:8080/api/vaccinations/by-region/${interval}/${startDate}/${endDate}`);
+findFirstAndLastRecord(`http://localhost:8080/api/vaccinations/in-slovakia`);
+fetchVaccinationData(`http://localhost:8080/api/vaccinations/in-slovakia/${interval}/${startDate}/${endDate}`);
 createDatePickerSlovakia();
 
 //---------------------- FUNCTIONS
 
-async function fetchVaccinationData(url, url2) {
+async function fetchVaccinationData(url) {
     await fetch(url)
         .then(response => {
             if (response.ok) {
@@ -57,12 +66,18 @@ async function fetchVaccinationData(url, url2) {
                 dose2Sum[0][i] = data[i].dose2Sum;
                 publishedOn[i] = data[i].publishedOn;
             }
+            dose1Count[0].reverse();
+            dose2Count[0].reverse();
+            dose1Sum[0].reverse();
+            dose2Sum[0].reverse();
+            // publishedOn.reverse();
 
-            fetchRegionVaccinationData(url2, dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn);
+            myChart.destroy();
+            plotSlovakiaVaccinations(dose1Count[region], dose2Count[region], dose1Sum[region], dose2Sum[region], publishedOn);
         })
 }
 
-async function fetchRegionVaccinationData(url, dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn) {
+async function fetchRegionVaccinationData(url) {
     await fetch(url)
         .then(response => {
             if (response.ok) {
@@ -72,10 +87,17 @@ async function fetchRegionVaccinationData(url, dose1Count, dose2Count, dose1Sum,
             }
         })
         .then(data => {
-            publishedOnTmp = [];
+            let dose1Count = [];
+            let dose2Count = [];
+            let dose1Sum = [];
+            let dose2Sum = [];
+            let publishedOn = [];
+            initializeArrays(dose1Count);
+            initializeArrays(dose2Count);
+            initializeArrays(dose1Sum);
+            initializeArrays(dose2Sum);
             // filling memory
             const dataLength = data.length;
-            minDate = createDate(data[dataLength - 1].publishedOn);
             for (let i = 0; i < dataLength; i++) {
                 let index = Math.round((createDate(data[i].publishedOn).getTime() - minDate.getTime()) / millisecondsInDay);
                 let region = data[i].region.id;
@@ -84,12 +106,26 @@ async function fetchRegionVaccinationData(url, dose1Count, dose2Count, dose1Sum,
                 dose2Count[region][index] = data[i].dose2Count;
                 dose1Sum[region][index] = data[i].dose1Sum;
                 dose2Sum[region][index] = data[i].dose2Sum;
-                publishedOnTmp[index] = data[i].publishedOn;
-                // publishedOn[index] = data[i].publishedOn;
+                publishedOn[index] = data[i].publishedOn;
             }
-            fillArraysWithPreviousDataPoint(dose1Sum, dose2Sum, publishedOnTmp);
+            fillArraysWithPreviousDataPoint(dose1Sum, dose2Sum, publishedOn);
             myChart.destroy();
-            plotSlovakiaVaccinations(dose1Count[region], dose2Count[region], dose1Sum[region], dose2Sum[region], publishedOnTmp);
+            plotSlovakiaVaccinations(dose1Count[region], dose2Count[region], dose1Sum[region], dose2Sum[region], publishedOn);
+        })
+}
+
+async function findFirstAndLastRecord(url) {
+    await fetch(url)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return Promise.reject(new Error(`Slovakia vaccination data acquisition failed. Server answered with ${response.status}: ${response.statusText}.`));
+            }
+        })
+        .then(data => {
+            endDate = deconstructDateToUrl(createDate(data[0].publishedOn));
+            startDate = deconstructDateToUrl(createDate(data[data.length - 1].publishedOn));
         })
 }
 
@@ -116,9 +152,14 @@ function createDatePickerSlovakia() {
             startDate: minDate,
             endDate: maxDate
         }, function(start, end, label) {
+            minDate = start._d;
             startDate = deconstructDateToUrl(start._d);
             endDate = deconstructDateToUrl(end._d);
-            fetchVaccinationData(`http://localhost:8080/api/vaccinations/in-slovakia/${interval}/${startDate}/${endDate}`,`http://localhost:8080/api/vaccinations/by-region/${interval}/${startDate}/${endDate}`);
+
+            if (region == 0)
+                fetchVaccinationData(`http://localhost:8080/api/vaccinations/in-slovakia/${interval}/${startDate}/${endDate}`);
+            else
+                fetchRegionVaccinationData(`http://localhost:8080/api/vaccinations/by-region/${interval}/${startDate}/${endDate}`);
         });
     });
 }

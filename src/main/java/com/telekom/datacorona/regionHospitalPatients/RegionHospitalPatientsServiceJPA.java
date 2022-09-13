@@ -1,5 +1,7 @@
 package com.telekom.datacorona.regionHospitalPatients;
 
+import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
+
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -37,6 +39,15 @@ public class RegionHospitalPatientsServiceJPA implements RegionHospitalPatientsS
     public List<RegionHospitalPatients> getCountRegionHospitalPatients(String from, String to) {
         return entityManager
                 .createQuery("select rhp.region.title, sum(rhp.nonCovid), sum(rhp.confirmedCovid), sum(rhp.ventilatedCovid), sum(rhp.suspectedCovid) from RegionHospitalPatients rhp where rhp.publishedOn between :from and :to group by rhp.region.title")
+                .setParameter("from", from)
+                .setParameter("to", to)
+                .getResultList();
+    }
+
+    @Override
+    public List<RegionHospitalPatients> getDailyRegionHospitalPatients(String from, String to) {
+        return entityManager
+                .createQuery("select rhp from RegionHospitalPatients rhp where rhp.publishedOn between :from and :to")
                 .setParameter("from", from)
                 .setParameter("to", to)
                 .getResultList();
