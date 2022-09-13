@@ -226,35 +226,35 @@ let doseCount2ZA = 0;
 
                     if(regionVaccinationsData[row].region.title == "Košický"){
                     doseCount1KE +=regionVaccinationsData[row].dose1Count;
-                    doseCount2KE +=regionVaccinationsData[row].dose1Count;
+                    doseCount2KE +=regionVaccinationsData[row].dose2Count;
                     }
                     if(regionVaccinationsData[row].region.title == "Prešovský"){
                     doseCount1PO +=regionVaccinationsData[row].dose1Count;
-                    doseCount2PO +=regionVaccinationsData[row].dose1Count;
+                    doseCount2PO +=regionVaccinationsData[row].dose2Count;
                     }
                     if(regionVaccinationsData[row].region.title == "Žilinský"){
                     doseCount1ZA +=regionVaccinationsData[row].dose1Count;
-                    doseCount2ZA +=regionVaccinationsData[row].dose1Count;
+                    doseCount2ZA +=regionVaccinationsData[row].dose2Count;
                     }
                     if(regionVaccinationsData[row].region.title == "Nitriansky"){
                     doseCount1NR +=regionVaccinationsData[row].dose1Count;
-                    doseCount2NR +=regionVaccinationsData[row].dose1Count;
+                    doseCount2NR +=regionVaccinationsData[row].dose2Count;
                     }
                     if(regionVaccinationsData[row].region.title == "Trenčiansky"){
                     doseCount1TN +=regionVaccinationsData[row].dose1Count;
-                    doseCount2TN +=regionVaccinationsData[row].dose1Count;
+                    doseCount2TN +=regionVaccinationsData[row].dose2Count;
                     }
                     if(regionVaccinationsData[row].region.title == "Trnavský"){
                     doseCount1TT +=regionVaccinationsData[row].dose1Count;
-                    doseCount2TT +=regionVaccinationsData[row].dose1Count;
+                    doseCount2TT +=regionVaccinationsData[row].dose2Count;
                     }
                     if(regionVaccinationsData[row].region.title == "Banskobystrický"){
                     doseCount1BB +=regionVaccinationsData[row].dose1Count;
-                    doseCount2BB +=regionVaccinationsData[row].dose1Count;
+                    doseCount2BB +=regionVaccinationsData[row].dose2Count;
                     }
                     if(regionVaccinationsData[row].region.title == "Bratislavský"){
                     doseCount1BA +=regionVaccinationsData[row].dose1Count;
-                    doseCount2BA +=regionVaccinationsData[row].dose1Count;
+                    doseCount2BA +=regionVaccinationsData[row].dose2Count;
                     }
 
                         if (valRegion == myRegionNameTitle || valRegion == "Slovensko.") {
@@ -273,16 +273,36 @@ let doseCount2ZA = 0;
                  </tr>
                   </tbody>
                 `;
-                average = summForAverage/8;
-                if(average < (doseCount1TN + doseCount2TN)){
+
+                average = summForAverage/5449270;
+                if(average-(average * 0.05) > (doseCount1TN + doseCount2TN)/577464){
                 document.getElementById("TN").style.fill =  document.getElementById("downToAverage").value;
                 }
-                if(average > (doseCount1TN + doseCount2TN)){
+                if(average+(average * 0.05) < (doseCount1TN + doseCount2TN)/577464){
                 document.getElementById("TN").style.fill =  document.getElementById("upToAverage").value;
                 }
-                if(average == (doseCount1TN + doseCount2TN)){
+                if((average+(average * 0.05) >= (doseCount1TN + doseCount2TN)/577464) && ((doseCount1TN + doseCount2TN)/577464 >= average -(average * 0.05))){
+
                 document.getElementById("TN").style.fill = document.getElementById("inToAverage").value;
                 }
+
+
+
+                 if(average-(average * 0.05) > (doseCount1NR + doseCount2NR)/677900){
+                document.getElementById("NR").style.fill =  document.getElementById("downToAverage").value;
+                }
+                if(average+(average * 0.05) < (doseCount1NR + doseCount2NR)/677900){
+                document.getElementById("NR").style.fill =  document.getElementById("upToAverage").value;
+                }
+                if(average+(average * 0.05) >= (doseCount1NR + doseCount2NR)/677900 && (doseCount1NR + doseCount2NR)/677900 >= average -(average * 0.05)){
+
+                document.getElementById("NR").style.fill = document.getElementById("inToAverage").value;
+                }
+
+
+
+
+
 <!--                if(average < (doseCount1TN + doseCount2TN)){-->
 <!--                document.getElementById("TN").style.fill =  document.getElementById("downToAverage").value;-->
 <!--                }-->
