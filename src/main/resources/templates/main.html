@@ -243,7 +243,25 @@
             }
 
             function renderRegionVaccinations(regionVaccinationsData, viewElements) {
+let average = 0;
+let summForAverage=0;
+let doseCount1KE = 0;
+let doseCount1TT = 0;
+let doseCount1TN = 0;
+let doseCount1NR = 0;
+let doseCount1BA = 0;
+let doseCount1PO = 0;
+let doseCount1BB = 0;
+let doseCount1ZA = 0;
 
+let doseCount2KE = 0;
+let doseCount2TT = 0;
+let doseCount2TN = 0;
+let doseCount2NR = 0;
+let doseCount2BA = 0;
+let doseCount2PO = 0;
+let doseCount2BB = 0;
+let doseCount2ZA = 0;
                 const rowCount = 8;
                 let html2Render = "";
                 html2Render += `
@@ -263,8 +281,41 @@
                 if(regionVaccinationsData.length != 0){
                 for (row = 0; row < rowCount; row++) {
                    myRegionNameTitle = regionVaccinationsData[row][0];
+summForAverage += regionVaccinationsData[row][1] + regionVaccinationsData[row][2];
+                   if(regionVaccinationsData[row][0] == "Košický"){
+                    doseCount1KE +=regionVaccinationsData[row].[1];
+                    doseCount2KE +=regionVaccinationsData[row].[2];
+                    }
+                    if(regionVaccinationsData[row][0] == "Prešovský"){
+                    doseCount1PO +=regionVaccinationsData[row][1];
+                    doseCount2PO +=regionVaccinationsData[row][2];
+                    }
+                    if(regionVaccinationsData[row][0] == "Žilinský"){
+                    doseCount1ZA +=regionVaccinationsData[row][1];
+                    doseCount2ZA +=regionVaccinationsData[row][2];
+                    }
+                    if(regionVaccinationsData[row][0] == "Nitriansky"){
+                    doseCount1NR +=regionVaccinationsData[row][1];
+                    doseCount2NR +=regionVaccinationsData[row][2];
+                    }
+                    if(regionVaccinationsData[row][0]e == "Trenčiansky"){
+                    doseCount1TN +=regionVaccinationsData[row][1];
+                    doseCount2TN +=regionVaccinationsData[row][2];
+                    }
+                    if(regionVaccinationsData[row][0] == "Trnavský"){
+                    doseCount1TT +=regionVaccinationsData[row][1];
+                    doseCount2TT +=regionVaccinationsData[row][2];
+                    }
+                    if(regionVaccinationsData[row][0] == "Banskobystrický"){
+                    doseCount1BB +=regionVaccinationsData[row][1];
+                    doseCount2BB +=regionVaccinationsData[row][2];
+                    }
+                    if(regionVaccinationsData[row][0] == "Bratislavský"){
+                    doseCount1BA +=regionVaccinationsData[row][1];
+                    doseCount2BA +=regionVaccinationsData[row][2];
+                    }
 
-                    myNewDate = new Date(myReparedDate);
+
 
 
                         if (valRegion == myRegionNameTitle || valRegion == "Slovensko.") {
@@ -285,6 +336,18 @@
                 </tr>
                   </tbody>
                 `;
+ average = summForAverage/5449270;
+                if(average-(average * 0.05) > (doseCount1TN + doseCount2TN)/577464){
+                document.getElementById("TN").style.fill =  document.getElementById("downToAverage").value;
+                }
+                if(average+(average * 0.05) < (doseCount1TN + doseCount2TN)/577464){
+                document.getElementById("TN").style.fill =  document.getElementById("upToAverage").value;
+                }
+                if((average+(average * 0.05) >= (doseCount1TN + doseCount2TN)/577464) && ((doseCount1TN + doseCount2TN)/577464 >= average -(average * 0.05))){
+
+                document.getElementById("TN").style.fill = document.getElementById("inToAverage").value;
+                }
+
                 viewElements.infoTable.innerHTML = html2Render;
             }
         }
