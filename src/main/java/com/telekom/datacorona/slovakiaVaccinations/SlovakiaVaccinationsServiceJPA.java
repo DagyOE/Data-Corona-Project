@@ -1,5 +1,7 @@
 package com.telekom.datacorona.slovakiaVaccinations;
 
+import com.telekom.datacorona.regionVaccinations.RegionVaccinations;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -29,6 +31,15 @@ public class SlovakiaVaccinationsServiceJPA implements SlovakiaVaccinationsServi
     public List<SlovakiaVaccinations> getAllSlovakiaVaccinations() {
         return entityManager
                 .createQuery("select sv from SlovakiaVaccinations sv")
+                .getResultList();
+    }
+
+    @Override
+    public List<RegionVaccinations> getDailyVaccinations(String from, String to) {
+        return entityManager
+                .createQuery("select sv from SlovakiaVaccinations sv where sv.publishedOn between :from and :to")
+                .setParameter("from", from)
+                .setParameter("to", to)
                 .getResultList();
     }
 }
