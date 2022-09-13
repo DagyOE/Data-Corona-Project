@@ -200,26 +200,28 @@
     function processData(valRegion) {
         if (document.getElementById('objectOfInterest').value == 0) {
             const viewElements = {
-                objectOfInterestName1: document.getElementById("objectOfInterestName1"),
-                objectOfInterestName2: document.getElementById("objectOfInterestName2"),
+                objectOfInterestName: document.getElementById("objectOfInterestName"),
                 infoTable: document.getElementById("infoTable"),
             }
 
-            fetchAndRenderRegionVaccinations("/api/vaccinations/by-region", viewElements);
+
             var valRegionEndSentence = "";
             var objectOfInterest = document.getElementById("objectOfInterest");
-            var objectOfInterestName1 = objectOfInterest.options[objectOfInterest.selectedIndex].title;
+            var objectOfInterestName = objectOfInterest.options[objectOfInterest.selectedIndex].title;
             var startDate = document.getElementById("dateStart").value;
             var endDate = document.getElementById("dateEnd").value;
+            var myReparedStartDate = String(startDate.replaceAll('"', ''));
+             var myReparedEndDate = String(endDate.replaceAll('"', ''));
+
+             fetchAndRenderRegionVaccinations(`/api/vaccinations/by-region/${myReparedStartDate}/${myReparedEndDate}`, viewElements);
 
             if (valRegion == "Slovensko.") {
                 valRegionEndSentence = "";
             }
             if (valRegion != "Slovensko.") {
-                valRegionEndSentence = "kraj";
+                valRegionEndSentence = "kraj.";
             }
-            viewElements.objectOfInterestName1.innerHTML = objectOfInterestName1;
-            viewElements.objectOfInterestName2.innerHTML = valRegion + " " + valRegionEndSentence;
+            viewElements.objectOfInterestName.innerHTML = objectOfInterestName + " " + valRegion + " " + valRegionEndSentence;
 
             function fetchAndRenderRegionVaccinations(getJsonUrl, viewElements) {
 
@@ -231,8 +233,8 @@
                             return Promise.reject(new Error(`regionVaccinations acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
                         }
                     })
-                    .then(regionHospitalPatientsData => { //here we process the returned response data in JSON ...
-                        renderRegionVaccinations(regionHospitalPatientsData, viewElements);
+                    .then(regionVaccinationsData => { //here we process the returned response data in JSON ...
+                        renderRegionVaccinations(regionVaccinationsData, viewElements);
                     })
                     .catch(error => { ////here we process all the failed promises
                         errorMessage = "Nepodarilo sa získať alebo vykresliť údaje krajských vakcináciách. Podrobnosti: " + error;
@@ -240,18 +242,16 @@
                     });
             }
 
-            function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
+            function renderRegionVaccinations(regionVaccinationsData, viewElements) {
 
-                const rowCount = regionHospitalPatientsData.length;
+                const rowCount = 8;
                 let html2Render = "";
                 html2Render += `
-                <thead>
-                    <tr>
-                        <th scope="col">Číslo dávky</th>
-                        <th scope="col">Počet</th>
-                    </tr>
-                </thead>
-                `;
+            <thead>
+           <tr>
+                <th>Dávka</th>
+                <th>Počet</th>
+           </tr>`;
                 let doseCount1 = 0;
                 let doseCount2 = 0;
                 var myNewStartDate = new Date(startDate);
@@ -260,48 +260,56 @@
                 let myDate = "";
                 var myNewDate = "";
                 var myRegionNameTitle = ""
+                if(regionVaccinationsData.length != 0){
                 for (row = 0; row < rowCount; row++) {
-                    myDate = regionHospitalPatientsData[row].publishedOn;
-                    myReparedDate = myDate.replaceAll("\"", "");
-                    myRegionNameTitle = regionHospitalPatientsData[row].region.title;
+                   myRegionNameTitle = regionVaccinationsData[row][0];
 
                     myNewDate = new Date(myReparedDate);
 
-                    if (myNewStartDate <= myNewDate && myNewEndDate >= myNewDate) {
+
                         if (valRegion == myRegionNameTitle || valRegion == "Slovensko.") {
-                            doseCount1 += regionHospitalPatientsData[row].dose1Count;
-                            doseCount2 += regionHospitalPatientsData[row].dose2Count;
+                            doseCount1 += regionVaccinationsData[row][1];
+                            doseCount2 += regionVaccinationsData[row][2];
                         }
-                    }
-                }
+
+                }}
                 html2Render +=
                     `
-                <tbody>
-                    <tr>
-                        <th scope="row">Prvá</th>
-                        <td>${doseCount1}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Druhá</th>
-                        <td>${doseCount2}</td>
-                    </tr>
-                </tbody>
+               <tbody>
+                <tr>
+                    <td>Prvá</td>
+                    <td>${doseCount1}</td>
+                </tr>
+                    <td>Druhá</td>
+                    <td>${doseCount2}</td>
+                </tr>
+                  </tbody>
                 `;
                 viewElements.infoTable.innerHTML = html2Render;
             }
         }
 
+
+
+
+
+
+
+
+
+
+
+
         if (document.getElementById('objectOfInterest').value == 1) {
             const viewElements = {
-                objectOfInterestName1: document.getElementById("objectOfInterestName1"),
-                objectOfInterestName2: document.getElementById("objectOfInterestName2"),
+                objectOfInterestName: document.getElementById("objectOfInterestName"),
                 infoTable: document.getElementById("infoTable"),
             }
 
-            fetchAndRenderRegionVaccinations("/api/hospital-patients/by-region", viewElements);
+            fetchAndRenderRegionHospitalPatients("/api/hospital-patients/by-region", viewElements);
             var valRegionEndSentence = "";
             var objectOfInterest = document.getElementById("objectOfInterest");
-            var objectOfInterestName1 = objectOfInterest.options[objectOfInterest.selectedIndex].title;
+            var objectOfInterestName = objectOfInterest.options[objectOfInterest.selectedIndex].title;
             var startDate = document.getElementById("dateStart").value;
             var endDate = document.getElementById("dateEnd").value;
 
@@ -309,12 +317,11 @@
                 valRegionEndSentence = "";
             }
             if (valRegion != "Slovensko.") {
-                valRegionEndSentence = "kraj";
+                valRegionEndSentence = "kraj.";
             }
-            viewElements.objectOfInterestName1.innerHTML = objectOfInterestName1;
-            viewElements.objectOfInterestName2.innerHTML = valRegion + " " + valRegionEndSentence;
+            viewElements.objectOfInterestName.innerHTML = objectOfInterestName + " " + valRegion + " " + valRegionEndSentence;
 
-            function fetchAndRenderRegionVaccinations(getJsonUrl, viewElements) {
+            function fetchAndRenderRegionHospitalPatients(getJsonUrl, viewElements) {
 
                 fetch(getJsonUrl)  //there may be a second parameter, an object wih options, but we do not need it now.
                     .then(response => {      //fetch promise fullfilled (operation completed successfully)
@@ -325,7 +332,7 @@
                         }
                     })
                     .then(regionHospitalPatientsData => { //here we process the returned response data in JSON ...
-                        renderRegionVaccinations(regionHospitalPatientsData, viewElements);
+                        renderRegionHospitalPatients(regionHospitalPatientsData, viewElements);
                     })
                     .catch(error => { ////here we process all the failed promises
                         errorMessage = "Nepodarilo sa získať alebo vykresliť údaje hospitalizovanych pacientoch. Podrobnosti: " + error;
@@ -333,17 +340,15 @@
                     });
             }
 
-            function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
+            function renderRegionHospitalPatients(regionHospitalPatientsData, viewElements) {
                 const rowCount = regionHospitalPatientsData.length;
                 let html2Render = "";
                 html2Render += `
-                <thead>
-                    <tr>
-                        <th scope="col">Popis Pacientov</th>
-                        <th scope="col">Počet</th>
-                    </tr>
-                </thead>
-                `;
+            <thead>
+           <tr>
+               <th>Popis Pacientov</th>
+               <th>Počet</th>
+           </tr>`;
                 let nonCovidPatients = 0;
                 let covidPatients = 0;
                 let covidPatientsOnVentilation = 0;
@@ -359,7 +364,6 @@
                     myDate = regionHospitalPatientsData[row].publishedOn;
                     myReparedDate = myDate.replaceAll("\"", "");
                     myRegionNameTitle = regionHospitalPatientsData[row].region.title;
-
                     myNewDate = new Date(myReparedDate);
 
                     if (myNewStartDate <= myNewDate && myNewEndDate >= myNewDate) {
@@ -373,26 +377,25 @@
                 }
                 html2Render +=
                     `
-                <tbody>
-                    <tr>
-                        <td scope="row">Celkovo</td>
-                        <td>${nonCovidPatients}</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">COV19</td>
-                        <td>${covidPatients}</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">COV19 na UPV</td>
-                        <td>${covidPatientsOnVentilation}</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">COV19 podozrenie</td>
-                        <td>${suspectedCovidPatients}</td>
-                    </tr>
-                </tbody>
+               <tbody>
+                <tr>
+                    <td>Celkovo</td>
+                    <td>${nonCovidPatients}</td>
+                </tr>
+                <tr>
+                    <td>COV19</td>
+                    <td>${covidPatients}</td>
+                </tr>
+                <tr>
+                    <td>COV19 na UPV</td>
+                    <td>${covidPatientsOnVentilation}</td>
+                </tr>
+                <tr>
+                    <td>COV19 podozrenie</td>
+                    <td>${suspectedCovidPatients}</td>
+                </tr>
+                  </tbody>
                 `;
-
                 viewElements.infoTable.innerHTML = html2Render;
             }
         }
