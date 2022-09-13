@@ -80,27 +80,11 @@ initializeArrays(confirmedCovidMonth);
 initializeArrays(nonCovidMonth);
 initializeArrays(suspectedCovidMonth);
 initializeArrays(ventilatedCovidMonth);
-// initializeArrays2D(confirmedCovid);
-// initializeArrays2D(dose2Count);
-// initializeArrays2D(dose1Sum);
-// initializeArrays2D(dose2Sum);
 
 fetchHospitalPatientsData("http://localhost:8080/api/hospital-patients/in-slovakia");
 fetchRegionHospitalPatients("http://localhost:8080/api/hospital-patients/by-region");
 
 //---------------------- FUNCTIONS
-
-// function initializeArrays(arr) {
-//     for (let i = 0; i < 9; i++) {
-//         arr[i] = [];
-//     }
-// }
-//
-// function initializeArrays2D(arr) {
-//     for (let region = 1; region < 9; region++) {
-//         arr[region][0] = 0;
-//     }
-// }
 
 async function fetchHospitalPatientsData(url) {
     await fetch(url)
@@ -125,9 +109,6 @@ async function fetchHospitalPatientsData(url) {
             suspectedCovid[0].reverse();
             ventilatedCovid[0].reverse();
             publishedOnPatients.reverse();
-
-            minDatePatients = createDate(publishedOnPatients[0]);
-            maxDatePatients = createDate(publishedOnPatients[publishedOnPatients.length - 1]);
         })
 }
 
@@ -141,6 +122,9 @@ async function fetchRegionHospitalPatients(url) {
             }
         })
         .then(data => {
+            minDatePatients = createDate(publishedOnPatients[0]);
+            maxDatePatients = createDate(publishedOnPatients[publishedOnPatients.length - 1]);
+
             const dataLength = data.length;
             for (let i = 0; i < dataLength; i++) {
                 let index = Math.round((createDate(data[i].publishedOn).getTime() - minDatePatients.getTime()) / millisecondsInDay);
@@ -201,7 +185,6 @@ function prepareWeeklyDataPatients() {
                 ventilatedCovidWeek[region][weekIdx] += ventilatedCovid[region][dayIdx];
                 dayIdx++;
             } while (dayIdx < publishedOnPatients.length && createDate(publishedOnPatients[dayIdx]).getDay() != 0);
-            // updatedAtWeek[region][weekIdx] = updatedAt[region][dayIdx - 1];
             publishedOnPatientsWeek[weekIdx] = publishedOnPatients[dayIdx - 1];
             weekIdx++;
         }
@@ -224,7 +207,6 @@ function prepareMonthlyDataPatients() {
                 ventilatedCovidMonth[region][monthIdx] += ventilatedCovid[region][dayIdx];
                 dayIdx++;
             } while(dayIdx < publishedOnPatients.length && createDate(publishedOnPatients[dayIdx]).getDate() != 1);
-            // updatedAtMonth[region][weekIdx] = updatedAt[region][dayIdx - 1];
             publishedOnPatientsMonth[monthIdx] = publishedOnPatients[dayIdx - 1];
             publishedOnPatientsMonthXAxis[monthIdx] = month[createDate(publishedOnPatients[dayIdx - 1]).getMonth()] + ' ' + publishedOnPatients[dayIdx - 1].substring(0, 4);
             monthIdx++;

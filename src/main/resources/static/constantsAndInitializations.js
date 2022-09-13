@@ -28,3 +28,7 @@ function initializeArrays(arr) {
         arr[i] = [];
     }
 }
+
+function createDate(date) {
+    return new Date(parseInt(date.substring(0, 4)), parseInt(date.substring(5, 7)) - 1, parseInt(date.substring(8, 10)));
+}
