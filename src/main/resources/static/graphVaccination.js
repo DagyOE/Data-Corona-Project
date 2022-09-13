@@ -59,22 +59,11 @@ initializeArrays(dose1CountMonth);
 initializeArrays(dose2CountMonth);
 initializeArrays(dose1SumMonth);
 initializeArrays(dose2SumMonth);
-// initializeArrays2D(dose1Count);
-// initializeArrays2D(dose2Count);
-// initializeArrays2D(dose1Sum);
-// initializeArrays2D(dose2Sum);
 
 fetchVaccinationData("http://localhost:8080/api/vaccinations/in-slovakia");
 fetchRegionVaccinationData("http://localhost:8080/api/vaccinations/by-region");
-// selectDataAndPlotSlovakiaVaccinations();
 
 //---------------------- FUNCTIONS
-
-// function initializeArrays2D(arr) {
-//     for (let region = 1; region < 9; region++) {
-//         arr[region][0] = 0;
-//     }
-// }
 
 async function fetchVaccinationData(url) {
     await fetch(url)
@@ -102,9 +91,6 @@ async function fetchVaccinationData(url) {
             dose2Sum[0].reverse();
             updatedAt.reverse();
             publishedOn.reverse();
-
-            minDate = createDate(publishedOn[0]);
-            maxDate = createDate(publishedOn[publishedOn.length - 1]);
         })
 }
 
@@ -118,6 +104,9 @@ async function fetchRegionVaccinationData(url) {
             }
         })
         .then(data => {
+            minDate = createDate(publishedOn[0]);
+            maxDate = createDate(publishedOn[publishedOn.length - 1]);
+
             // filling memory
             const dataLength = data.length;
             for (let i = 0; i < dataLength; i++) {
@@ -185,10 +174,6 @@ function createDatePickerSlovakia() {
     });
 }
 
-function createDate(date) {
-    return new Date(parseInt(date.substring(0, 4)), parseInt(date.substring(5, 7)) - 1, parseInt(date.substring(8, 10)));
-}
-
 function prepareWeeklyData() {
     for (let region = 0; region < 9; region++) {
         let dayIdx = 0;
@@ -201,7 +186,6 @@ function prepareWeeklyData() {
                 dose2CountWeek[region][weekIdx] += dose2Count[region][dayIdx];
                 dayIdx++;
             } while (dayIdx < publishedOn.length && createDate(publishedOn[dayIdx]).getDay() != 0);
-            // updatedAtWeek[region][weekIdx] = updatedAt[region][dayIdx - 1];
             publishedOnWeek[weekIdx] = publishedOn[dayIdx - 1];
             dose1SumWeek[region][weekIdx] = dose1Sum[region][dayIdx - 1];
             dose2SumWeek[region][weekIdx] = dose2Sum[region][dayIdx - 1];
@@ -222,7 +206,6 @@ function prepareMonthlyData() {
                 dose2CountMonth[region][monthIdx] += dose2Count[region][dayIdx];
                 dayIdx++;
             } while(dayIdx < publishedOn.length && createDate(publishedOn[dayIdx]).getDate() != 1);
-            // updatedAtMonth[region][weekIdx] = updatedAt[region][dayIdx - 1];
             publishedOnMonth[monthIdx] = publishedOn[dayIdx - 1];
             publishedOnMonthXAxis[monthIdx] = month[createDate(publishedOn[dayIdx - 1]).getMonth()] + ' ' + publishedOn[dayIdx - 1].substring(0, 4);
             dose1SumMonth[region][monthIdx] = dose1Sum[region][dayIdx - 1];
