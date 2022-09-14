@@ -1,10 +1,8 @@
 // indices for range selection
 let minDatePatients = createDate("2020-04-30");
-//todo: check whether it shouldn't be until today
-let maxDatePatients = createDate("2022-09-08");
+let maxDatePatients = new Date();
 let startDatePatients = "2020-04-30";
-//todo: check whether it shouldn't be until today
-let endDatePatients = "2022-09-08";
+let endDatePatients = new Date();
 
 let intervalPatients = 'weekly';
 let regionPatients = '0';
@@ -93,24 +91,23 @@ async function fetchRegionPatientsData(url) {
             let suspectedCovid = [];
             let ventilatedCovid = [];
             let publishedOn = [];
-            initializeArrays(confirmedCovid);
-            initializeArrays(nonCovid);
-            initializeArrays(suspectedCovid);
-            initializeArrays(ventilatedCovid);
             // filling memory
+            let indexRegion = 0;
             const dataLength = data.length;
             for (let i = 0; i < dataLength; i++) {
-                let index = Math.round((createDate(data[i].publishedOn).getTime() - minDatePatients.getTime()) / millisecondsInDay);
-                let region = data[i].region.id;
+                let regionData = data[i].region.id.toString();
 
-                confirmedCovid[region][index] = data[i].confirmedCovid;
-                nonCovid[region][index] = data[i].nonCovid;
-                suspectedCovid[region][index] = data[i].suspectedCovid;
-                ventilatedCovid[region][index] = data[i].ventilatedCovid;
-                publishedOn[index] = data[i].publishedOn;
+                if (regionData === regionPatients) {
+                    confirmedCovid[indexRegion] = data[i].confirmedCovid;
+                    nonCovid[indexRegion] = data[i].nonCovid;
+                    suspectedCovid[indexRegion] = data[i].suspectedCovid;
+                    ventilatedCovid[indexRegion] = data[i].ventilatedCovid;
+                    publishedOn[indexRegion] = data[i].publishedOn;
+                    indexRegion++;
+                }
             }
             myChartPatients.destroy();
-            plotHospitalPatients(confirmedCovid[regionPatients], ventilatedCovid[regionPatients], suspectedCovid[regionPatients], nonCovid[regionPatients], publishedOn);
+            plotHospitalPatients(confirmedCovid, ventilatedCovid, suspectedCovid, nonCovid, publishedOn);
         })
 }
 
@@ -202,7 +199,7 @@ function plotHospitalPatients(confirmedCovid, ventilatedCovid, suspectedCovid, n
                     },
                     tooltip: {
                         callbacks: {
-                            label: (tooltipItem, data) => (`${patientsChart.data.datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex]}`)
+                            label: (tooltipItem, data) => (`${myChartPatients.data.datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex]}`)
                         }
                     }
                 },

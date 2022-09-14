@@ -1,10 +1,8 @@
 // indices for range selection
 let minDate = createDate("2021-01-04");
-//todo: check whether it shouldn't be until today
-let maxDate = createDate("2022-07-26");
+let maxDate = new Date();
 let startDate = "2021-01-04";
-//todo: check whether it shouldn't be until today
-let endDate = "2022-07-26";
+let endDate = new Date();
 
 let interval = 'weekly';
 let region = '0';
@@ -90,24 +88,24 @@ async function fetchRegionVaccinationData(url) {
             let dose1Sum = [];
             let dose2Sum = [];
             let publishedOn = [];
-            initializeArrays(dose1Count);
-            initializeArrays(dose2Count);
-            initializeArrays(dose1Sum);
-            initializeArrays(dose2Sum);
             const dataLength = data.length;
+            let indexRegion = 0;
             for (let i = 0; i < dataLength; i++) {
-                let index = Math.round((createDate(data[i].publishedOn).getTime() - minDate.getTime()) / millisecondsInDay);
-                let region = data[i].region.id;
-
-                dose1Count[region][index] = data[i].dose1Count;
-                dose2Count[region][index] = data[i].dose2Count;
-                dose1Sum[region][index] = data[i].dose1Sum;
-                dose2Sum[region][index] = data[i].dose2Sum;
-                publishedOn[index] = data[i].publishedOn;
+                let regionData = data[i].region.id.toString();
+                if (regionData === region) {
+                    dose1Count[indexRegion] = data[i].dose1Count;
+                    dose2Count[indexRegion] = data[i].dose2Count;
+                    dose1Sum[indexRegion] = data[i].dose1Sum;
+                    dose2Sum[indexRegion] = data[i].dose2Sum;
+                    publishedOn[indexRegion] = data[i].publishedOn;
+                    indexRegion++;
+                }
             }
-            fillArraysWithPreviousDataPoint(dose1Sum, dose2Sum, publishedOn);
+            if (interval === 'daily') {
+                fillArraysWithPreviousDataPoint(dose1Sum, dose2Sum, publishedOn);
+            }
             myChart.destroy();
-            plotSlovakiaVaccinations(dose1Count[region], dose2Count[region], dose1Sum[region], dose2Sum[region], publishedOn);
+            plotSlovakiaVaccinations(dose1Count, dose2Count, dose1Sum, dose2Sum, publishedOn);
         })
 }
 
