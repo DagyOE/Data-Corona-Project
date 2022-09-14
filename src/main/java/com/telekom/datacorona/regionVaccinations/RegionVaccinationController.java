@@ -44,9 +44,10 @@ public class RegionVaccinationController {
                 String publishedOn = "";
                 boolean newWeek = false;
                 int length = regionVaccinationsList.size();
+                Date rvDate = new Date();
                 for (int i = length - 1; i >= 0; i--) {
                     RegionVaccinations rv = regionVaccinationsList.get(i);
-                    Date rvDate = createDate(rv.getPublishedOn());
+                    rvDate = createDate(rv.getPublishedOn());
 
                     calendar.setTime(rvDate);
                     if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && newWeek) {
@@ -65,6 +66,9 @@ public class RegionVaccinationController {
                     regionVaccinations[region - 1].setDose2Sum(rv.getDose2Sum());
                     regionVaccinations[region - 1].setUpdatedAt(rv.getUpdatedAt());
                     publishedOn = rv.getPublishedOn();
+                }
+                if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                    addRegionVaccinations(weeklyRegionVaccinationsList, regionVaccinations, publishedOn);
                 }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
@@ -93,9 +97,10 @@ public class RegionVaccinationController {
                 String publishedOn = "";
                 boolean newMonth = false;
                 int length = regionVaccinationsList.size();
+                Date rvDate = new Date();
                 for (int i = length - 1; i >= 0; i--) {
                     RegionVaccinations rv = regionVaccinationsList.get(i);
-                    Date rvDate = createDate(rv.getPublishedOn());
+                    rvDate = createDate(rv.getPublishedOn());
 
                     calendar.setTime(rvDate);
                     if (calendar.get(Calendar.DAY_OF_MONTH) == 1 && newMonth) {
@@ -114,6 +119,9 @@ public class RegionVaccinationController {
                     regionVaccinations[region - 1].setDose2Sum(rv.getDose2Sum());
                     regionVaccinations[region - 1].setUpdatedAt(rv.getUpdatedAt());
                     publishedOn = rv.getPublishedOn();
+                }
+                if (calendar.get(Calendar.DAY_OF_MONTH) == getLastDayOfMonth(calendar.get(Calendar.MONTH))) {
+                    addRegionVaccinations(monthlyRegionVaccinationsList, regionVaccinations, publishedOn);
                 }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
@@ -137,5 +145,13 @@ public class RegionVaccinationController {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = formatter.parse(date_string);
         return date;
+    }
+
+    private int getLastDayOfMonth(int month) {
+        if (month == 1)
+            return 28;
+        if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11)
+            return 31;
+        return 30;
     }
 }
