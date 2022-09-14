@@ -196,30 +196,47 @@
 
 <script>
     var buttonClick = document.getElementById("submit");
+    function objectOfInterestOnChange(){
+    let colorSelectors = document.getElementsByClassName("colorSelectors");
+    if(document.getElementById('objectOfInterest').value == 0){
+     for (var i = 0; i < colorSelectors.length; i ++) {
+    colorSelectors[i].style.display = 'block';}
+}
+if(document.getElementById('objectOfInterest').value == 1){
+     for (let i = 0; i < colorSelectors.length; i ++) {
+    colorSelectors[i].style.display = 'none';}
+  let svgSlovakiaMap = document.getElementsByClassName("svgSlovakiaMap");
+    for (let j = 0; j < svgSlovakiaMap.length; j ++) {
+    svgSlovakiaMap[j].style.fill = '#fa6284';}
 
+
+}
+    }
     function processData(valRegion) {
         if (document.getElementById('objectOfInterest').value == 0) {
             const viewElements = {
-                objectOfInterestName1: document.getElementById("objectOfInterestName1"),
-                objectOfInterestName2: document.getElementById("objectOfInterestName2"),
+                objectOfInterestName: document.getElementById("objectOfInterestName"),
                 infoTable: document.getElementById("infoTable"),
             }
 
-            fetchAndRenderRegionVaccinations("/api/vaccinations/by-region", viewElements);
+
             var valRegionEndSentence = "";
             var objectOfInterest = document.getElementById("objectOfInterest");
-            var objectOfInterestName1 = objectOfInterest.options[objectOfInterest.selectedIndex].title;
+            var objectOfInterestName = objectOfInterest.options[objectOfInterest.selectedIndex].title;
             var startDate = document.getElementById("dateStart").value;
             var endDate = document.getElementById("dateEnd").value;
+            var myReparedStartDate = String(startDate.replaceAll('"', ''));
+             var myReparedEndDate = String(endDate.replaceAll('"', ''));
+
+             fetchAndRenderRegionVaccinations(`/api/vaccinations/by-region/${myReparedStartDate}/${myReparedEndDate}`, viewElements);
 
             if (valRegion == "Slovensko.") {
                 valRegionEndSentence = "";
             }
             if (valRegion != "Slovensko.") {
-                valRegionEndSentence = "kraj";
+                valRegionEndSentence = "kraj.";
             }
-            viewElements.objectOfInterestName1.innerHTML = objectOfInterestName1;
-            viewElements.objectOfInterestName2.innerHTML = valRegion + " " + valRegionEndSentence;
+            viewElements.objectOfInterestName.innerHTML = objectOfInterestName + " " + valRegion + " " + valRegionEndSentence;
 
             function fetchAndRenderRegionVaccinations(getJsonUrl, viewElements) {
 
@@ -231,8 +248,8 @@
                             return Promise.reject(new Error(`regionVaccinations acquisition failed. Server answered with ${response.status}: ${response.statusText}.`)); //we return a rejected promise to be catched later
                         }
                     })
-                    .then(regionHospitalPatientsData => { //here we process the returned response data in JSON ...
-                        renderRegionVaccinations(regionHospitalPatientsData, viewElements);
+                    .then(regionVaccinationsData => { //here we process the returned response data in JSON ...
+                        renderRegionVaccinations(regionVaccinationsData, viewElements);
                     })
                     .catch(error => { ////here we process all the failed promises
                         errorMessage = "Nepodarilo sa získať alebo vykresliť údaje krajských vakcináciách. Podrobnosti: " + error;
@@ -240,18 +257,33 @@
                     });
             }
 
-            function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
-
-                const rowCount = regionHospitalPatientsData.length;
+            function renderRegionVaccinations(regionVaccinationsData, viewElements) {
+let average = 0;
+let summForAverage=0;
+let doseCount1TN = 0;
+let doseCount2TN = 0;
+let doseCount1NR = 0;
+let doseCount2NR = 0;
+let doseCount1KE = 0;
+let doseCount2KE = 0;
+let doseCount1TT = 0;
+let doseCount2TT = 0;
+let doseCount1BA = 0;
+let doseCount2BA = 0;
+let doseCount1PO = 0;
+let doseCount2PO = 0;
+let doseCount1BB = 0;
+let doseCount1ZA = 0;
+let doseCount2BB = 0;
+let doseCount2ZA = 0;
+                const rowCount = regionVaccinationsData.length;
                 let html2Render = "";
                 html2Render += `
-                <thead>
-                    <tr>
-                        <th scope="col">Číslo dávky</th>
-                        <th scope="col">Počet</th>
-                    </tr>
-                </thead>
-                `;
+            <thead>
+           <tr>
+                <th>Dávka</th>
+                <th>Počet</th>
+           </tr>`;
                 let doseCount1 = 0;
                 let doseCount2 = 0;
                 var myNewStartDate = new Date(startDate);
@@ -260,61 +292,158 @@
                 let myDate = "";
                 var myNewDate = "";
                 var myRegionNameTitle = ""
-                for (row = 0; row < rowCount; row++) {
-                    myDate = regionHospitalPatientsData[row].publishedOn;
-                    myReparedDate = myDate.replaceAll("\"", "");
-                    myRegionNameTitle = regionHospitalPatientsData[row].region.title;
+                if(regionVaccinationsData.length != 0){
 
-                    myNewDate = new Date(myReparedDate);
-
-                    if (myNewStartDate <= myNewDate && myNewEndDate >= myNewDate) {
-                        if (valRegion == myRegionNameTitle || valRegion == "Slovensko.") {
-                            doseCount1 += regionHospitalPatientsData[row].dose1Count;
-                            doseCount2 += regionHospitalPatientsData[row].dose2Count;
-                        }
-                    }
+                for (let i = 0; i < regionVaccinationsData.length; i ++) {
+                if(regionVaccinationsData[i][0]=="Košický"){
+                 doseCount1KE +=regionVaccinationsData[i][1];
+                    doseCount2KE +=regionVaccinationsData[i][2];
                 }
+
+                if(regionVaccinationsData[i][0]=="Prešovský"){
+                    doseCount1PO +=regionVaccinationsData[i][1];
+                    doseCount2PO +=regionVaccinationsData[i][2];
+                }
+                if(regionVaccinationsData[i][0]=="Žilinský"){
+                doseCount1ZA +=regionVaccinationsData[i][1];
+                doseCount2ZA +=regionVaccinationsData[i][2];
+                 }
+                 if(regionVaccinationsData[i][0]=="Nitriansky"){
+                 doseCount1NR +=regionVaccinationsData[i][1];
+                 doseCount2NR +=regionVaccinationsData[i][2];
+                 }
+
+                 if(regionVaccinationsData[i][0]=="Trenčiansky"){
+                  doseCount1TN +=regionVaccinationsData[i][1];
+                  doseCount2TN +=regionVaccinationsData[i][2];
+                  }
+
+                  if(regionVaccinationsData[i][0]=="Trnavský"){
+                  doseCount1TT +=regionVaccinationsData[i][1];
+                  doseCount2TT +=regionVaccinationsData[i][2];
+                  }
+
+                   if(regionVaccinationsData[i][0]=="Banskobystrický"){
+                  doseCount1BB +=regionVaccinationsData[i][1];
+                  doseCount2BB +=regionVaccinationsData[i][2];
+                  }
+                   if(regionVaccinationsData[i][0]=="Bratislavský"){
+                  doseCount1BA +=regionVaccinationsData[i][1];
+                  doseCount2BA +=regionVaccinationsData[i][2];
+                  }
+                  }
+
+
+
+                for (row = 0; row < rowCount; row++) {
+                   myRegionNameTitle = regionVaccinationsData[row][0];
+summForAverage += regionVaccinationsData[row][1] + regionVaccinationsData[row][2];
+
+                        if (valRegion == myRegionNameTitle || valRegion == "Slovensko.") {
+                            doseCount1 += regionVaccinationsData[row][1];
+                            doseCount2 += regionVaccinationsData[row][2];
+                        }
+
+                }}
                 html2Render +=
                     `
-                <tbody>
-                    <tr>
-                        <th scope="row">Prvá</th>
-                        <td>${doseCount1}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Druhá</th>
-                        <td>${doseCount2}</td>
-                    </tr>
-                </tbody>
+               <tbody>
+                <tr>
+                    <td>Prvá</td>
+                    <td>${doseCount1}</td>
+                </tr>
+                    <td>Druhá</td>
+                    <td>${doseCount2}</td>
+                </tr>
+                  </tbody>
                 `;
+
+                pathColorChange("TN", 577464,doseCount1TT,doseCount2TT, summForAverage);
+
+                pathColorChange("NR", 677900,doseCount1NR,doseCount2NR, summForAverage);
+
+                pathColorChange("PO", 808931,doseCount1PO,doseCount2PO, summForAverage);
+
+                pathColorChange("KE", 782216,doseCount1KE,doseCount2KE, summForAverage);
+
+                pathColorChange("TT", 566008,doseCount1TT,doseCount2TT, summForAverage);
+
+                pathColorChange("BB", 625601,doseCount1BB,doseCount2BB, summForAverage);
+
+                pathColorChange("BA", 719537,doseCount1BA,doseCount2BA, summForAverage);
+
+                pathColorChange("ZA", 691613,doseCount1ZA,doseCount2ZA, summForAverage);
+
+
+
                 viewElements.infoTable.innerHTML = html2Render;
+
+
+
+
+
+
+
             }
+
+
+
+function pathColorChange(region, citizenCount, dose1Count, dose2Count, summForAverage){
+                                  average = summForAverage/5449270;
+                if(((dose1Count + dose2Count)/citizenCount) < average * 0.95){
+                document.getElementById(region).style.fill =  document.getElementById("downToAverage").value;
+                }
+                if(((dose1Count + dose2Count)/citizenCount) > average * 1.05  ){
+                document.getElementById(region).style.fill =  document.getElementById("upToAverage").value;
+                }
+                if((average * 1.05 >= ((dose1Count + dose2Count)/citizenCount)) && (((dose1Count + dose2Count)/citizenCount) >= average * 0.95)){
+
+                document.getElementById(region).style.fill = document.getElementById("inToAverage").value;
+                }
+
+                }
+
+
+
+
+
         }
 
+
+
+
+
+
+
+
+
+
+
+
         if (document.getElementById('objectOfInterest').value == 1) {
+
+
             const viewElements = {
-                objectOfInterestName1: document.getElementById("objectOfInterestName1"),
-                objectOfInterestName2: document.getElementById("objectOfInterestName2"),
+                objectOfInterestName: document.getElementById("objectOfInterestName"),
                 infoTable: document.getElementById("infoTable"),
             }
 
-            fetchAndRenderRegionVaccinations("/api/hospital-patients/by-region", viewElements);
+
             var valRegionEndSentence = "";
             var objectOfInterest = document.getElementById("objectOfInterest");
-            var objectOfInterestName1 = objectOfInterest.options[objectOfInterest.selectedIndex].title;
+            var objectOfInterestName = objectOfInterest.options[objectOfInterest.selectedIndex].title;
             var startDate = document.getElementById("dateStart").value;
             var endDate = document.getElementById("dateEnd").value;
-
+fetchAndRenderRegionHospitalPatients(`/api/hospital-patients/by-region/${startDate}/${endDate}`, viewElements);
             if (valRegion == "Slovensko.") {
                 valRegionEndSentence = "";
             }
             if (valRegion != "Slovensko.") {
-                valRegionEndSentence = "kraj";
+                valRegionEndSentence = "kraj.";
             }
-            viewElements.objectOfInterestName1.innerHTML = objectOfInterestName1;
-            viewElements.objectOfInterestName2.innerHTML = valRegion + " " + valRegionEndSentence;
+            viewElements.objectOfInterestName.innerHTML = objectOfInterestName + " " + valRegion + " " + valRegionEndSentence;
 
-            function fetchAndRenderRegionVaccinations(getJsonUrl, viewElements) {
+            function fetchAndRenderRegionHospitalPatients(getJsonUrl, viewElements) {
 
                 fetch(getJsonUrl)  //there may be a second parameter, an object wih options, but we do not need it now.
                     .then(response => {      //fetch promise fullfilled (operation completed successfully)
@@ -325,7 +454,7 @@
                         }
                     })
                     .then(regionHospitalPatientsData => { //here we process the returned response data in JSON ...
-                        renderRegionVaccinations(regionHospitalPatientsData, viewElements);
+                        renderRegionHospitalPatients(regionHospitalPatientsData, viewElements);
                     })
                     .catch(error => { ////here we process all the failed promises
                         errorMessage = "Nepodarilo sa získať alebo vykresliť údaje hospitalizovanych pacientoch. Podrobnosti: " + error;
@@ -333,17 +462,16 @@
                     });
             }
 
-            function renderRegionVaccinations(regionHospitalPatientsData, viewElements) {
+            function renderRegionHospitalPatients(regionHospitalPatientsData, viewElements) {
+
                 const rowCount = regionHospitalPatientsData.length;
                 let html2Render = "";
                 html2Render += `
-                <thead>
-                    <tr>
-                        <th scope="col">Popis Pacientov</th>
-                        <th scope="col">Počet</th>
-                    </tr>
-                </thead>
-                `;
+            <thead>
+           <tr>
+               <th>Popis Pacientov</th>
+               <th>Počet</th>
+           </tr>`;
                 let nonCovidPatients = 0;
                 let covidPatients = 0;
                 let covidPatientsOnVentilation = 0;
@@ -354,49 +482,51 @@
                 let myDate = "";
                 var myNewDate = "";
                 var myRegionNameTitle = ""
-
+             if(regionHospitalPatientsData.length != 0){
                 for (row = 0; row < rowCount; row++) {
-                    myDate = regionHospitalPatientsData[row].publishedOn;
-                    myReparedDate = myDate.replaceAll("\"", "");
-                    myRegionNameTitle = regionHospitalPatientsData[row].region.title;
 
-                    myNewDate = new Date(myReparedDate);
+                    myRegionNameTitle = regionHospitalPatientsData[row][0];
 
-                    if (myNewStartDate <= myNewDate && myNewEndDate >= myNewDate) {
+
+
                         if (valRegion == myRegionNameTitle || valRegion == "Slovensko.") {
-                            nonCovidPatients += regionHospitalPatientsData[row].nonCovid;
-                            covidPatients += regionHospitalPatientsData[row].confirmedCovid;
-                            covidPatientsOnVentilation += regionHospitalPatientsData[row].ventilatedCovid;
-                            suspectedCovidPatients += regionHospitalPatientsData[row].suspectedCovid;
+                            nonCovidPatients += regionHospitalPatientsData[row][1];
+                            covidPatients += regionHospitalPatientsData[row][2];
+                            covidPatientsOnVentilation += regionHospitalPatientsData[row][3];
+                            suspectedCovidPatients += regionHospitalPatientsData[row][4];
                         }
-                    }
-                }
+
+                }}
                 html2Render +=
                     `
-                <tbody>
-                    <tr>
-                        <td scope="row">Celkovo</td>
-                        <td>${nonCovidPatients}</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">COV19</td>
-                        <td>${covidPatients}</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">COV19 na UPV</td>
-                        <td>${covidPatientsOnVentilation}</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">COV19 podozrenie</td>
-                        <td>${suspectedCovidPatients}</td>
-                    </tr>
-                </tbody>
+               <tbody>
+                <tr>
+                    <td>Celkovo</td>
+                    <td>${nonCovidPatients}</td>
+                </tr>
+                <tr>
+                    <td>COV19</td>
+                    <td>${covidPatients}</td>
+                </tr>
+                <tr>
+                    <td>COV19 na UPV</td>
+                    <td>${covidPatientsOnVentilation}</td>
+                </tr>
+                <tr>
+                    <td>COV19 podozrenie</td>
+                    <td>${suspectedCovidPatients}</td>
+                </tr>
+                  </tbody>
                 `;
 
                 viewElements.infoTable.innerHTML = html2Render;
+
             }
         }
     }
+
+
+
 </script>
 
 <script src="/constantsAndInitializations.js"></script>
