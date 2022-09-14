@@ -35,7 +35,7 @@ public class SlovakiaVaccinationsServiceJPA implements SlovakiaVaccinationsServi
     }
 
     @Override
-    public List<RegionVaccinations> getDailyVaccinations(String from, String to) {
+    public List<SlovakiaVaccinations> getDailyVaccinations(String from, String to) {
         return entityManager
                 .createQuery("select sv from SlovakiaVaccinations sv where sv.publishedOn between :from and :to")
                 .setParameter("from", from)

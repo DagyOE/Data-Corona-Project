@@ -10,5 +10,5 @@ public interface SlovakiaVaccinationsService {
 
     List<SlovakiaVaccinations> getAllSlovakiaVaccinations();
 
-    List<RegionVaccinations> getDailyVaccinations(String from, String to);
+    List<SlovakiaVaccinations> getDailyVaccinations(String from, String to);
 }

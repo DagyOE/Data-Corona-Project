@@ -30,6 +30,19 @@ public class SlovakiaVaccinations {
         this.publishedOn = publishedOn;
     }
 
+    @Override
+    public String toString() {
+        return "SlovakiaVaccinations{" +
+                "id='" + id + '\'' +
+                ", dose1Count=" + dose1Count +
+                ", dose2Count=" + dose2Count +
+                ", dose1Sum=" + dose1Sum +
+                ", dose2Sum=" + dose2Sum +
+                ", updatedAt='" + updatedAt + '\'' +
+                ", publishedOn='" + publishedOn + '\'' +
+                '}';
+    }
+
     public String getId() {
         return id;
     }

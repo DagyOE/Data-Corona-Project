@@ -40,10 +40,7 @@ import java.net.URL;
 //todo: erase these classes
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class Console {
@@ -96,58 +93,70 @@ public class Console {
 //        getSlovakiaHospitalPatientsData(urlSlovakiaHospitalPatients);
         System.out.println("End mirroring");
 
-        List<RegionVaccinations> testList = testController();
-        for (RegionVaccinations rv: testList)
-            System.out.println(rv);
+        List<SlovakiaHospitalPatients>testList = testController();
+        for (SlovakiaHospitalPatients t:testList)
+            System.out.println(t);
     }
 
-    private List<RegionVaccinations> testController() {
-        List<RegionVaccinations> regionVaccinationsList = regionVaccinationsService.getAllRegionVaccinations();
-
-        List<RegionVaccinations> weeklyRegionVaccinationsList = new ArrayList<>();
-
+    private List<SlovakiaHospitalPatients> testController() {
         String from = "2021-01-04";
-        String to = "2021-01-29";
-        try {
-            Date fromDate = createDate(from);
-            Date toDate = createDate(to);
+        String to = "2021-02-28";
+        List<SlovakiaHospitalPatients> slovakiaHospitalPatientsList = slovakiaHospitalPatientsService.getDailyHospitalPatients(from, to);
 
-            Calendar calendar = Calendar.getInstance();
-            int[] regionsDose1Count = new int[8];
-            int[] regionsDose2Count = new int[8];
-            for (RegionVaccinations rv: regionVaccinationsList) {
-                Date rvDate = createDate(rv.getPublishedOn());
+        List<SlovakiaHospitalPatients> monthlySlovakiaHospitalPatientsList = new ArrayList<>();
 
-                if (!rvDate.before(fromDate) && !rvDate.after(toDate)) {
-                    int region = rv.getRegion().getId();
+        if (from != null && to != null) {
+            try {
+                Calendar calendar = Calendar.getInstance();
+                int ventilatedCovid = 0;
+                int nonCovid = 0;
+                int confirmedCovid = 0;
+                int suspectedCovid = 0;
 
-                    regionsDose1Count[region - 1] += rv.getDose1Count();
-                    regionsDose2Count[region - 1] += rv.getDose2Count();
+                int length = slovakiaHospitalPatientsList.size();
+                for (int i = length - 1; i >= 0; i--) {
+                    SlovakiaHospitalPatients shp = slovakiaHospitalPatientsList.get(i);
 
-                    calendar.setTime(rvDate);
-                    if(calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-                        RegionVaccinations newRV = new RegionVaccinations(rv.getId(), rv.getRegion(), regionsDose1Count[region - 1], regionsDose2Count[region - 1],
-                                rv.getDose1Sum(), rv.getDose2Sum(), rv.getUpdatedAt(), rv.getPublishedOn());
-                        weeklyRegionVaccinationsList.add(newRV);
+                    ventilatedCovid += shp.getVentilatedCovid();
+                    nonCovid += shp.getNonCovid();
+                    confirmedCovid += shp.getConfirmedCovid();
+                    suspectedCovid += shp.getSuspectedCovid();
 
-                        regionsDose1Count[region - 1] = 0;
-                        regionsDose2Count[region - 1] = 0;
 
-//                        System.out.println(newRV.toString());
+                    Date shpDate = createDate(shp.getPublishedOn());
+                    calendar.setTime(shpDate);
+                    if (calendar.get(Calendar.DAY_OF_MONTH) == getLastDayOfMonth(calendar.get(Calendar.MONTH))) {
+                        SlovakiaHospitalPatients newSHP = new SlovakiaHospitalPatients(shp.getId(), shp.getOldestReportedAt(), shp.getNewestReportedAt(),
+                                ventilatedCovid, nonCovid, confirmedCovid, suspectedCovid, shp.getPublishedOn(), shp.getUpdatedAt());
+                        monthlySlovakiaHospitalPatientsList.add(newSHP);
+
+                        ventilatedCovid = 0;
+                        nonCovid = 0;
+                        confirmedCovid = 0;
+                        suspectedCovid = 0;
                     }
                 }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
         }
 
-        return weeklyRegionVaccinationsList;
+        Collections.reverse(monthlySlovakiaHospitalPatientsList);
+        return monthlySlovakiaHospitalPatientsList;
     }
 
     private Date createDate(String date_string) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = formatter.parse(date_string);
         return date;
+    }
+
+    private int getLastDayOfMonth(int month) {
+        if (month == 1)
+            return 28;
+        if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11)
+            return 31;
+        return 30;
     }
 
     private void getSlovakiaHospitalPatientsData(String url) throws IOException, JSONException {

@@ -6,7 +6,7 @@ let startDatePatients = "2020-04-30";
 //todo: check whether it shouldn't be until today
 let endDatePatients = "2022-09-08";
 
-let intervalPatients = 'daily';
+let intervalPatients = 'weekly';
 let regionPatients = '0';
 
 let urlSlovakia = `http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`;

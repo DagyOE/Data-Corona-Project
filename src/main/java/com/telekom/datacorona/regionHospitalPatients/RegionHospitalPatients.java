@@ -44,6 +44,22 @@ public class RegionHospitalPatients {
         this.updatedAt = updatedAt;
     }
 
+    @Override
+    public String toString() {
+        return "RegionHospitalPatients{" +
+                "id='" + id + '\'' +
+                ", oldestReportedAt='" + oldestReportedAt + '\'' +
+                ", newestReportedAt='" + newestReportedAt + '\'' +
+                ", region=" + region +
+                ", ventilatedCovid=" + ventilatedCovid +
+                ", nonCovid=" + nonCovid +
+                ", confirmedCovid=" + confirmedCovid +
+                ", suspectedCovid=" + suspectedCovid +
+                ", publishedOn='" + publishedOn + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                '}';
+    }
+
     public String getId() {
         return id;
     }

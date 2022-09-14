@@ -6,7 +6,7 @@ let startDate = "2021-01-04";
 //todo: check whether it shouldn't be until today
 let endDate = "2022-07-26";
 
-let interval = 'daily';
+let interval = 'weekly';
 let region = '0';
 
 let myChart = new Chart(document.getElementById("SlovakiaVaccinationsCanvas").getContext("2d"), {});

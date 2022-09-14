@@ -20,7 +20,7 @@ public class SlovakiaVaccinationsWebServiceREST {
     }
 
     @GetMapping("/daily/{from}/{to}")
-    public List<RegionVaccinations> getDailyRegionVaccinations(@PathVariable String from, @PathVariable String to) {
+    public List<SlovakiaVaccinations> getDailyRegionVaccinations(@PathVariable String from, @PathVariable String to) {
         return slovakiaVaccinationsService.getDailyVaccinations(from, to);
     }
 }
