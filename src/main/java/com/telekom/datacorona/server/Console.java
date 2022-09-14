@@ -36,12 +36,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URL;
 
-
-//todo: erase these classes
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 @Component
 public class Console {
 
@@ -92,71 +86,6 @@ public class Console {
 //        getRegionHospitalPatientsData(urlRegionHospitalPatients);
 //        getSlovakiaHospitalPatientsData(urlSlovakiaHospitalPatients);
         System.out.println("End mirroring");
-
-        List<SlovakiaHospitalPatients>testList = testController();
-        for (SlovakiaHospitalPatients t:testList)
-            System.out.println(t);
-    }
-
-    private List<SlovakiaHospitalPatients> testController() {
-        String from = "2021-01-04";
-        String to = "2021-02-28";
-        List<SlovakiaHospitalPatients> slovakiaHospitalPatientsList = slovakiaHospitalPatientsService.getDailyHospitalPatients(from, to);
-
-        List<SlovakiaHospitalPatients> monthlySlovakiaHospitalPatientsList = new ArrayList<>();
-
-        if (from != null && to != null) {
-            try {
-                Calendar calendar = Calendar.getInstance();
-                int ventilatedCovid = 0;
-                int nonCovid = 0;
-                int confirmedCovid = 0;
-                int suspectedCovid = 0;
-
-                int length = slovakiaHospitalPatientsList.size();
-                for (int i = length - 1; i >= 0; i--) {
-                    SlovakiaHospitalPatients shp = slovakiaHospitalPatientsList.get(i);
-
-                    ventilatedCovid += shp.getVentilatedCovid();
-                    nonCovid += shp.getNonCovid();
-                    confirmedCovid += shp.getConfirmedCovid();
-                    suspectedCovid += shp.getSuspectedCovid();
-
-
-                    Date shpDate = createDate(shp.getPublishedOn());
-                    calendar.setTime(shpDate);
-                    if (calendar.get(Calendar.DAY_OF_MONTH) == getLastDayOfMonth(calendar.get(Calendar.MONTH))) {
-                        SlovakiaHospitalPatients newSHP = new SlovakiaHospitalPatients(shp.getId(), shp.getOldestReportedAt(), shp.getNewestReportedAt(),
-                                ventilatedCovid, nonCovid, confirmedCovid, suspectedCovid, shp.getPublishedOn(), shp.getUpdatedAt());
-                        monthlySlovakiaHospitalPatientsList.add(newSHP);
-
-                        ventilatedCovid = 0;
-                        nonCovid = 0;
-                        confirmedCovid = 0;
-                        suspectedCovid = 0;
-                    }
-                }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        Collections.reverse(monthlySlovakiaHospitalPatientsList);
-        return monthlySlovakiaHospitalPatientsList;
-    }
-
-    private Date createDate(String date_string) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = formatter.parse(date_string);
-        return date;
-    }
-
-    private int getLastDayOfMonth(int month) {
-        if (month == 1)
-            return 28;
-        if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11)
-            return 31;
-        return 30;
     }
 
     private void getSlovakiaHospitalPatientsData(String url) throws IOException, JSONException {

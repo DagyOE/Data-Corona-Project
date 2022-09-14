@@ -1,5 +1,7 @@
 package com.telekom.datacorona.regionVaccinations;
 
+import com.telekom.datacorona.region.RegionService;
+import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -20,41 +22,49 @@ public class RegionVaccinationController {
 
     @Autowired
     RegionVaccinationsService regionVaccinationsService;
+    @Autowired
+    RegionService regionService;
 
     @RequestMapping(value = "/vaccinations/by-region/weekly/{from}/{to}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<RegionVaccinations> getWeeklyData(@PathVariable String from, @PathVariable String to) {
-        List<RegionVaccinations> regionVaccinationsList = regionVaccinationsService.getAllRegionVaccinations();
+        List<RegionVaccinations> regionVaccinationsList = regionVaccinationsService.getDailyRegionVaccinations(from, to);
 
         List<RegionVaccinations> weeklyRegionVaccinationsList = new ArrayList<>();
 
         if (from != null && to != null) {
             try {
-                Date fromDate = createDate(from);
-                Date toDate = createDate(to);
-
                 Calendar calendar = Calendar.getInstance();
-                int[] regionsDose1Count = new int[8];
-                int[] regionsDose2Count = new int[8];
-                for (RegionVaccinations rv : regionVaccinationsList) {
+                RegionVaccinations[] regionVaccinations = new RegionVaccinations[8];
+                for (int region = 0; region < 8; region++) {
+                    regionVaccinations[region] = new RegionVaccinations();
+                    regionVaccinations[region].setRegion(regionService.getAllRegions().get(region));
+                }
+
+                String publishedOn = "";
+                boolean newWeek = false;
+                int length = regionVaccinationsList.size();
+                for (int i = length - 1; i >= 0; i--) {
+                    RegionVaccinations rv = regionVaccinationsList.get(i);
                     Date rvDate = createDate(rv.getPublishedOn());
 
-                    if (!rvDate.before(fromDate) && !rvDate.after(toDate)) {
-                        int region = rv.getRegion().getId();
-
-                        regionsDose1Count[region - 1] += rv.getDose1Count();
-                        regionsDose2Count[region - 1] += rv.getDose2Count();
-
-                        calendar.setTime(rvDate);
-                        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-                            RegionVaccinations newRV = new RegionVaccinations(rv.getId(), rv.getRegion(), regionsDose1Count[region - 1], regionsDose2Count[region - 1],
-                                    rv.getDose1Sum(), rv.getDose2Sum(), rv.getUpdatedAt(), rv.getPublishedOn());
-                            weeklyRegionVaccinationsList.add(newRV);
-
-                            regionsDose1Count[region - 1] = 0;
-                            regionsDose2Count[region - 1] = 0;
-                        }
+                    calendar.setTime(rvDate);
+                    if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && newWeek) {
+                        addRegionVaccinations(weeklyRegionVaccinationsList, regionVaccinations, publishedOn);
+                        newWeek = false;
+                    } else if (!newWeek && calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+                        newWeek = true;
                     }
+
+                    int region = rv.getRegion().getId();
+
+                    regionVaccinations[region - 1].setId(rv.getId());
+                    regionVaccinations[region - 1].setDose1Count(regionVaccinations[region - 1].getDose1Count() + rv.getDose1Count());
+                    regionVaccinations[region - 1].setDose2Count(regionVaccinations[region - 1].getDose2Count() + rv.getDose2Count());
+                    regionVaccinations[region - 1].setDose1Sum(rv.getDose1Sum());
+                    regionVaccinations[region - 1].setDose2Sum(rv.getDose2Sum());
+                    regionVaccinations[region - 1].setUpdatedAt(rv.getUpdatedAt());
+                    publishedOn = rv.getPublishedOn();
                 }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
@@ -67,37 +77,43 @@ public class RegionVaccinationController {
     @RequestMapping(value = "/vaccinations/by-region/monthly/{from}/{to}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<RegionVaccinations> getMonthlyData(@PathVariable String from, @PathVariable String to) {
-        List<RegionVaccinations> regionVaccinationsList = regionVaccinationsService.getAllRegionVaccinations();
+        List<RegionVaccinations> regionVaccinationsList = regionVaccinationsService.getDailyRegionVaccinations(from, to);
 
         List<RegionVaccinations> monthlyRegionVaccinationsList = new ArrayList<>();
 
         if (from != null && to != null) {
             try {
-                Date fromDate = createDate(from);
-                Date toDate = createDate(to);
-
                 Calendar calendar = Calendar.getInstance();
-                int[] regionsDose1Count = new int[8];
-                int[] regionsDose2Count = new int[8];
-                for (RegionVaccinations rv : regionVaccinationsList) {
+                RegionVaccinations[] regionVaccinations = new RegionVaccinations[8];
+                for (int region = 0; region < 8; region++) {
+                    regionVaccinations[region] = new RegionVaccinations();
+                    regionVaccinations[region].setRegion(regionService.getAllRegions().get(region));
+                }
+
+                String publishedOn = "";
+                boolean newMonth = false;
+                int length = regionVaccinationsList.size();
+                for (int i = length - 1; i >= 0; i--) {
+                    RegionVaccinations rv = regionVaccinationsList.get(i);
                     Date rvDate = createDate(rv.getPublishedOn());
 
-                    if (!rvDate.before(fromDate) && !rvDate.after(toDate)) {
-                        int region = rv.getRegion().getId();
-
-                        regionsDose1Count[region - 1] += rv.getDose1Count();
-                        regionsDose2Count[region - 1] += rv.getDose2Count();
-
-                        calendar.setTime(rvDate);
-                        if (calendar.get(Calendar.DAY_OF_MONTH) == getLastDayOfMonth(calendar.get(Calendar.MONTH))) {
-                            RegionVaccinations newRV = new RegionVaccinations(rv.getId(), rv.getRegion(), regionsDose1Count[region - 1], regionsDose2Count[region - 1],
-                                    rv.getDose1Sum(), rv.getDose2Sum(), rv.getUpdatedAt(), rv.getPublishedOn());
-                            monthlyRegionVaccinationsList.add(newRV);
-
-                            regionsDose1Count[region - 1] = 0;
-                            regionsDose2Count[region - 1] = 0;
-                        }
+                    calendar.setTime(rvDate);
+                    if (calendar.get(Calendar.DAY_OF_MONTH) == 1 && newMonth) {
+                        addRegionVaccinations(monthlyRegionVaccinationsList, regionVaccinations, publishedOn);
+                        newMonth = false;
+                    } else if (!newMonth && calendar.get(Calendar.DAY_OF_MONTH) != 1) {
+                        newMonth = true;
                     }
+
+                    int region = rv.getRegion().getId();
+
+                    regionVaccinations[region - 1].setId(rv.getId());
+                    regionVaccinations[region - 1].setDose1Count(regionVaccinations[region - 1].getDose1Count() + rv.getDose1Count());
+                    regionVaccinations[region - 1].setDose2Count(regionVaccinations[region - 1].getDose2Count() + rv.getDose2Count());
+                    regionVaccinations[region - 1].setDose1Sum(rv.getDose1Sum());
+                    regionVaccinations[region - 1].setDose2Sum(rv.getDose2Sum());
+                    regionVaccinations[region - 1].setUpdatedAt(rv.getUpdatedAt());
+                    publishedOn = rv.getPublishedOn();
                 }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
@@ -107,17 +123,19 @@ public class RegionVaccinationController {
         return monthlyRegionVaccinationsList;
     }
 
+    private void addRegionVaccinations(List<RegionVaccinations> rvList, RegionVaccinations[] regionVaccinations, String publishedOn) {
+        for (int region = 0; region < 8; region++) {
+            rvList.add(new RegionVaccinations(regionVaccinations[region].getId(), regionVaccinations[region].getRegion(),
+                    regionVaccinations[region].getDose1Count(), regionVaccinations[region].getDose2Count(), regionVaccinations[region].getDose1Sum(),
+                    regionVaccinations[region].getDose2Sum(), regionVaccinations[region].getUpdatedAt(), publishedOn));
+            regionVaccinations[region] = new RegionVaccinations();
+            regionVaccinations[region].setRegion(regionService.getAllRegions().get(region));
+        }
+    }
+
     private Date createDate(String date_string) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = formatter.parse(date_string);
         return date;
-    }
-
-    private int getLastDayOfMonth(int month) {
-        if (month == 1)
-            return 28;
-        if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11)
-            return 31;
-        return 30;
     }
 }
