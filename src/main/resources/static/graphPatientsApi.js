@@ -3,6 +3,7 @@ let minDatePatients = createDate("2020-04-30");
 //todo: check whether it shouldn't be until today
 let maxDatePatients = createDate("2022-09-08");
 let startDatePatients = "2020-04-30";
+//todo: check whether it shouldn't be until today
 let endDatePatients = "2022-09-08";
 
 let intervalPatients = 'daily';

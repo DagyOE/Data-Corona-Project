@@ -1,23 +1,73 @@
 package com.telekom.datacorona.regionVaccinations;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Controller
 @RequestMapping("/api")
 public class RegionVaccinationController {
 
+    @Autowired
     RegionVaccinationsService regionVaccinationsService;
 
-    @RequestMapping(value = "/hospital-patients/by-region/weekly/{from}/{to}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/vaccinations/by-region/weekly/{from}/{to}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public int getWeeklyData(@RequestParam(required = false) String from, @RequestParam(required = false) String to) {
+    public List<RegionVaccinations> getWeeklyData(@PathVariable String from, @PathVariable String to) {
         List<RegionVaccinations> regionVaccinationsList = regionVaccinationsService.getAllRegionVaccinations();
-        return 1;
+
+        List<RegionVaccinations> weeklyRegionVaccinationsList = new ArrayList<>();
+
+        if (from != null && to != null) {
+            try {
+                Date fromDate = createDate(from);
+                Date toDate = createDate(to);
+
+                Calendar calendar = Calendar.getInstance();
+                int[] regionsDose1Count = new int[8];
+                int[] regionsDose2Count = new int[8];
+                for (RegionVaccinations rv : regionVaccinationsList) {
+                    Date rvDate = createDate(rv.getPublishedOn());
+
+                    if (!rvDate.before(fromDate) && !rvDate.after(toDate)) {
+                        int region = rv.getRegion().getId();
+
+                        regionsDose1Count[region - 1] += rv.getDose1Count();
+                        regionsDose2Count[region - 1] += rv.getDose2Count();
+
+                        calendar.setTime(rvDate);
+                        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                            RegionVaccinations newRV = new RegionVaccinations(rv.getId(), rv.getRegion(), regionsDose1Count[region - 1], regionsDose2Count[region - 1],
+                                    rv.getDose1Sum(), rv.getDose2Sum(), rv.getUpdatedAt(), rv.getPublishedOn());
+                            weeklyRegionVaccinationsList.add(newRV);
+
+                            regionsDose1Count[region - 1] = 0;
+                            regionsDose2Count[region - 1] = 0;
+                        }
+                    }
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return weeklyRegionVaccinationsList;
+    }
+
+    private Date createDate(String date_string) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = formatter.parse(date_string);
+        return date;
     }
 }

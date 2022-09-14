@@ -1,7 +1,9 @@
 // indices for range selection
 let minDate = createDate("2021-01-04");
+//todo: check whether it shouldn't be until today
 let maxDate = createDate("2022-07-26");
 let startDate = "2021-01-04";
+//todo: check whether it shouldn't be until today
 let endDate = "2022-07-26";
 
 let interval = 'daily';
