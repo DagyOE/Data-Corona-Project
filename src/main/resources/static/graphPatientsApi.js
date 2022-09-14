@@ -35,7 +35,7 @@ document.getElementById("PatientsRegion").addEventListener("change", event => {
 
 //---------------------- CALLS
 
-findFirstAndLastRecord(`http://127.0.0.1:8080/api/hospital-patients/in-slovakia`);
+// findFirstAndLastRecord(`http://127.0.0.1:8080/api/hospital-patients/in-slovakia`);
 fetchPatientsData(`http://localhost:8080/api/hospital-patients/in-slovakia/${intervalPatients}/${startDatePatients}/${endDatePatients}`);
 createDatePickerPatients();
 
@@ -105,6 +105,13 @@ async function fetchRegionPatientsData(url) {
                     publishedOn[indexRegion] = data[i].publishedOn;
                     indexRegion++;
                 }
+            }
+            if (intervalPatients === 'daily') {
+                confirmedCovid.reverse();
+                nonCovid.reverse();
+                suspectedCovid.reverse();
+                ventilatedCovid.reverse();
+                publishedOn.reverse();
             }
             myChartPatients.destroy();
             plotHospitalPatients(confirmedCovid, ventilatedCovid, suspectedCovid, nonCovid, publishedOn);

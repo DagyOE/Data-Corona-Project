@@ -32,7 +32,7 @@ document.getElementById("SlovakiaVaccinationsRegion").addEventListener("change",
 
 //---------------------- CALLS
 
-findFirstAndLastRecord(`http://localhost:8080/api/vaccinations/in-slovakia`);
+// findFirstAndLastRecord(`http://localhost:8080/api/vaccinations/in-slovakia`);
 fetchVaccinationData(`http://localhost:8080/api/vaccinations/in-slovakia/${interval}/${startDate}/${endDate}`);
 createDatePickerSlovakia();
 
@@ -102,6 +102,11 @@ async function fetchRegionVaccinationData(url) {
                 }
             }
             if (interval === 'daily') {
+                dose1Count.reverse();
+                dose2Count.reverse();
+                dose1Sum.reverse();
+                dose2Sum.reverse();
+                publishedOn.reverse();
                 fillArraysWithPreviousDataPoint(dose1Sum, dose2Sum, publishedOn);
             }
             myChart.destroy();
