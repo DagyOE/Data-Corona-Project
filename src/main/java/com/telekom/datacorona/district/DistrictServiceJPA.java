@@ -18,9 +18,7 @@ public class DistrictServiceJPA implements DistrictService{
                     .createQuery("select d from District d where d.id= :id")
                     .setParameter("id", district.getId())
                     .getSingleResult();
-        } catch (IllegalArgumentException iae) {
-            entityManager.persist(district);
-        } catch (NoResultException nre) {
+        } catch (IllegalArgumentException | NoResultException iae) {
             entityManager.persist(district);
         }
     }

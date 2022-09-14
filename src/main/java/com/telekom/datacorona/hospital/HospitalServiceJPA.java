@@ -18,9 +18,7 @@ public class HospitalServiceJPA implements HospitalService{
                     .createQuery("select h from Hospital h where h.id= :id")
                     .setParameter("id", hospital.getId())
                     .getSingleResult();
-        } catch (IllegalArgumentException iae) {
-            entityManager.persist(hospital);
-        } catch (NoResultException nre) {
+        } catch (IllegalArgumentException | NoResultException iae) {
             entityManager.persist(hospital);
         }
     }

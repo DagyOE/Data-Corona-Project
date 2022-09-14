@@ -20,9 +20,7 @@ public class RegionVaccinationsServiceJPA implements RegionVaccinationsService {
                     .createQuery("select rv from RegionVaccinations rv where rv.id= :id")
                     .setParameter("id", regionVaccinations.getId())
                     .getSingleResult();
-        } catch (IllegalArgumentException iae) {
-            entityManager.persist(regionVaccinations);
-        } catch (NoResultException nre) {
+        } catch (IllegalArgumentException | NoResultException iae) {
             entityManager.persist(regionVaccinations);
         }
     }

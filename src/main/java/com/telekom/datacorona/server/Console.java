@@ -75,16 +75,16 @@ public class Console {
     @Scheduled(fixedRate = 86400000)
     public void run() throws IOException, JSONException {
         System.out.println("Start mirroring");
-//        getRegionData(urlRegion);
-//        getDistrictData(urlDistrict);
-//        getCityData(urlCity);
-//        getHospitalData(urlHospital);
-//        getVaccinationByRegionData(urlVaccinationsByRegion);
-//        getVaccinationInSlovakiaData(urlVaccinationsInSlovakia);
-//        getVaccineData(urlVaccine);
-//        getVaccinationData(urlVaccination);
-//        getRegionHospitalPatientsData(urlRegionHospitalPatients);
-//        getSlovakiaHospitalPatientsData(urlSlovakiaHospitalPatients);
+        getRegionData(urlRegion);
+        getDistrictData(urlDistrict);
+        getCityData(urlCity);
+        getHospitalData(urlHospital);
+        getVaccinationByRegionData(urlVaccinationsByRegion);
+        getVaccinationInSlovakiaData(urlVaccinationsInSlovakia);
+        getVaccineData(urlVaccine);
+        getVaccinationData(urlVaccination);
+        getRegionHospitalPatientsData(urlRegionHospitalPatients);
+        getSlovakiaHospitalPatientsData(urlSlovakiaHospitalPatients);
         System.out.println("End mirroring");
     }
 

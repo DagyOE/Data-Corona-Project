@@ -19,9 +19,7 @@ public class RegionServiceJPA implements RegionService{
                     .createQuery("select r from Region r where r.id= :id")
                     .setParameter("id", region.getId())
                     .getSingleResult();
-        } catch (IllegalArgumentException iae) {
-            entityManager.persist(region);
-        } catch (NoResultException nre) {
+        } catch (IllegalArgumentException | NoResultException iae) {
             entityManager.persist(region);
         }
     }

@@ -20,9 +20,7 @@ public class SlovakiaVaccinationsServiceJPA implements SlovakiaVaccinationsServi
                     .createQuery("select sv from SlovakiaVaccinations sv where sv.id= :id")
                     .setParameter("id", slovakiaVaccinations.getId())
                     .getSingleResult();
-        } catch (IllegalArgumentException iae) {
-            entityManager.persist(slovakiaVaccinations);
-        } catch (NoResultException nre) {
+        } catch (IllegalArgumentException | NoResultException iae) {
             entityManager.persist(slovakiaVaccinations);
         }
     }

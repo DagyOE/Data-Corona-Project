@@ -21,9 +21,7 @@ public class RegionHospitalPatientsServiceJPA implements RegionHospitalPatientsS
                     .createQuery("select rhp from RegionHospitalPatients rhp where rhp.id= :id")
                     .setParameter("id", regionHospitalPatients.getId())
                     .getSingleResult();
-        } catch (IllegalArgumentException iae) {
-            entityManager.persist(regionHospitalPatients);
-        } catch (NoResultException nre) {
+        } catch (IllegalArgumentException | NoResultException iae) {
             entityManager.persist(regionHospitalPatients);
         }
     }

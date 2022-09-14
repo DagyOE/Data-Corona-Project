@@ -18,9 +18,7 @@ public class VaccinationsServiceJPA implements VaccinationsService {
                     .createQuery("select v from Vaccinations v where v.id= :id")
                     .setParameter("id", vaccinations.getId())
                     .getSingleResult();
-        } catch (IllegalArgumentException iae) {
-            entityManager.persist(vaccinations);
-        } catch (NoResultException nre) {
+        } catch (IllegalArgumentException | NoResultException iae) {
             entityManager.persist(vaccinations);
         }
     }

@@ -21,9 +21,7 @@ public class SlovakiaHospitalPatientsServiceJPA implements SlovakiaHospitalPatie
                     .createQuery("select shp from SlovakiaHospitalPatients shp where shp.id= :id")
                     .setParameter("id", slovakiaHospitalPatients.getId())
                     .getSingleResult();
-        } catch (IllegalArgumentException iae) {
-            entityManager.persist(slovakiaHospitalPatients);
-        } catch (NoResultException nre) {
+        } catch (IllegalArgumentException | NoResultException iae) {
             entityManager.persist(slovakiaHospitalPatients);
         }
     }
