@@ -5,18 +5,17 @@ import com.telekom.datacorona.regionHospitalPatients.RegionHospitalPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
+@CrossOrigin
 @RequestMapping("/api")
 public class RegionVaccinationController {
 
@@ -30,7 +29,7 @@ public class RegionVaccinationController {
     public List<RegionVaccinations> getWeeklyData(@PathVariable String from, @PathVariable String to) {
         List<RegionVaccinations> regionVaccinationsList = regionVaccinationsService.getDailyRegionVaccinations(from, to);
 
-        List<RegionVaccinations> weeklyRegionVaccinationsList = new ArrayList<>();
+        List<RegionVaccinations> weeklyRegionVaccinationsList = new LinkedList<>();
 
         if (from != null && to != null) {
             try {
@@ -83,7 +82,7 @@ public class RegionVaccinationController {
     public List<RegionVaccinations> getMonthlyData(@PathVariable String from, @PathVariable String to) {
         List<RegionVaccinations> regionVaccinationsList = regionVaccinationsService.getDailyRegionVaccinations(from, to);
 
-        List<RegionVaccinations> monthlyRegionVaccinationsList = new ArrayList<>();
+        List<RegionVaccinations> monthlyRegionVaccinationsList = new LinkedList<>();
 
         if (from != null && to != null) {
             try {

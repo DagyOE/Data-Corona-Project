@@ -3,6 +3,7 @@ package com.telekom.datacorona.slovakiaHospitalPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
+@CrossOrigin
 @RequestMapping("/api")
 public class SlovakiaHospitalPatientsController {
 
@@ -70,7 +72,7 @@ public class SlovakiaHospitalPatientsController {
     public List<SlovakiaHospitalPatients> getMonthlyData(@PathVariable String from, @PathVariable String to) {
         List<SlovakiaHospitalPatients> slovakiaHospitalPatientsList = slovakiaHospitalPatientsService.getDailyHospitalPatients(from, to);
 
-        List<SlovakiaHospitalPatients> monthlySlovakiaHospitalPatientsList = new ArrayList<>();
+        List<SlovakiaHospitalPatients> monthlySlovakiaHospitalPatientsList = new LinkedList<>();
 
         if (from != null && to != null) {
             try {

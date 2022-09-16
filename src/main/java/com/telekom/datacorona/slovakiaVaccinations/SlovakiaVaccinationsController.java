@@ -6,6 +6,7 @@ import com.telekom.datacorona.slovakiaHospitalPatients.SlovakiaHospitalPatientsS
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
+@CrossOrigin
 @RequestMapping("/api")
 public class SlovakiaVaccinationsController {
 
@@ -26,7 +28,7 @@ public class SlovakiaVaccinationsController {
     public List<SlovakiaVaccinations> getWeeklyData(@PathVariable String from, @PathVariable String to) {
         List<SlovakiaVaccinations> slovakiaHospitalPatientsList = slovakiaVaccinationsService.getDailyVaccinations(from, to);
 
-        List<SlovakiaVaccinations> weeklySlovakiaHospitalPatientsList = new ArrayList<>();
+        List<SlovakiaVaccinations> weeklySlovakiaHospitalPatientsList = new LinkedList<>();
 
         if (from != null && to != null) {
             try {
@@ -68,7 +70,7 @@ public class SlovakiaVaccinationsController {
     public List<SlovakiaVaccinations> getMonthlyData(@PathVariable String from, @PathVariable String to) {
         List<SlovakiaVaccinations> slovakiaHospitalPatientsList = slovakiaVaccinationsService.getDailyVaccinations(from, to);
 
-        List<SlovakiaVaccinations> monthlySlovakiaHospitalPatientsList = new ArrayList<>();
+        List<SlovakiaVaccinations> monthlySlovakiaHospitalPatientsList = new LinkedList<>();
 
         if (from != null && to != null) {
             try {
